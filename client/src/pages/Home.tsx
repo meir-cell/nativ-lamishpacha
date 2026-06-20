@@ -662,7 +662,7 @@ function Footer() {
             {/* Social */}
             <div className="flex items-center gap-3 justify-end mt-5">
               <a
-                href="https://www.facebook.com/meir.asor"
+                href="https://www.facebook.com/share/1BNVuxk5qA/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
