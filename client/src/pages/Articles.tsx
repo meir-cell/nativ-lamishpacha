@@ -28,86 +28,329 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-const categories = ["הכל", "טיפול זוגי", "גישור", "ייעוץ משפטי", "הורות", "גירושין"];
+const categories = ["הכל", "גישור ויישוב סכסוכים", "הלכתיים - בין בני זוג", "הספרים שלי", "טיפול זוגי בנישואין", "משפטיים", "פסיכולוגיה יהודית"];
 
 const articles = [
   {
-    title: "הסכם ממון לפני נישואין — מה חשוב לדעת?",
-    excerpt: "הסכם ממון הוא כלי משפטי חשוב שמגדיר את מעמד הרכוש של כל אחד מבני הזוג. מה כולל הסכם ממון, מתי כדאי לערוך אותו ואיך הוא מגן על שני הצדדים?",
-    category: "ייעוץ משפטי",
-    date: "מרץ 2024",
-    img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/הסכם-ממון-לפני-נישואין/",
-    readTime: "5 דקות קריאה",
+    title: `מדריך ממוקד לניהול גירושין`,
+    excerpt: `מדריך ממוקד לניהול הליך הגירושין בבית הדין הרבני\\n\\nמבוא\\n\\nכאשר חיי הנישואין מגיעים למשבר עמוק, ובני הזוג מבינים כי אין עוד אפשרות להמשיך את החיים המשותפים, ניצבת בפניהם אחת ההחלטות המשמעותיות ביותר `,
+    category: `משפטיים`,
+    date: `יוני 13, 2026`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2026/06/madrich-leguroshun.png`,
+    href: "",
   },
   {
-    title: "טיפול זוגי — מתי הגיע הזמן לפנות לעזרה?",
-    excerpt: "זוגות רבים ממתינים זמן רב מדי לפני שהם פונים לטיפול זוגי. כיצד לזהות את הסימנים המוקדמים שמצביעים על כך שהגיע הזמן לפנות לעזרה מקצועית?",
-    category: "טיפול זוגי",
-    date: "פברואר 2024",
-    img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/טיפול-זוגי-מתי/",
-    readTime: "4 דקות קריאה",
+    title: `מונחים בפסיכולוגיה יהודית`,
+    excerpt: `צמצום בפסיכולוגיה יהודית\\n\\nהמושג \\"צמצום\\" מגיע מהקבלה, בעיקר מתורת האר\\"י. במקור הקבלי, הצמצום מתאר רעיון עמוק מאוד: כדי שיהיה מקום לעולם – האינסוף \\"צמצם\\" את עצמו. \\nכלומר, האלוהות זה כמובן רעיון `,
+    category: `פסיכולוגיה יהודית`,
+    date: `יוני 6, 2026`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2026/06/pesishlogya.png`,
+    href: "",
   },
   {
-    title: "גישור בגירושין — חלופה לבית הדין",
-    excerpt: "גישור בגירושין מאפשר לזוגות להגיע להסכמות בדרך מהירה, זולה ומכבדת יותר מהליכים משפטיים מסורתיים. מה היתרונות ואיך מתחילים?",
-    category: "גישור",
-    date: "ינואר 2024",
-    img: "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/גישור-גירושין/",
-    readTime: "6 דקות קריאה",
+    title: `שלבי תהליך הגישור`,
+    excerpt: `תהליך הגישור הוא הליך מובנה ליישוב סכסוכים, שבו צד שלישי ניטרלי מסייע לצדדים לנהל דיאלוג, להבין את צורכיהם ולהגיע להסכמות משותפות. על פי פישר, יורי ופטון (Fisher, Ury & Patton 2011), מטרת הגישור אינה `,
+    category: `גישור ויישוב סכסוכים`,
+    date: `יוני 3, 2026`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2026/06/gishur.png`,
+    href: "",
   },
   {
-    title: "משמורת ילדים — מה אומר החוק?",
-    excerpt: "סוגיית משמורת הילדים היא אחת הרגישות ביותר בהליכי גירושין. מה ההבדל בין משמורת פיזית למשמורת משפטית, ואיך בית הדין מחליט?",
-    category: "גירושין",
-    date: "דצמבר 2023",
-    img: "https://images.unsplash.com/photo-1536640712-4d4c36ff0e4e?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/משמורת-ילדים/",
-    readTime: "7 דקות קריאה",
+    title: `פסיכיאטריה ודת`,
+    excerpt: `מתוך מאמר, הרפואה לאור ההלכה, של הרב וולבה,\\n(חוברת ח' סיוון תשמ\\"ב, בית החולים קרית צנז ע\\"ש לניאדו)\\nניסוח מחודש בס\\"ד מאת: מאיר שמעון עשור\\n\\nבשנים האחרונות נושא הקשר בין פסיכיאטריה לדת הפך לנושא מ`,
+    category: `פסיכולוגיה יהודית`,
+    date: `יוני 3, 2026`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2026/06/meir-1024x1024.png`,
+    href: "",
   },
   {
-    title: "תקשורת בריאה בזוגיות — 5 כלים מעשיים",
-    excerpt: "תקשורת היא הבסיס לכל קשר זוגי בריא. הנה 5 כלים מעשיים שתוכלו ליישם כבר היום כדי לשפר את התקשורת עם בן/בת הזוג שלכם.",
-    category: "טיפול זוגי",
-    date: "נובמבר 2023",
-    img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/תקשורת-זוגית/",
-    readTime: "5 דקות קריאה",
+    title: `להיות מטפל`,
+    excerpt: `דילוג לתוכן \\n\\nלהיות מטפל \\n\\nמאיר שמעון עשור \\n\\nלהיות מטפל\\n\\nמאי 1, 2024 \\n\\nהספרים שלי\\n\\nלהיות-מטפל הורד\\n\\nשתף מאמר זה:\\n\\nקשיים בזיהוי אינטרסים בהליך הגישור\\n\\nאוגוסט 11, 2020\\n\\nמאיר שמעון עש`,
+    category: `הספרים שלי`,
+    date: `מאי 1, 2024`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2024/05/Depositphotos_695947942_XL-1.jpg`,
+    href: "",
   },
   {
-    title: "מזונות ילדים — כל מה שצריך לדעת",
-    excerpt: "מזונות ילדים הם חובה הלכתית ומשפטית. כיצד מחשבים מזונות, מי משלם ומה קורה כשאחד הצדדים מסרב לשלם?",
-    category: "ייעוץ משפטי",
-    date: "אוקטובר 2023",
-    img: "https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/מזונות-ילדים/",
-    readTime: "6 דקות קריאה",
+    title: `ספר קורות חייו של רפאל יחיאל עשור זצ"ל`,
+    excerpt: `קורות חייו של\\n\\nרבי רפאל יחיאל עשור זצוק\\"ל\\n\\nנולד בשנת 1939: במרוקו\\nנלב\\"ע ב ה' סיוון התשל\\"ד (26.5.1974)\\nוכך נכתב על מצבתו:\\nזאת מצבת קבורת האדם גדול בענקים, יניק וחכים איש משכיל ואיש מידות\\nגומ`,
+    category: `הספרים שלי`,
+    date: `מאי 1, 2024`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2024/05/Depositphotos_220723218_XL-1.jpg`,
+    href: "",
   },
   {
-    title: "גידול ילדים אחרי גירושין — איך לשמור על שגרה?",
-    excerpt: "גירושין הם אתגר לכל המשפחה, ובמיוחד לילדים. כיצד לשמור על שגרה בריאה לילדים גם לאחר הפרידה, ומה עושים כשיש קונפליקטים בין ההורים?",
-    category: "הורות",
-    date: "ספטמבר 2023",
-    img: "https://images.unsplash.com/photo-1484665754804-74b091211472?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/גידול-ילדים-גירושין/",
-    readTime: "5 דקות קריאה",
+    title: `שער האמונה והייחוד בהשם`,
+    excerpt: `הספר ״שער האמונה והייחוד בהשם״ הוא ספר יסוד לכל אדם המבקש להעמיק את אמונתו ולחזק את הקשר שלו עם הקב״ה. הספר מציג את עקרונות האמונה היהודית בצורה בהירה ונגישה, ומספק כלים מעשיים ליישום האמונה בחיי היומ`,
+    category: `הספרים שלי`,
+    date: `אפריל 19, 2024`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2024/04/Depositphotos_368602274_XL-1.jpg`,
+    href: "",
   },
   {
-    title: "בית הדין הרבני — מדריך מקיף למתחילים",
-    excerpt: "מה זה בית הדין הרבני, מה הסמכויות שלו, ואיך מתנהלים בו הליכים של גירושין, מזונות ומשמורת? מדריך מקיף לכל מי שנדרש להתמודד עם ההליכים.",
-    category: "ייעוץ משפטי",
-    date: "אוגוסט 2023",
-    img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80&fit=crop",
-    href: "https://meir-asor.co.il/בית-דין-רבני/",
-    readTime: "8 דקות קריאה",
+    title: `שער היראה והאהבה`,
+    excerpt: `מצוות אהבה ויראת השם הן מצוות בסיסיות ביהדות ומהותיות לקיום ושמירת התורה והמצוות. בהתקיימן משדרגות הן את איכות לימוד התורה ועשיית המצוות והן מעצימות את הקשר המתמיד עם בורא עולם.\\n\\nבספר זה ערכנו סקירה`,
+    category: `הספרים שלי`,
+    date: `אפריל 19, 2024`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2024/04/Depositphotos_459081800_XL-1.jpg`,
+    href: "",
   },
+  {
+    title: `גישור ככלי טיפולי בישוב סכסוכים בין בני זוג`,
+    excerpt: `על הגישור הזוגי\\n\\nהגישור בכלל הוא כלי המשמש לישוב סכסוכים, יכול להות כלי טיפולי אפקטיבי קצר מועד, לטיפול במשבר מוגדר גבולות, הנוצר בין בני זוג. \\n\\nמיועד לבני זוג נשואים שנמצאים במשבר זוגי הנובע מסכס`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `נובמבר 28, 2023`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2023/11/gisor.png`,
+    href: "",
+  },
+  {
+    title: `גשר השלום, הגישור ככלי לשלום`,
+    excerpt: `גשר השלום – הגישור ככלי מחזיק ברכה\\n\\nהגישור ויישוב סכסוכים לאור ערך השלום\\n\\nאמרו חז\\"ל: \\"לא מצא הקדוש ברוך הוא כלי מחזיק ברכה לישראל אלא השלום, שנאמר: 'ה' עֹז לעמו ייתן, ה' יברך את עמו בשלום'\\" (מש`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `נובמבר 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/11/shalom.png`,
+    href: "",
+  },
+  {
+    title: `יתרונות הגישור ככלי ליישוב סכסוכים`,
+    excerpt: `חילוקי דעות המובילים לסכסוכים הם סיטואציות נורמליות כחלק ממהלך החיים שלנו. הם יכולים להתרחש בכל זמן נתון, בכל מקום, ועם כל אחד. קיימות מספר אפשרויות לפתרון סכסוכים כאשר אחת הדרכים הטובות ביותר היא באמ`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `נובמבר 10, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/11/gishur_4.jpg`,
+    href: "",
+  },
+  {
+    title: `קשיים בזיהוי אינטרסים בהליך הגישור`,
+    excerpt: `ברוב המקרים בעימות בהליך גישור, הצדדים אינם מציגים באופן ברור ושקוף את האינטרסים שלהם. **ישנם מספר סיבות לכך:**\\n\\n* **קושי ראשון, חוסר מודעות לאינטרסים:**  \\nכלומר הצדדים אינם יודעים לזהות בעצמם את ה`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/puzzle.jpg`,
+    href: "",
+  },
+  {
+    title: `עמדות אינטרסים ושקרים`,
+    excerpt: `המעורבות של מגשר אינה מבטיחה את כנות הצדדים לגבי האינטרסים שלהם. הצדדים אף עלולים לשקר בכוונה. \\"צד במשא ומתן ישקר כאשר הוא טוען או כאשר ניתן יהיה להבין ממנו שהוא ייעשה מה שאינו מתכוון לעשות בזמן שהטע`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/moznaim_2.jpg`,
+    href: "",
+  },
+  {
+    title: `זיהוי אינטרסים קבלה והסכמה`,
+    excerpt: `זיהוי אינטרסים:\\nהמפתח לקבלה, להסכמה ולהתקדמות במשא ומתן\\n\\nמבוא:\\n\\nאחד האתגרים המרכזיים בגישור ובמשא ומתן הוא המעבר מעיסוק ב\\"עמדות\\" לעיסוק ב\\"אינטרסים\\". בעוד שעמדה היא מה שהצד אומר שהוא רוצה, האי`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/gishor.png`,
+    href: "",
+  },
+  {
+    title: `מהלכים עקיפים לחשיפת אינטרסים`,
+    excerpt: `להלן בחינה של תהליכים לחשיפת אינטרסים\\n\\n**מגשרים** משתמשים במיומנויות תקשורת על מנת לזהות אינטרסים כמו:\\n\\nהקשבה פעילה, שיקוף, ניסוח מחדש, תמצות, הכללה, חלוקה לקטעים או תבניות.\\n\\nכאשר משתמשים באחת מ`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/hand_wood.jpg`,
+    href: "",
+  },
+  {
+    title: `מהלכים ישירים לחשיפת האינטרסים`,
+    excerpt: `יש מגשרים (Fisher & Ury 1981) הממליצים על תשאול ישיר לגבי אינטרסים. הם מציעים שכאשר צד בסכסוך מציג את עמדתו בפני הצד השני, הוא גם ישאל את עצמו ואת הצד השני מדוע עמדה זו חשובה. ניסוח זהיר של שאלות יכול`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/gihur_55.jpg`,
+    href: "",
+  },
+  {
+    title: `הליכים לזיהוי אינטרסים`,
+    excerpt: `צדדים ומגשרים במשא ומתן משתמשים בשני סוגי תהליכים לזיהוי אינטרסים של הצדדים בסכסוך: ישירים – מודעים ועקפים – לא בולטים.\\n\\nצדדים משתמשים בהליכים עקיפים כאשר הם:\\n\\n1. משתמשים במשא ומתן בגישה של מיקוח `,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/gishur_222.jpg`,
+    href: "",
+  },
+  {
+    title: `גישות פרודוקטיביות (בעלות יכולת לייצר ולהפיק)`,
+    excerpt: `הבנה של אינטרסים של הצד שכנגד מסייעת להביא לתוצאות טובות יותר.  \\nאפשר להקל על זיהוי אינטרסים ע\\"י שימוש ופתוח גישות פתוחות לכך כמו:\\n\\n1. אמונה שלכל הצדדים יש אינטרסים וצרכים החשובים להם.\\n2. אמונה ש`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 11, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/gishur_1.jpg`,
+    href: "",
+  },
+  {
+    title: `גירושין בהסכמה – הדרך המכבדת לסיום קשר הנישואין`,
+    excerpt: `גירושין הם מן האירועים המורכבים והרגישים ביותר בחיי המשפחה. לצד הקושי הרגשי, נדרשים בני הזוג לקבל החלטות משמעותיות שישפיעו על עתידם ועל עתיד ילדיהם. השאלה אינה רק האם להתגרש, אלא גם כיצד לעשות זאת.\\n\\`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/giruh.jpg`,
+    href: "",
+  },
+  {
+    title: `טוען רבני או מגשר?`,
+    excerpt: `במאמר זה נעסוק בדיון הלכתי אתי; הנוגע בכללי האתיקה והמוסריות של טוענים רבניים ומגשרים. ושניהם גם יחד. ובעיקר נתמקד בשאלה האם מגשר, שהינו גם טוען רבני יכול לשלב בין שני תפקידים חשובים אלו בו זמנית. ולה`,
+    category: `הלכתיים - בין בני זוג`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/toen_new.jpg`,
+    href: "",
+  },
+  {
+    title: `טוען רבני`,
+    excerpt: `טוען רבני הוא אדם שתפגשו רק במידה והחלטתם להתגרש. הרגע בו הנכם מחליטים להתגרש הוא רגע לא קל אשר הגיע ככל הנראה כתוצאה מתקופה ארוכה בה היחסים היו מעורערים. מצד שני, לעיתים גירושין הם דבר שעדיף לעשות במ`,
+    category: `גישור ויישוב סכסוכים`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/toen_rabani.jpg`,
+    href: "",
+  },
+  {
+    title: `הסכם גירושין בהסכמה`,
+    excerpt: `לא קל להחליט להתגרש. הדבר לרוב כרוך במלחמת התשה קשה בין שני הצדדים במהלכה נפגעים לא רק בני הזוג אלא גם הילדים. פתרון אחר להליך הגירושין הוא עריכת הסכם גירושין בהסכמה. בני זוג שהחליטו להתגרש במינימום מ`,
+    category: `משפטיים`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/devorce_ring.jpg`,
+    href: "",
+  },
+  {
+    title: `הליך גירושין ברבנות`,
+    excerpt: `הליך גירושין בבית הדין הרבני\\nהדרך הנכונה לסיים את הקשר תוך שמירה על הזכויות, המשפחה והעתיד\\nכאשר בני זוג מגיעים למסקנה כי אין עוד אפשרות להמשיך את חיי הנישואין, ניצבת בפניהם אחת ההחלטות המשמעותיות בי`,
+    category: `משפטיים`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/Giroshien-1.png`,
+    href: "",
+  },
+  {
+    title: `מגשר גירושין`,
+    excerpt: `זוגיות איננה דבר פשוט והדברים עשויים להפוך לקשים אף יותר לאחר הנישואין. מגורים משותפים במשך תקופה ארוכה, ילדים, חובות, לחצים בעבודה – כל אלה עשויים להוביל את הזוג לפנות אל מגשר גירושין. תפקידו של מגשר`,
+    category: `משפטיים`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/yeutz.jpg`,
+    href: "",
+  },
+  {
+    title: `טוען רבני בתל אביב`,
+    excerpt: `לא כדאי למהר לעשות החלטות פזיזות כשהדבר נוגע לגירושין. כרוך בכך תהליך לא קל אשר מקשה הן על בני הזוג והן על ילדיהם. אך במידה והחלטתם על כך – יתכן ותזדקקו לשירותיו של טוען רבני. כל אחד מבני הזוג יכול לב`,
+    category: `משפטיים`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/judge.jpg`,
+    href: "",
+  },
+  {
+    title: `שלום בית`,
+    excerpt: `נושא שלום בית הוא נושא חמקמק שיש להבהירו כאשר מדובר בהליך גירושין. כאשר בני הזוג מסתכסכים באופן תכוף ומרגישים שאין ברירה אחרת אלא להתגרש, פעמים רבות קורה כי אחד מבני הזוג מצהיר על רצונו להתגרש בעוד בן`,
+    category: `הלכתיים - בין בני זוג`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/red_heart.jpg`,
+    href: "",
+  },
+  {
+    title: `תביעת גירושין`,
+    excerpt: `בני זוג רבים אשר נמצאים במשבר עמוק ביחסיהם מבינים בשלב מסוים כי אין להם ברירה אלא להגיש תביעת גירושין. בתחילת התהליך ניתן עוד לחשוב על הליך כמו גירושין בהסכמה או על הליך גישור במהלכו בני הזוג יוכלו לה`,
+    category: `הלכתיים - בין בני זוג`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/home_break.jpg`,
+    href: "",
+  },
+  {
+    title: `ייעוץ לגירושין`,
+    excerpt: `נישואין, הצעד הראשון להגשמה עצמית וייעוד של כל אדם, אולם רבות קורה שהנישואין אינם עולים יפה, על כן קיבלנו דרך לתקן את המעוות, ויכול האדם לתת גט פיטורין לאשתו ולשחררה, מתוך ידיעה כי בוודאי נכון יותר שז`,
+    category: `טיפול זוגי בנישואין`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/yeutz_legerushin.jpg`,
+    href: "",
+  },
+  {
+    title: `גביית כתובה מוגזמת`,
+    excerpt: `במאמר זה נעסוק בנושא רגיש וחשוב אשר מעסיק רבים מדייני בתי הדין הרבניים בכל מיני קונסטלציות שונות ומגוונות. \\"גביית כתובה מוגזמת ומופרזת שלעיתים הסכום הנקוב בה מסתכם במיליוני שקלים\\" בעיקר נתמקד בשאלה `,
+    category: `הלכתיים - בין בני זוג`,
+    date: `אוגוסט 3, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/08/ketoba.png`,
+    href: "",
+  },
+  {
+    title: `מזונות זמניים בבית הדין`,
+    excerpt: `רבים מהמתגרשים בוחרים בדרך הקלה שהיא הסכם גירושין, המכיל את כל הפרמטרים הנדרשים כולל מזונות ומזונות זמניים. אך ישנם פעמים שאין מנוס מפאת, שנשללה האפשרות ליצור הסכם גירושין המוסכם על הצדדים. ונאלצים אנ`,
+    category: `משפטיים`,
+    date: `יולי 22, 2020`,
+    img: `https://meir-asor.co.il/wp-content/uploads/2020/07/gold_bridge.jpg`,
+    href: "",
+  }
 ];
+
+// Article modal component
+function ArticleModal({ article, onClose }: { article: typeof articles[0] | null; onClose: () => void }) {
+  useEffect(() => {
+    if (article) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [article]);
+
+  if (!article) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 overflow-y-auto"
+      style={{ background: "rgba(0,0,0,0.7)" }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div
+        className="relative w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl"
+        style={{ background: "white" }}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 left-4 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
+          style={{ background: "rgba(0,0,0,0.3)", color: "white" }}
+          aria-label="סגור"
+        >
+          ✕
+        </button>
+
+        {/* Image */}
+        {article.img && (
+          <div className="aspect-[16/7] overflow-hidden">
+            <img src={article.img} alt={article.title} className="w-full h-full object-cover" />
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="p-8 text-right" dir="rtl">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-xs px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-gold)", fontFamily: "'Assistant', sans-serif" }}>
+              {article.category}
+            </span>
+            <span className="text-xs" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>{article.date}</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
+            {article.title}
+          </h2>
+          <div
+            className="text-base leading-loose"
+            style={{ color: "#3A2A1E", fontFamily: "'Assistant', sans-serif", whiteSpace: "pre-wrap" }}
+          >
+            {article.excerpt}
+          </div>
+          <div className="mt-8 pt-6 border-t flex items-center justify-between" style={{ borderColor: "rgba(196,149,106,0.2)" }}>
+            <a
+              href="/#contact"
+              className="btn-cta"
+              onClick={onClose}
+            >
+              לפגישת ייעוץ חינם
+              <ArrowLeft size={16} />
+            </a>
+            <span className="text-sm" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+              מאיר שמעון עשור
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function ArticlesPage() {
   const [activeCategory, setActiveCategory] = useState("הכל");
   const [search, setSearch] = useState("");
+  const [selectedArticle, setSelectedArticle] = useState<typeof articles[0] | null>(null);
 
   const filtered = articles.filter((a) => {
     const matchCat = activeCategory === "הכל" || a.category === activeCategory;
@@ -146,14 +389,14 @@ export default function ArticlesPage() {
           </AnimatedSection>
           <AnimatedSection delay={300}>
             <p className="text-white/75 max-w-xl leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-              מאמרים מקצועיים בנושאי טיפול זוגי, גישור, ייעוץ משפטי והורות — כדי שתגיעו מוכנים ומעצימים לכל שלב.
+              {filtered.length} מאמרים מקצועיים בנושאי גישור, טיפול זוגי, ייעוץ משפטי, הלכה ופסיכולוגיה יהודית — מאת מאיר שמעון עשור.
             </p>
           </AnimatedSection>
         </div>
       </section>
 
       {/* Filters */}
-      <section className="py-8 sticky top-16 z-30 shadow-sm" style={{ background: "white", borderBottom: "1px solid rgba(196,149,106,0.15)" }}>
+      <section className="py-6 sticky top-16 z-30 shadow-sm" style={{ background: "white", borderBottom: "1px solid rgba(196,149,106,0.15)" }}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search */}
@@ -179,7 +422,7 @@ export default function ArticlesPage() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className="px-4 py-2 rounded-full text-sm font-medium transition-all"
+                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                   style={{
                     background: activeCategory === cat ? "var(--brand-gold)" : "var(--brand-cream)",
                     color: activeCategory === cat ? "white" : "var(--brand-dark)",
@@ -206,16 +449,19 @@ export default function ArticlesPage() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((a, i) => (
-                <AnimatedSection key={a.title} delay={i * 60}>
-                  <a
-                    href={a.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                <AnimatedSection key={a.title} delay={i * 50}>
+                  <button
+                    onClick={() => setSelectedArticle(a)}
+                    className="block w-full text-right rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer"
                     style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)", boxShadow: "0 2px 12px rgba(92,64,51,0.06)" }}
                   >
                     <div className="aspect-[16/9] overflow-hidden">
-                      <img src={a.img} alt={a.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img
+                        src={a.img}
+                        alt={a.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                      />
                     </div>
                     <div className="p-5 text-right">
                       <div className="flex items-center justify-between mb-3">
@@ -231,15 +477,14 @@ export default function ArticlesPage() {
                       <p className="text-sm leading-relaxed mb-4 line-clamp-3" style={{ color: "#4A3728", fontFamily: "'Assistant', sans-serif" }}>
                         {a.excerpt}
                       </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>{a.readTime}</span>
+                      <div className="flex items-center justify-end">
                         <div className="flex items-center gap-1 text-sm font-medium" style={{ color: "var(--brand-gold)" }}>
                           קרא עוד
                           <ArrowLeft size={14} />
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </button>
                 </AnimatedSection>
               ))}
             </div>
@@ -264,6 +509,9 @@ export default function ArticlesPage() {
           </AnimatedSection>
         </div>
       </section>
+
+      {/* Article Modal */}
+      <ArticleModal article={selectedArticle} onClose={() => setSelectedArticle(null)} />
 
       <WhatsAppFloat />
     </div>
