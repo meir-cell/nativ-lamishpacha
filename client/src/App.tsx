@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import CoupleTherapy from "./pages/CoupleTherapy";
 import Mediation from "./pages/Mediation";
 import LegalAdvice from "./pages/LegalAdvice";
+import ArticlesPage from "./pages/Articles";
+import FAQPage from "./pages/FAQ";
 
 function Router() {
   return (
@@ -16,6 +18,8 @@ function Router() {
       <Route path={"/tipul-zugi"} component={CoupleTherapy} />
       <Route path={"/gishur"} component={Mediation} />
       <Route path={"/yiutz-mishpati"} component={LegalAdvice} />
+      <Route path={"/articles"} component={ArticlesPage} />
+      <Route path={"/faq"} component={FAQPage} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

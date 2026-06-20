@@ -37,6 +37,10 @@ export default function Navbar() {
 
   const handleAnchor = (href: string) => {
     setMenuOpen(false);
+    if (href.startsWith("/")) {
+      window.location.href = href;
+      return;
+    }
     if (href.startsWith("#")) {
       if (!isHome) {
         window.location.href = "/" + href;
@@ -126,7 +130,8 @@ export default function Navbar() {
           {[
             { label: "אודות", href: "#about" },
             { label: "המלצות", href: "#testimonials" },
-            { label: "מאמרים", href: "#articles" },
+            { label: "מאמרים", href: "/articles", isPage: true },
+            { label: "שאלות נפוצות", href: "/faq", isPage: true },
             { label: "צור קשר", href: "#contact" },
           ].map((link) => (
             <button
