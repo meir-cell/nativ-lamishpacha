@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "wouter";
 import {
   Phone, Mail, MapPin, Heart, Scale, Users, CheckCircle2,
   ArrowLeft, ChevronDown, Star, BookOpen, Calendar
@@ -110,27 +111,21 @@ function HeroSection() {
 
 // ── SERVICES ──────────────────────────────────────────────────────────────────
 const services = [
-  {
-    icon: Heart,
-    title: "טיפול זוגי",
+    { icon: Heart, title: "טיפול זוגי", pageHref: "/tipul-zugi",
     subtitle: "מרחב בטוח לשיקום הקשר",
     desc: "מערכת זוגית טובה אינה נמדדת בהיעדר קשיים, אלא ביכולת להתמודד איתם יחד. הטיפול מעניק לבני הזוג כלים מעשיים לתקשורת בריאה, חיזוק האמון וחידוש הקרבה הרגשית.",
     benefits: ["שיפור התקשורת וההקשבה", "הפחתת מתחים ומאבקי כוח", "חיזוק האמון והקרבה", "כלים לפתרון מחלוקות"],
     color: "#C4956A",
     href: "#contact",
   },
-  {
-    icon: Users,
-    title: "גישור טיפולי",
+    { icon: Users, title: "גישור טיפולי", pageHref: "/gishur",
     subtitle: "מוצא ממבוי סתום",
     desc: "גישור טיפולי לזוגות במשבר — הליך ממוקד ויעיל לזוגות הנמצאים במשבר הנובע ממחלוקת מוגדרת. העבודה מתמקדת בהבנת האינטרסים ובניית הסכמות שמאפשרות התקדמות משותפת.",
     benefits: ["זיהוי מוקדי המחלוקת", "דיאלוג מכבד ומובנה", "בניית הסכמות מעשיות", "שיפור האווירה הזוגית"],
     color: "#6B7C5C",
     href: "#contact",
   },
-  {
-    icon: Scale,
-    title: "ייעוץ משפטי",
+    { icon: Scale, title: "ייעוץ משפטי", pageHref: "/yiutz-mishpati",
     subtitle: "ייצוג בבתי הדין הרבניים",
     desc: "שירות מקצועי ומקיף לכל ההליכים בפני בתי הדין הרבניים — גירושין, כתובה, מזונות, משמורת, הסדרי שהות, חלוקת רכוש, שלום בית והסכמים משפחתיים.",
     benefits: ["ניתוח משפטי והלכתי", "אסטרטגיה מותאמת אישית", "ליווי צמוד לאורך ההליך", "דיסקרטיות מלאה"],
@@ -174,9 +169,11 @@ function ServicesSection() {
                     </li>
                   ))}
                 </ul>
-                <a href="#contact" className="btn-cta text-sm justify-center" style={{ background: s.color }}>
-                  לפרטים נוספים
-                </a>
+                <Link href={(s as any).pageHref}>
+                  <a className="btn-cta text-sm justify-center" style={{ background: s.color }}>
+                    לפרטים נוספים
+                  </a>
+                </Link>
               </div>
             </AnimatedSection>
           ))}
