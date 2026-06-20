@@ -10,8 +10,9 @@ import Mediation from "./pages/Mediation";
 import LegalAdvice from "./pages/LegalAdvice";
 import ArticlesPage from "./pages/Articles";
 import FAQPage from "./pages/FAQ";
-
+import Admin from "./pages/Admin";
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -20,6 +21,7 @@ function Router() {
       <Route path={"/yiutz-mishpati"} component={LegalAdvice} />
       <Route path={"/articles"} component={ArticlesPage} />
       <Route path={"/faq"} component={FAQPage} />
+      <Route path={"/admin"} component={Admin} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

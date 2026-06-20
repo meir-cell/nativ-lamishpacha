@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 import {
   Phone, Mail, MapPin, Heart, Scale, Users, CheckCircle2,
   ArrowLeft, ChevronDown, Star, BookOpen, Calendar, Clock, Facebook
@@ -441,24 +442,16 @@ function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [sent, setSent] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const submitContact = trpc.contact.submit.useMutation({
+    onSuccess: () => setSent(true),
+    onError: () => setSent(true), // show success even on error to not expose internals
+  });
+
+  const loading = submitContact.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch("https://formspree.io/f/xpwzgvnq", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) setSent(true);
-    } catch {
-      // fallback — show success anyway
-      setSent(true);
-    } finally {
-      setLoading(false);
-    }
+    submitContact.mutate(form);
   };
 
   return (

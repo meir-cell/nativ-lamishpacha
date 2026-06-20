@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1781995065732,
+      "tag": "0000_hard_peter_quill",
+      "breakpoints": true
+    }
+  ]
+}
