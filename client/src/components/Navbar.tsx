@@ -53,16 +53,13 @@ export default function Navbar() {
 
   const navTextColor = scrolled ? "var(--brand-dark)" : "var(--brand-dark)";
 
-  // In inner pages, always show solid background
-  const isSolid = !isHome || scrolled;
-
   return (
     <header
       className="fixed top-0 right-0 left-0 z-50 transition-all duration-300"
       style={{
-        background: isSolid ? "white" : "transparent",
-        boxShadow: isSolid ? "0 2px 20px rgba(92,64,51,0.08)" : "none",
-        borderBottom: isSolid ? "1px solid rgba(196,149,106,0.15)" : "none",
+        background: "white",
+        boxShadow: scrolled ? "0 2px 20px rgba(92,64,51,0.12)" : "0 1px 8px rgba(92,64,51,0.06)",
+        borderBottom: "1px solid rgba(196,149,106,0.15)",
       }}
     >
       <div className="container mx-auto flex items-center justify-between py-3 px-4 md:px-8">
