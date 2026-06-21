@@ -614,7 +614,7 @@ function Footer() {
               <img src={LOGO_URL} alt="נתיב למשפחה" className="h-10 w-10 object-contain" />
             </div>
             <p className="text-sm text-white/60 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-              ליווי מקצועי ואנושי בצמתי החיים המשפחתיים. 33 שנות ניסיון בטיפול, גישור וייעוץ משפטי.
+              ליווי מקצועי ואנושי בצמתי החיים המשפחתיים.<br />33 שנות ניסיון בטיפול, גישור וייעוץ משפטי.
             </p>
           </div>
 
