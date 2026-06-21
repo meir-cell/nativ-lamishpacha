@@ -679,13 +679,14 @@ function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t pt-6 flex flex-col md:flex-row items-center justify-between gap-3" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-          <div className="text-xs text-white/40" style={{ fontFamily: "'Assistant', sans-serif" }}>
-            © כל הזכויות שמורות לי.נ.ר קלינק בע"מ 2026
+        <div className="border-t mt-2 pt-5" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs" style={{ fontFamily: "'Assistant', sans-serif", color: "rgba(255,255,255,0.4)" }}>
+            <span>© 2026 נתיב למשפחה — מאיר שמעון עשור. כל הזכויות שמורות.</span>
+            <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.2)" }}>|</span>
+            <a href="/accessibility" className="hover:text-white/70 transition-colors">הצהרת נגישות</a>
+            <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.2)" }}>|</span>
+            <a href="/terms" className="hover:text-white/70 transition-colors">תנאי שימוש</a>
           </div>
-          <a href="/terms" className="text-xs text-white/40 hover:text-white/70 transition-colors" style={{ fontFamily: "'Assistant', sans-serif" }}>
-            תנאי שימוש באתר
-          </a>
         </div>
       </div>
     </footer>
