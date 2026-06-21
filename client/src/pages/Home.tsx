@@ -416,10 +416,14 @@ function ContactSection() {
               <br />
               <span style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</span>
             </h2>
-            <p className="text-white/80 mb-8 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-              לצורך תיאום פגישת היכרות ראשונית, ניתן למלא את פרטי ההתקשרות בטופס ולציין בקצרה את נושא הפנייה.
-              הפנייה הראשונית הינה דיסקרטית, ללא עלות וללא התחייבות.
-            </p>
+            <div className="mb-6 flex items-center gap-2">
+              <img
+                src="/manus-storage/hyp-logo_eb89b174.png"
+                alt="Hyp תשלום מאובטח"
+                className="h-8 w-auto opacity-90"
+                title="תשלום מאובטח באמצעות Hyp"
+              />
+            </div>
 
             <div className="space-y-4">
               {[
