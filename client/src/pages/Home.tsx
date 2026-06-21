@@ -91,7 +91,7 @@ function HeroSection() {
         <AnimatedSection delay={500} className="mt-16 flex gap-8 flex-wrap justify-end">
           {[
             { num: "33+", label: "שנות ניסיון" },
-            { num: "3", label: "מרכזים בארץ" },
+            { num: "3", label: "אזורים בארץ" },
             { num: "100%", label: "דיסקרטיות" },
           ].map((s) => (
             <div key={s.label} className="text-right">
