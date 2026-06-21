@@ -130,6 +130,7 @@ export default function Navbar() {
             { label: "אודות", href: "#about" },
             { label: "המלצות", href: "#testimonials" },
             { label: "מאמרים", href: "/articles", isPage: true },
+            { label: "הספרים שלי", href: "/books", isPage: true },
             { label: "שאלות נפוצות", href: "/faq", isPage: true },
             { label: "צור קשר", href: "#contact" },
           ].map((link) => (
@@ -188,6 +189,7 @@ export default function Navbar() {
               { label: "אודות", href: "#about" },
               { label: "המלצות", href: "#testimonials" },
               { label: "מאמרים", href: "/articles" },
+              { label: "הספרים שלי", href: "/books" },
               { label: "שאלות נפוצות", href: "/faq" },
               { label: "צור קשר", href: "#contact" },
             ].map((link) => (

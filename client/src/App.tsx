@@ -8,7 +8,8 @@ import Home from "./pages/Home";
 import CoupleTherapy from "./pages/CoupleTherapy";
 import Mediation from "./pages/Mediation";
 import LegalAdvice from "./pages/LegalAdvice";
-import ArticlesPage from "./pages/Articles";
+import ArticlesPage from "@/pages/Articles";
+import BooksPage from "@/pages/Books";
 import FAQPage from "./pages/FAQ";
 import Admin from "./pages/Admin";
 import AccessibilityPage from "./pages/Accessibility";
@@ -22,6 +23,7 @@ function Router() {
       <Route path={"/gishur"} component={Mediation} />
       <Route path={"/yiutz-mishpati"} component={LegalAdvice} />
       <Route path={"/articles"} component={ArticlesPage} />
+      <Route path={"/books"} component={BooksPage} />
       <Route path={"/faq"} component={FAQPage} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/accessibility"} component={AccessibilityPage} />
