@@ -403,78 +403,96 @@ function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-24" style={{ background: "var(--brand-dark)" }}>
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          {/* Info - left side */}
-          <AnimatedSection delay={100} className="text-right">
-            <div className="inline-block text-sm font-semibold mb-3 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.2)", color: "var(--brand-gold)" }}>
-              צור קשר
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
-              פגישת ייעוץ ראשונית
-              <br />
-              <span style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</span>
-            </h2>
-            <div className="mb-6 flex items-center gap-2">
-              <img
-                src="/manus-storage/hyp-logo_eb89b174.png"
-                alt="Hyp תשלום מאובטח"
-                className="h-8 w-auto opacity-90"
-                title="תשלום מאובטח באמצעות Hyp"
-              />
-            </div>
+    <section id="contact" className="relative py-28 overflow-hidden" style={{ background: "linear-gradient(135deg, #2C1810 0%, #3D2314 50%, #2C1810 100%)" }}>
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #C4956A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #C4956A 0%, transparent 40%)" }} />
+      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(196,149,106,0.4), transparent)" }} />
 
-            <div className="space-y-4">
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Section header */}
+        <AnimatedSection className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-4" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.3)" }}>
+            <span>צור קשר</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-3" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
+            פגישת ייעוץ ראשונית
+          </h2>
+          <p className="text-xl font-medium" style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</p>
+        </AnimatedSection>
+
+        <div className="grid md:grid-cols-5 gap-10 items-start max-w-5xl mx-auto">
+          {/* Info panel */}
+          <AnimatedSection delay={100} className="md:col-span-2 text-right">
+            {/* Contact cards */}
+            <div className="space-y-3 mb-8">
               {[
-                { icon: Phone, label: "054-2111-288", href: "tel:0542111288" },
-                { icon: Mail, label: "meir@ynrcollege.org", href: "mailto:meir@ynrcollege.org" },
-                { icon: MapPin, label: "באר שבע | ירושלים | בני ברק", href: "#" },
+                { icon: Phone, label: "054-2111-288", sub: "זמין גם בוואצאפ", href: "tel:0542111288" },
+                { icon: Mail, label: "meir@ynrcollege.org", sub: "מייל אישי", href: "mailto:meir@ynrcollege.org" },
+                { icon: MapPin, label: "באר שבע | ירושלים | בני ברק", sub: "שלושה מרכזים", href: "#about" },
               ].map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
-                  className="flex items-center gap-3 group"
-                  style={{ color: "white", fontFamily: "'Assistant', sans-serif" }}
+                  className="flex items-center gap-4 p-4 rounded-2xl group transition-all duration-200 hover:-translate-y-0.5"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(196,149,106,0.2)", textDecoration: "none" }}
                 >
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(196,149,106,0.2)" }}>
-                    <item.icon size={18} style={{ color: "var(--brand-gold)" }} />
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(196,149,106,0.2)" }}>
+                    <item.icon size={20} style={{ color: "var(--brand-gold)" }} />
                   </div>
-                  <span className="group-hover:opacity-80 transition-opacity">{item.label}</span>
+                  <div className="text-right flex-1">
+                    <div className="text-sm font-semibold text-white group-hover:text-amber-200 transition-colors" style={{ fontFamily: "'Assistant', sans-serif" }}>{item.label}</div>
+                    <div className="text-xs mt-0.5" style={{ color: "rgba(196,149,106,0.7)", fontFamily: "'Assistant', sans-serif" }}>{item.sub}</div>
+                  </div>
                 </a>
               ))}
             </div>
 
-
+            {/* HYP payment badge */}
+            <div className="flex items-center justify-end gap-3 p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(196,149,106,0.15)" }}>
+              <div className="text-right">
+                <div className="text-xs font-medium text-white/70" style={{ fontFamily: "'Assistant', sans-serif" }}>תשלום מאובטח</div>
+              </div>
+              <img
+                src="/manus-storage/hyp-logo_eb89b174.png"
+                alt="Hyp תשלום מאובטח"
+                className="h-7 w-auto"
+                style={{ filter: "brightness(1.1)" }}
+              />
+            </div>
           </AnimatedSection>
 
           {/* Form */}
-          <AnimatedSection delay={200}>
-            <div className="rounded-2xl p-8" style={{ background: "white" }}>
+          <AnimatedSection delay={200} className="md:col-span-3">
+            <div className="rounded-3xl overflow-hidden" style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(196,149,106,0.2)" }}>
+              {/* Form header strip */}
+              <div className="px-8 py-5" style={{ background: "linear-gradient(to left, #C4956A, #A67850)" }}>
+                <h3 className="text-lg font-bold text-white text-right" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
+                  השאר פרטים ונחזור אליך
+                </h3>
+              </div>
+
+              <div className="p-8">
               {sent ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,149,106,0.15)" }}>
-                    <CheckCircle2 size={32} style={{ color: "var(--brand-gold)" }} />
+                <div className="text-center py-10">
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(196,149,106,0.12)" }}>
+                    <CheckCircle2 size={40} style={{ color: "var(--brand-gold)" }} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
+                  <h3 className="text-2xl font-bold mb-3" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
                     תודה! פנייתך התקבלה
                   </h3>
-                  <p className="text-sm" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+                  <p className="text-base" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
                     נחזור אליך בהקדם לתיאום הפגישה.
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 text-right">
-                  <h3 className="text-xl font-bold mb-6" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
-                    השאר פרטים ונחזור אליך
-                  </h3>
+                <form onSubmit={handleSubmit} className="space-y-5 text-right">
                   {[
                     { key: "name", label: "שם מלא", type: "text", placeholder: "ישראל ישראלי" },
                     { key: "email", label: "כתובת אימייל", type: "email", placeholder: "israel@example.com" },
                     { key: "phone", label: "מספר נייד", type: "tel", placeholder: "050-0000000" },
                   ].map((f) => (
                     <div key={f.key}>
-                      <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
+                      <label className="block text-sm font-semibold mb-2" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
                         {f.label}
                       </label>
                       <input
@@ -483,20 +501,21 @@ function ContactSection() {
                         required
                         value={(form as any)[f.key]}
                         onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border text-right text-sm outline-none transition-all"
+                        className="w-full px-4 py-3.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
                         style={{
-                          borderColor: "rgba(196,149,106,0.3)",
+                          borderColor: "rgba(196,149,106,0.25)",
                           fontFamily: "'Assistant', sans-serif",
                           color: "var(--brand-dark)",
-                          background: "var(--brand-cream)",
+                          background: "#FDFAF7",
+                          fontSize: "15px",
                         }}
-                        onFocus={(e) => (e.target.style.borderColor = "var(--brand-gold)")}
-                        onBlur={(e) => (e.target.style.borderColor = "rgba(196,149,106,0.3)")}
+                        onFocus={(e) => { e.target.style.borderColor = "var(--brand-gold)"; e.target.style.background = "#FFF"; e.target.style.boxShadow = "0 0 0 4px rgba(196,149,106,0.1)"; }}
+                        onBlur={(e) => { e.target.style.borderColor = "rgba(196,149,106,0.25)"; e.target.style.background = "#FDFAF7"; e.target.style.boxShadow = "none"; }}
                       />
                     </div>
                   ))}
                   <div>
-                    <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
+                    <label className="block text-sm font-semibold mb-2" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
                       תמצית הפנייה
                     </label>
                     <textarea
@@ -504,26 +523,45 @@ function ContactSection() {
                       rows={4}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border text-right text-sm outline-none transition-all resize-none"
+                      className="w-full px-4 py-3.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
                       style={{
-                        borderColor: "rgba(196,149,106,0.3)",
+                        borderColor: "rgba(196,149,106,0.25)",
                         fontFamily: "'Assistant', sans-serif",
                         color: "var(--brand-dark)",
-                        background: "var(--brand-cream)",
+                        background: "#FDFAF7",
+                        fontSize: "15px",
                       }}
-                      onFocus={(e) => (e.target.style.borderColor = "var(--brand-gold)")}
-                      onBlur={(e) => (e.target.style.borderColor = "rgba(196,149,106,0.3)")}
+                      onFocus={(e) => { e.target.style.borderColor = "var(--brand-gold)"; e.target.style.background = "#FFF"; e.target.style.boxShadow = "0 0 0 4px rgba(196,149,106,0.1)"; }}
+                      onBlur={(e) => { e.target.style.borderColor = "rgba(196,149,106,0.25)"; e.target.style.background = "#FDFAF7"; e.target.style.boxShadow = "none"; }}
                     />
                   </div>
-                  <button type="submit" disabled={loading} className="btn-cta w-full justify-center text-base py-3.5" style={{ opacity: loading ? 0.7 : 1 }}>
-                    {loading ? "שולח... " : "שלח פנייה"}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-white font-bold text-base transition-all duration-200"
+                    style={{
+                      background: loading ? "rgba(196,149,106,0.6)" : "linear-gradient(to left, #C4956A, #A67850)",
+                      boxShadow: loading ? "none" : "0 8px 24px rgba(196,149,106,0.35)",
+                      fontFamily: "'Assistant', sans-serif",
+                      transform: loading ? "scale(0.99)" : "scale(1)",
+                    }}
+                    onMouseEnter={(e) => { if (!loading) { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.01)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 12px 32px rgba(196,149,106,0.45)"; } }}
+                    onMouseLeave={(e) => { if (!loading) { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(196,149,106,0.35)"; } }}
+                  >
+                    {loading ? "שולח..." : "שלח פנייה"}
                     {!loading && <ArrowLeft size={18} />}
                   </button>
-                  <p className="text-xs text-center" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
-                    הפנייה דיסקרטית לחלוטין ● ללא עלות ● ללא התחייבות
-                  </p>
+                  <div className="flex items-center justify-center gap-4 pt-1">
+                    {["דיסקרטיות מלאה", "ללא עלות", "ללא התחייבות"].map((badge) => (
+                      <span key={badge} className="flex items-center gap-1 text-xs" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+                        <CheckCircle2 size={12} style={{ color: "var(--brand-gold)" }} />
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
                 </form>
               )}
+              </div>
             </div>
           </AnimatedSection>
         </div>
