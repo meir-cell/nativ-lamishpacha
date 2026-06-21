@@ -302,72 +302,9 @@ function AboutSection() {
   );
 }
 
-// ── TESTIMONIALS ──────────────────────────────────────────────────────────────
-const testimonials = [
-  {
-    text: "מאיר עשור היקר, בשמי ובשם ילדי אני רוצה להודות מקרב לב על טיפולך המסור. בעת של טלטול רגשי, כלכלי ונפשי, שימשת לנו כעוגן וסייעת לנו תוך הסתכלות רחבה מחד וירידה לפרטי פרטים מאידך. תודה על הקשבתך, סבלנותך, מאמציך הרבים וההשקעה ללא לאות.",
-    name: "מ.ת",
-    city: "רמת גן",
-  },
-  {
-    text: "מעבר למקצועיות המשפטית והתורנית המיוחדת שלך, גם החריצות והנחישות שלך עזרו וסייעו להגיע להישגים ראויים. ומעל הכל האכפתיות הכנה שלך בענייננו בכל צעד. בראיה לאחור אני מודה לבורא עולם שגלגל כך שאתה ליווית את התיק שלנו.",
-    name: "ד.א",
-    city: "ירושלים",
-  },
-  {
-    text: "אין מילים על העזרה המקצועית שלך, על ההתייחסות לפרטים, על ההסכם הנכון ביותר שיכולת להכין עבורי מתוך הגעה לשיתוף פעולה של הצדדים. תודה על הליווי לאורך כל הדרך. מעריך מאוד.",
-    name: "אורי",
-    city: "ירושלים",
-  },
-  {
-    text: "הצלחת בחכמתך וטוב ליבך לסיים את התיק שלנו במהירות ובצורה קלה יחסית, ועוד לפני פסח היינו אחרי הגט. ומעל זה שהכל בסוף התנהל בגישור ובהסכמה, ללא מריבות מיותרות. עשית עבודה נפלאה שקודמך לא הצליחו.",
-    name: "שמעון ב.",
-    city: "באר שבע",
-  },
-];
 
-function TestimonialsSection() {
-  return (
-    <section id="testimonials" className="py-24" style={{ background: "var(--brand-light)" }}>
-      <div className="container mx-auto px-4">
-        <AnimatedSection className="text-center mb-16">
-          <div className="inline-block text-sm font-semibold mb-3 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
-            לקוחות ממליצים
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
-            מה אומרים עלינו
-          </h2>
-        </AnimatedSection>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {testimonials.map((t, i) => (
-            <AnimatedSection key={i} delay={i * 100}>
-              <div className="testimonial-card h-full">
-                <div className="flex gap-1 mb-3">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} size={14} fill="#C4956A" style={{ color: "#C4956A" }} />
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed mb-4" style={{ color: "#4A3728", fontFamily: "'Assistant', sans-serif" }}>
-                  {t.text}
-                </p>
-                <div className="flex items-center gap-2 justify-end">
-                  <div>
-                    <div className="font-semibold text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{t.name}</div>
-                    <div className="text-xs" style={{ color: "var(--brand-mid)" }}>{t.city}</div>
-                  </div>
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: "var(--brand-gold)" }}>
-                    {t.name[0]}
-                  </div>
-                </div>
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+
 
 // ── ARTICLES ──────────────────────────────────────────────────────────────────
 const articles = [
@@ -701,7 +638,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <AboutSection />
-      <TestimonialsSection />
+      {/* TestimonialsSection removed */}
       <ArticlesSection />
       <ContactSection />
       <Footer />

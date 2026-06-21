@@ -128,7 +128,6 @@ export default function Navbar() {
           {/* Anchor links */}
           {[
             { label: "אודות", href: "#about" },
-            { label: "המלצות", href: "#testimonials" },
             { label: "מאמרים", href: "/articles", isPage: true },
             { label: "הספרים שלי", href: "/books", isPage: true },
             { label: "שאלות נפוצות", href: "/faq", isPage: true },
@@ -187,7 +186,6 @@ export default function Navbar() {
             ))}
             {[
               { label: "אודות", href: "#about" },
-              { label: "המלצות", href: "#testimonials" },
               { label: "מאמרים", href: "/articles" },
               { label: "הספרים שלי", href: "/books" },
               { label: "שאלות נפוצות", href: "/faq" },
