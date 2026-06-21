@@ -209,7 +209,7 @@ function AboutSection() {
                 className="absolute -bottom-5 -right-5 rounded-2xl p-5 shadow-xl"
                 style={{ background: "var(--brand-dark)", color: "white" }}
               >
-                <div className="text-4xl font-black" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-gold)" }}>28+</div>
+                <div className="text-4xl font-black" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-gold)" }}>33+</div>
                 <div className="text-sm mt-1" style={{ fontFamily: "'Assistant', sans-serif" }}>שנות ניסיון</div>
               </div>
               {/* Placeholder for personal photo */}
