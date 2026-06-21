@@ -395,21 +395,19 @@ function ArticlesSection() {
   return (
     <section id="articles" className="py-24" style={{ background: "white" }}>
       <div className="container mx-auto px-4">
-        <AnimatedSection className="flex items-end justify-between mb-12">
+        <AnimatedSection className="text-center mb-12">
+          <div className="inline-block text-sm font-semibold mb-2 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
+            ידע מקצועי
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
+            מאמרים מקצועיים
+          </h2>
           <Link href="/articles">
-            <a className="btn-outline text-sm">
+            <a className="btn-outline text-sm inline-flex">
               לכל המאמרים
               <ArrowLeft size={15} />
             </a>
           </Link>
-          <div className="text-right">
-            <div className="inline-block text-sm font-semibold mb-2 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
-              ידע מקצועי
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
-              מאמרים מקצועיים
-            </h2>
-          </div>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-3 gap-6">
