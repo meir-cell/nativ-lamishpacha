@@ -144,7 +144,7 @@ function ServicesSection() {
             תחומי הפעילות
           </div>
           <h2 className="text-3xl md:text-4xl font-bold section-title mx-auto" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
-            כיצד אוכל לסייע לך
+            תחומים בהם אוכל לסייע לך
           </h2>
         </AnimatedSection>
 
