@@ -140,9 +140,6 @@ function ServicesSection() {
     <section id="services" className="py-24" style={{ background: "var(--brand-cream)" }}>
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
-          <div className="inline-block text-sm font-semibold mb-3 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
-            תחומי הפעילות
-          </div>
           <h2 className="text-3xl md:text-4xl font-bold section-title mx-auto" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
             תחומים בהם אוכל לסייע לך
           </h2>
