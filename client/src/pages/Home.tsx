@@ -264,16 +264,36 @@ function AboutSection() {
 
         {/* Locations */}
         <AnimatedSection delay={300} className="mt-16">
-          <div className="grid grid-cols-3 gap-4">
-            {["באר שבע", "ירושלים", "בני ברק"].map((city) => (
-              <div
-                key={city}
-                className="text-center py-5 px-4 rounded-xl"
-                style={{ background: "var(--brand-cream)", border: "1px solid rgba(196,149,106,0.2)" }}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                city: "ירושלים",
+                address: "שכונת שאול, רח' בית הדפוס 30\nמרכז ספיר, בניין 1, קומה 1",
+                mapsUrl: "https://maps.google.com/?q=רח+בית+הדפוס+30+ירושלים"
+              },
+              {
+                city: "פתח תקווה",
+                address: "רח' ז'בוטינסקי 100\nקומה 4",
+                mapsUrl: "https://maps.google.com/?q=ז'בוטינסקי+100+פתח+תקווה"
+              },
+              {
+                city: "באר שבע",
+                address: "לפרטים ותיאום\nצרו קשר",
+                mapsUrl: "https://maps.google.com/?q=באר+שבע"
+              },
+            ].map((loc) => (
+              <a
+                key={loc.city}
+                href={loc.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-center py-5 px-4 rounded-xl block transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+                style={{ background: "var(--brand-cream)", border: "1px solid rgba(196,149,106,0.2)", textDecoration: "none" }}
               >
                 <MapPin size={20} className="mx-auto mb-2" style={{ color: "var(--brand-gold)" }} />
-                <div className="font-semibold text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{city}</div>
-              </div>
+                <div className="font-bold text-sm mb-1" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{loc.city}</div>
+                <div className="text-xs leading-relaxed whitespace-pre-line" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>{loc.address}</div>
+              </a>
             ))}
           </div>
         </AnimatedSection>
