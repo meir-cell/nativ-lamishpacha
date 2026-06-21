@@ -9,7 +9,7 @@ import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663762108963/mLbezbk5ZAEXFd46ngs4DG/hero-family-FembyC8jdmBD7L2hb3zZ3V.webp";
-const ABOUT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663762108963/mLbezbk5ZAEXFd46ngs4DG/about-bg-Xs6qrKJMa4wWG8wfxBc5oP.webp";
+const ABOUT_IMG = "/manus-storage/courtroom_93b9f0ff.jpg";
 
 // Intersection Observer hook for animations
 function useInView(threshold = 0.15) {
