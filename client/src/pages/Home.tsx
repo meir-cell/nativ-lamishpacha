@@ -278,8 +278,8 @@ function AboutSection() {
               },
               {
                 city: "באר שבע",
-                address: "לפרטים ותיאום\nצרו קשר",
-                mapsUrl: "https://maps.google.com/?q=באר+שבע"
+                address: "העיר העתיקה, רח' האבות 64",
+                mapsUrl: "https://maps.google.com/?q=רח+האבות+64+באר+שבע"
               },
             ].map((loc) => (
               <a
