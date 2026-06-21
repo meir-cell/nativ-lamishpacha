@@ -358,19 +358,19 @@ const articles = [
     title: "מדריך ממוקד לניהול גירושין",
     date: "יוני 13, 2026",
     img: "https://meir-asor.co.il/wp-content/uploads/2026/06/madrich-leguroshun-1024x683.png",
-    href: "https://meir-asor.co.il/%d7%9e%d7%93%d7%a8%d7%99%d7%9a-%d7%9e%d7%9e%d7%95%d7%a7%d7%93-%d7%9c%d7%a0%d7%99%d7%94%d7%95%d7%9c-%d7%92%d7%99%d7%a8%d7%95%d7%a9%d7%99%d7%9f/",
+    href: "/articles",
   },
   {
     title: "מונחים בפסיכולוגיה יהודית",
     date: "יוני 6, 2026",
     img: "https://meir-asor.co.il/wp-content/uploads/2026/06/pesishlogya-1024x683.png",
-    href: "https://meir-asor.co.il/%d7%9e%d7%95%d7%a0%d7%97%d7%99%d7%9d-%d7%91%d7%a4%d7%a1%d7%99%d7%9b%d7%95%d7%9c%d7%95%d7%92%d7%99%d7%94-%d7%99%d7%94%d7%95%d7%93%d7%99%d7%aa/",
+    href: "/articles",
   },
   {
     title: "שלבי תהליך הגישור",
     date: "יוני 3, 2026",
     img: "https://meir-asor.co.il/wp-content/uploads/2026/06/gishur-1024x683.png",
-    href: "https://meir-asor.co.il/%d7%a9%d7%9c%d7%91%d7%99-%d7%aa%d7%94%d7%9c%d7%99%d7%9a-%d7%94%d7%92%d7%99%d7%a9%d7%95%d7%a8/",
+    href: "/articles",
   },
 ];
 
@@ -379,15 +379,12 @@ function ArticlesSection() {
     <section id="articles" className="py-24" style={{ background: "white" }}>
       <div className="container mx-auto px-4">
         <AnimatedSection className="flex items-end justify-between mb-12">
-          <a
-            href="https://meir-asor.co.il/%d7%9e%d7%90%d7%9e%d7%a8%d7%99%d7%9d-%d7%9e%d7%a7%d7%a6%d7%95%d7%a2%d7%99%d7%99%d7%9d/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-outline text-sm"
-          >
-            לכל המאמרים
-            <ArrowLeft size={15} />
-          </a>
+          <Link href="/articles">
+            <a className="btn-outline text-sm">
+              לכל המאמרים
+              <ArrowLeft size={15} />
+            </a>
+          </Link>
           <div className="text-right">
             <div className="inline-block text-sm font-semibold mb-2 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
               ידע מקצועי
@@ -401,10 +398,8 @@ function ArticlesSection() {
         <div className="grid md:grid-cols-3 gap-6">
           {articles.map((a, i) => (
             <AnimatedSection key={a.title} delay={i * 100}>
+              <Link href={a.href}>
               <a
-                href={a.href}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="block rounded-2xl overflow-hidden shadow-sm border group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
                 style={{ borderColor: "rgba(196,149,106,0.2)" }}
               >
@@ -429,6 +424,7 @@ function ArticlesSection() {
                   </div>
                 </div>
               </a>
+              </Link>
             </AnimatedSection>
           ))}
         </div>
