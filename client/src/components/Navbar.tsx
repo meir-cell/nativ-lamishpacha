@@ -24,7 +24,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -51,7 +50,8 @@ export default function Navbar() {
     }
   };
 
-  const navTextColor = scrolled ? "var(--brand-dark)" : "var(--brand-dark)";
+  const navTextColor = "var(--brand-dark)";
+  const linkStyle = { color: navTextColor, fontFamily: "'Assistant', sans-serif" };
 
   return (
     <header
@@ -65,37 +65,35 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between py-3 px-4 md:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-            <img src={LOGO_URL} alt="נתיב למשפחה" className="h-12 w-12 object-contain" />
-            <div className="text-right">
-              <div
-                className="font-bold text-base leading-tight"
-                style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}
-              >
-                נתיב למשפחה
-              </div>
-              <div className="text-xs" style={{ color: "var(--brand-mid)" }}>
-                מאיר שמעון עשור
-              </div>
+          <img src={LOGO_URL} alt="נתיב למשפחה" className="h-12 w-12 object-contain" />
+          <div className="text-right">
+            <div
+              className="font-bold text-base leading-tight"
+              style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}
+            >
+              נתיב למשפחה
             </div>
+            <div className="text-xs" style={{ color: "var(--brand-mid)" }}>
+              מאיר שמעון עשור
+            </div>
+          </div>
         </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-5">
-          {/* Home */}
-          <Link href="/">
-            <a
-              className="text-sm font-medium transition-colors duration-200 hover:opacity-70"
-              style={{ color: navTextColor, fontFamily: "'Assistant', sans-serif" }}
-            >
-              דף הבית
-            </a>
+          <Link
+            href="/"
+            className="text-sm font-medium transition-colors duration-200 hover:opacity-70"
+            style={linkStyle}
+          >
+            דף הבית
           </Link>
 
           {/* Services dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               className="flex items-center gap-1 text-sm font-medium transition-colors duration-200 hover:opacity-70"
-              style={{ color: navTextColor, fontFamily: "'Assistant', sans-serif" }}
+              style={linkStyle}
               onClick={() => setServicesOpen(!servicesOpen)}
             >
               <ChevronDown
@@ -113,14 +111,14 @@ export default function Navbar() {
                 style={{ background: "var(--brand-cream)", border: "1px solid rgba(196,149,106,0.2)" }}
               >
                 {serviceLinks.map((s) => (
-                  <Link key={s.href} href={s.href}>
-                    <a
-                      className="block px-5 py-3 text-sm font-medium hover:bg-amber-50 transition-colors text-right"
-                      style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}
-                      onClick={() => setServicesOpen(false)}
-                    >
-                      {s.label}
-                    </a>
+                  <Link
+                    key={s.href}
+                    href={s.href}
+                    className="block px-5 py-3 text-sm font-medium hover:bg-amber-50 transition-colors text-right"
+                    style={linkStyle}
+                    onClick={() => setServicesOpen(false)}
+                  >
+                    {s.label}
                   </Link>
                 ))}
               </div>
@@ -139,19 +137,19 @@ export default function Navbar() {
               key={link.href}
               onClick={() => handleAnchor(link.href)}
               className="text-sm font-medium transition-colors duration-200 hover:opacity-70"
-              style={{ color: navTextColor, fontFamily: "'Assistant', sans-serif" }}
+              style={linkStyle}
             >
               {link.label}
             </button>
           ))}
         </nav>
 
-
         {/* Mobile menu toggle */}
         <button
           className="md:hidden p-2 rounded-lg"
           style={{ color: "var(--brand-dark)" }}
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? "סגור תפריט" : "פתח תפריט"}
         >
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -164,40 +162,40 @@ export default function Navbar() {
           style={{ background: "var(--brand-cream)" }}
         >
           <div className="container py-4 flex flex-col gap-1">
-            <Link href="/">
-              <a
-                className="text-right py-3 px-4 rounded-lg text-base font-medium transition-colors hover:bg-amber-50"
-                style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}
-                onClick={() => setMenuOpen(false)}
-              >
-                דף הבית
-              </a>
+            <Link
+              href="/"
+              className="text-right py-3 px-4 rounded-lg text-base font-medium transition-colors hover:bg-amber-50"
+              style={linkStyle}
+              onClick={() => setMenuOpen(false)}
+            >
+              דף הבית
             </Link>
             <div className="px-4 py-2 text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>
               שירותים
             </div>
             {serviceLinks.map((s) => (
-              <Link key={s.href} href={s.href}>
-                <a
-                  className="text-right py-2.5 px-8 rounded-lg text-sm font-medium transition-colors hover:bg-amber-50"
-                  style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {s.label}
-                </a>
+              <Link
+                key={s.href}
+                href={s.href}
+                className="text-right py-2.5 px-8 rounded-lg text-sm font-medium transition-colors hover:bg-amber-50"
+                style={linkStyle}
+                onClick={() => setMenuOpen(false)}
+              >
+                {s.label}
               </Link>
             ))}
             {[
               { label: "אודות", href: "#about" },
               { label: "המלצות", href: "#testimonials" },
-              { label: "מאמרים", href: "#articles" },
+              { label: "מאמרים", href: "/articles" },
+              { label: "שאלות נפוצות", href: "/faq" },
               { label: "צור קשר", href: "#contact" },
             ].map((link) => (
               <button
                 key={link.href}
                 onClick={() => handleAnchor(link.href)}
                 className="text-right py-3 px-4 rounded-lg text-base font-medium transition-colors hover:bg-amber-50"
-                style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}
+                style={linkStyle}
               >
                 {link.label}
               </button>
