@@ -654,24 +654,24 @@ function Footer() {
           </div>
 
           {/* Column 3 — Contact */}
-          <div className="text-right">
-            <h4 className="font-bold mb-5 text-sm tracking-wide" style={{ color: "var(--brand-gold)", fontFamily: "'Assistant', sans-serif" }}>יצירת קשר</h4>
+          <div>
+            <h4 className="font-bold mb-5 text-sm tracking-wide text-right" style={{ color: "var(--brand-gold)", fontFamily: "'Assistant', sans-serif" }}>יצירת קשר</h4>
             <div className="space-y-4">
-              <a href="tel:0542111288" className="flex items-center gap-3 text-sm text-white/70 hover:text-white justify-end transition-colors" style={{ fontFamily: "'Assistant', sans-serif" }}>
-                054-2111-288
+              <a href="tel:0542111288" className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors" style={{ fontFamily: "'Assistant', sans-serif", direction: "rtl" }}>
                 <Phone size={15} style={{ color: "var(--brand-gold)", flexShrink: 0 }} />
+                054-2111-288
               </a>
-              <a href="mailto:meir@ynrcollege.org" className="flex items-center gap-3 text-sm text-white/70 hover:text-white justify-end transition-colors" style={{ fontFamily: "'Assistant', sans-serif" }}>
-                meir@ynrcollege.org
+              <a href="mailto:meir@ynrcollege.org" className="flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors" style={{ fontFamily: "'Assistant', sans-serif", direction: "rtl" }}>
                 <Mail size={15} style={{ color: "var(--brand-gold)", flexShrink: 0 }} />
+                meir@ynrcollege.org
               </a>
-              <div className="flex items-center gap-3 text-sm text-white/70 justify-end" style={{ fontFamily: "'Assistant', sans-serif" }}>
-                פתח תקווה | ירושלים | באר שבע
+              <div className="flex items-center gap-3 text-sm text-white/70" style={{ fontFamily: "'Assistant', sans-serif", direction: "rtl" }}>
                 <MapPin size={15} style={{ color: "var(--brand-gold)", flexShrink: 0 }} />
+                פתח תקווה | ירושלים | באר שבע
               </div>
-              <div className="flex items-center gap-3 text-sm text-white/70 justify-end" style={{ fontFamily: "'Assistant', sans-serif" }}>
-                א׳–ה׳: 09:00–20:00 | ו׳: 09:00–13:00
+              <div className="flex items-center gap-3 text-sm text-white/70" style={{ fontFamily: "'Assistant', sans-serif", direction: "rtl" }}>
                 <Clock size={15} style={{ color: "var(--brand-gold)", flexShrink: 0 }} />
+                א׳–ה׳: 09:00–20:00 | ו׳: 09:00–13:00
               </div>
             </div>
           </div>
