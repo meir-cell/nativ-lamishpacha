@@ -94,9 +94,9 @@ function HeroSection() {
             { num: "3", label: "אזורים בארץ" },
             { num: "100%", label: "דיסקרטיות" },
           ].map((s) => (
-            <div key={s.label} className="text-right">
+            <div key={s.label} className="text-center flex flex-col items-center">
               <div className="text-3xl font-black" style={{ color: "#C4956A", fontFamily: "'Noto Serif Hebrew', serif" }}>{s.num}</div>
-              <div className="text-sm text-white/80" style={{ fontFamily: "'Assistant', sans-serif" }}>{s.label}</div>
+              <div className="text-sm text-white/80 mt-0.5" style={{ fontFamily: "'Assistant', sans-serif" }}>{s.label}</div>
             </div>
           ))}
         </AnimatedSection>
