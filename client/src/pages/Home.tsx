@@ -605,15 +605,15 @@ function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8 mb-8 text-right">
           {/* Brand */}
-          <div>
+          <div className="text-right">
             <div className="flex items-center gap-3 justify-end mb-4">
-              <div>
+              <div className="text-right">
                 <div className="font-bold text-lg" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>נתיב למשפחה</div>
                 <div className="text-xs text-white/60">מאיר שמעון עשור</div>
               </div>
               <img src={LOGO_URL} alt="נתיב למשפחה" className="h-10 w-10 object-contain" />
             </div>
-            <p className="text-sm text-white/60 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
+            <p className="text-sm text-white/60 leading-relaxed text-right" style={{ fontFamily: "'Assistant', sans-serif" }}>
               ליווי מקצועי ואנושי בצמתי החיים המשפחתיים.<br />33 שנות ניסיון בטיפול, גישור וייעוץ משפטי.
             </p>
           </div>
