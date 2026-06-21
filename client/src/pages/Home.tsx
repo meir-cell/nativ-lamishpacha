@@ -441,12 +441,7 @@ function ContactSection() {
               ))}
             </div>
 
-            <div className="mt-8 p-5 rounded-2xl" style={{ background: "rgba(196,149,106,0.12)", border: "1px solid rgba(196,149,106,0.25)" }}>
-              <p className="text-sm text-white/80 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-                לאחר קביעת פגישת העבודה, ניתן יהיה להסדיר את התשלום באופן מאובטח באמצעות האתר.
-                חשבונית מס/קבלה תישלח אוטומטית לדוא"ל.
-              </p>
-            </div>
+
           </AnimatedSection>
 
           {/* Form */}
