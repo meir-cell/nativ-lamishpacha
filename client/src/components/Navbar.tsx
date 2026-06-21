@@ -151,14 +151,6 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* CTA phone */}
-        <a
-          href="tel:0542111288"
-          className="hidden md:flex items-center gap-2 btn-cta text-sm py-2 px-4"
-        >
-          <Phone size={15} />
-          054-2111-288
-        </a>
 
         {/* Mobile menu toggle */}
         <button
