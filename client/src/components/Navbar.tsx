@@ -64,8 +64,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto flex items-center justify-between py-3 px-4 md:px-8">
         {/* Logo */}
-        <Link href="/">
-          <a className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group">
             <img src={LOGO_URL} alt="נתיב למשפחה" className="h-12 w-12 object-contain" />
             <div className="text-right">
               <div
@@ -78,7 +77,6 @@ export default function Navbar() {
                 מאיר שמעון עשור
               </div>
             </div>
-          </a>
         </Link>
 
         {/* Desktop nav */}
