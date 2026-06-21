@@ -213,12 +213,7 @@ function AboutSection() {
                 <div className="text-sm mt-1" style={{ fontFamily: "'Assistant', sans-serif" }}>שנות ניסיון</div>
               </div>
               {/* Placeholder for personal photo */}
-              <div
-                className="absolute -top-4 -left-4 rounded-xl px-4 py-3 text-sm font-medium shadow-lg"
-                style={{ background: "var(--brand-gold)", color: "white", fontFamily: "'Assistant', sans-serif" }}
-              >
-                📸 מקום לתמונה שלך
-              </div>
+
             </div>
           </AnimatedSection>
 
