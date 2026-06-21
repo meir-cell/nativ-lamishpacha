@@ -69,7 +69,7 @@ function HeroSection() {
 
         <AnimatedSection delay={300}>
           <p className="text-lg md:text-xl text-white/90 max-w-xl mb-8 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-            מאיר שמעון עשור — 28 שנות ניסיון בטיפול זוגי, גישור טיפולי וייעוץ משפטי בבתי הדין הרבניים.
+            מאיר שמעון עשור — 33 שנות ניסיון בטיפול זוגי, גישור טיפולי וייעוץ משפטי בבתי הדין הרבניים.
             ליווי מקצועי, דיסקרטי ואנושי בצמתי החיים המשפחתיים.
           </p>
         </AnimatedSection>
@@ -90,7 +90,7 @@ function HeroSection() {
         {/* Stats */}
         <AnimatedSection delay={500} className="mt-16 flex gap-8 flex-wrap justify-end">
           {[
-            { num: "28+", label: "שנות ניסיון" },
+            { num: "33+", label: "שנות ניסיון" },
             { num: "3", label: "מרכזים בארץ" },
             { num: "100%", label: "דיסקרטיות" },
           ].map((s) => (
@@ -234,7 +234,7 @@ function AboutSection() {
               מאיר שמעון עשור
             </h2>
             <p className="text-base leading-relaxed mb-4" style={{ color: "#4A3728", fontFamily: "'Assistant', sans-serif" }}>
-              למעלה מ־28 שנות ניסיון בליווי יחידים, זוגות ומשפחות בהתמודדות עם סכסוכים ואתגרי חיים מורכבים.
+              למעלה מ־33 שנות ניסיון בליווי יחידים, זוגות ומשפחות בהתמודדות עם סכסוכים ואתגרי חיים מורכבים.
             </p>
             <p className="text-base leading-relaxed mb-6" style={{ color: "#4A3728", fontFamily: "'Assistant', sans-serif" }}>
               שילוב ייחודי בין ידע וניסיון משפטי והלכתי לבין הבנה וכלים מעולם הטיפול והגישור — המאפשרים מתן מענה מקצועי, מקיף ורגיש. גישה זו מסייעת לבחון כל מקרה לעומקו ולמצוא פתרונות המותאמים לצרכים האישיים והמשפחתיים של כל לקוח.
@@ -599,7 +599,7 @@ function Footer() {
               <img src={LOGO_URL} alt="נתיב למשפחה" className="h-10 w-10 object-contain" />
             </div>
             <p className="text-sm text-white/60 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-              ליווי מקצועי ואנושי בצמתי החיים המשפחתיים. 28 שנות ניסיון בטיפול, גישור וייעוץ משפטי.
+              ליווי מקצועי ואנושי בצמתי החיים המשפחתיים. 33 שנות ניסיון בטיפול, גישור וייעוץ משפטי.
             </p>
           </div>
 

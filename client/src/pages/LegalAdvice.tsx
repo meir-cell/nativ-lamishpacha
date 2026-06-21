@@ -172,7 +172,7 @@ export default function LegalAdvice() {
               className="text-lg text-white/85 max-w-xl leading-relaxed mb-8"
               style={{ fontFamily: "'Assistant', sans-serif" }}
             >
-              ידע משפטי והלכתי מעמיק, ניסיון של 28 שנה וגישה אישית — כדי שתוכל להתמודד
+              ידע משפטי והלכתי מעמיק, ניסיון של 33 שנה וגישה אישית — כדי שתוכל להתמודד
               עם ההליכים בבית הדין הרבני בביטחון ובשקט נפשי.
             </p>
           </AnimatedSection>
