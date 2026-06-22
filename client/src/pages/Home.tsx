@@ -415,7 +415,7 @@ function ContactSection() {
           <p className="text-xl font-medium" style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</p>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-5 gap-10 items-start max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-5 gap-8 items-start max-w-4xl mx-auto">
           {/* Info panel */}
           <AnimatedSection delay={100} className="md:col-span-2 text-right">
             {/* Contact cards */}
@@ -458,15 +458,15 @@ function ContactSection() {
 
           {/* Form */}
           <AnimatedSection delay={200} className="md:col-span-3">
-            <div className="rounded-3xl overflow-hidden" style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(196,149,106,0.2)" }}>
+            <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(196,149,106,0.2)" }}>
               {/* Form header strip */}
-              <div className="px-8 py-5" style={{ background: "linear-gradient(to left, #C4956A, #A67850)" }}>
+              <div className="px-6 py-4" style={{ background: "linear-gradient(to left, #C4956A, #A67850)" }}>
                 <h3 className="text-lg font-bold text-white text-right" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
                   השאר פרטים ונחזור אליך
                 </h3>
               </div>
 
-              <div className="p-8">
+              <div className="p-6">
               {sent ? (
                 <div className="text-center py-10">
                   <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(196,149,106,0.12)" }}>
@@ -480,7 +480,7 @@ function ContactSection() {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5 text-right">
+                <form onSubmit={handleSubmit} className="space-y-4 text-right">
                   {[
                     { key: "name", label: "שם מלא", type: "text", placeholder: "ישראל ישראלי" },
                     { key: "email", label: "כתובת אימייל", type: "email", placeholder: "israel@example.com" },
@@ -496,7 +496,7 @@ function ContactSection() {
                         required
                         value={(form as any)[f.key]}
                         onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        className="w-full px-4 py-3.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
+                        className="w-full px-4 py-3 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
                         style={{
                           borderColor: "rgba(196,149,106,0.25)",
                           fontFamily: "'Assistant', sans-serif",
@@ -515,10 +515,10 @@ function ContactSection() {
                     </label>
                     <textarea
                       placeholder="כתוב בקצרה את נושא הפנייה..."
-                      rows={4}
+                      rows={3}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className="w-full px-4 py-3.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
+                      className="w-full px-4 py-3 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
                       style={{
                         borderColor: "rgba(196,149,106,0.25)",
                         fontFamily: "'Assistant', sans-serif",
@@ -533,7 +533,7 @@ function ContactSection() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-white font-bold text-base transition-all duration-200"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-base transition-all duration-200"
                     style={{
                       background: loading ? "rgba(196,149,106,0.6)" : "linear-gradient(to left, #C4956A, #A67850)",
                       boxShadow: loading ? "none" : "0 8px 24px rgba(196,149,106,0.35)",
