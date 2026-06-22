@@ -23,6 +23,7 @@ function Router() {
       <Route path={"/gishur"} component={Mediation} />
       <Route path={"/yiutz-mishpati"} component={LegalAdvice} />
       <Route path={"/articles"} component={ArticlesPage} />
+      <Route path={"/articles/:slug"} component={ArticlesPage} />
       <Route path={"/books"} component={BooksPage} />
       <Route path={"/faq"} component={FAQPage} />
       <Route path={"/admin"} component={Admin} />

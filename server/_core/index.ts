@@ -44,6 +44,48 @@ async function startServer() {
       createContext,
     })
   );
+  // Open Graph tags for article sharing (Facebook, WhatsApp, etc.)
+  // Must be registered BEFORE Vite/static middleware so bots get proper OG HTML
+  app.get("/articles/:slug", async (req, res, next) => {
+    const { ARTICLES_BY_SLUG } = await import("../../shared/articles-data.js");
+    const article = ARTICLES_BY_SLUG[req.params.slug];
+    // Only intercept bot/crawler requests; let browsers through to the SPA
+    const ua = req.headers["user-agent"] || "";
+    const isBot = /facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Pinterest|Google|Bingbot|Applebot|Googlebot|crawler|spider|bot/i.test(ua);
+    if (!article || !isBot) {
+      return next();
+    }
+    const siteUrl = "https://www.nativ-lamishpacha.com";
+    const articleUrl = `${siteUrl}/articles/${article.slug}`;
+    const imgUrl = article.img || `${siteUrl}/og-default.jpg`;
+    const html = `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>${article.title} | נתיב למשפחה</title>
+  <meta name="description" content="${article.excerpt}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="${articleUrl}" />
+  <meta property="og:title" content="${article.title}" />
+  <meta property="og:description" content="${article.excerpt}" />
+  <meta property="og:image" content="${imgUrl}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="נתיב למשפחה" />
+  <meta property="og:locale" content="he_IL" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${article.title}" />
+  <meta name="twitter:description" content="${article.excerpt}" />
+  <meta name="twitter:image" content="${imgUrl}" />
+  <meta http-equiv="refresh" content="0; url=${articleUrl}" />
+</head>
+<body>
+  <a href="${articleUrl}">${article.title}</a>
+</body>
+</html>`;
+    res.status(200).set({ "Content-Type": "text/html" }).end(html);
+  });
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

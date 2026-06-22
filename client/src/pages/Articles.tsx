@@ -3,7 +3,7 @@ import { Streamdown } from 'streamdown';
 import { BookOpen, ArrowLeft, Search, Tag, Share2, Copy, Check, Facebook } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
-import { Link } from "wouter";
+import { Link, useParams } from "wouter";
 
 function useInView(threshold = 0.12) {
   const ref = useRef<HTMLDivElement>(null);
@@ -1260,9 +1260,9 @@ function CardCopyButton({ title }: { title: string }) {
 }
 
 // Share buttons component
-function ShareButtons({ title }: { title: string }) {
+function ShareButtons({ title, url }: { title: string; url?: string }) {
   const [copied, setCopied] = useState(false);
-  const pageUrl = typeof window !== "undefined" ? window.location.href : "";
+  const pageUrl = url || (typeof window !== "undefined" ? window.location.href : "");
   const encodedUrl = encodeURIComponent(pageUrl);
   const encodedTitle = encodeURIComponent(title);
 
@@ -1332,11 +1332,26 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
   useEffect(() => {
     if (article) {
       document.body.style.overflow = "hidden";
+      // Update URL for sharing (without page reload)
+      const slug = (article as any).slug;
+      if (slug) {
+        window.history.pushState({ articleSlug: slug }, '', `/articles/${slug}`);
+      }
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+      // Restore URL when modal closes
+      window.history.pushState({}, '', '/articles');
+    };
   }, [article]);
 
   if (!article) return null;
+
+  // Build the canonical article URL for sharing
+  const slug = (article as any).slug;
+  const articleUrl = slug
+    ? `${window.location.origin}/articles/${slug}`
+    : window.location.href;
 
   return (
     <div
@@ -1384,7 +1399,7 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
           </div>
           {/* Share buttons */}
           <div className="mt-6 pt-5 border-t" style={{ borderColor: "rgba(196,149,106,0.15)" }}>
-            <ShareButtons title={article.title} />
+            <ShareButtons title={article.title} url={articleUrl} />
           </div>
 
           <div className="mt-5 pt-5 border-t flex items-center justify-between" style={{ borderColor: "rgba(196,149,106,0.2)" }}>
@@ -1410,6 +1425,15 @@ export default function ArticlesPage() {
   const [activeCategory, setActiveCategory] = useState("הכל");
   const [search, setSearch] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<typeof articles[0] | null>(null);
+  const params = useParams<{ slug?: string }>();
+
+  // Auto-open article when arriving via direct URL (e.g. from shared link)
+  useEffect(() => {
+    if (params.slug) {
+      const found = articles.find((a) => (a as any).slug === params.slug);
+      if (found) setSelectedArticle(found);
+    }
+  }, [params.slug]);
 
   const filtered = articles.filter((a) => {
     const matchCat = activeCategory === "הכל" || a.category === activeCategory;
