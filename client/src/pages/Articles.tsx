@@ -1388,14 +1388,20 @@ function useTTS(text: string) {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const stop = () => {
-    window.speechSynthesis.cancel();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     setIsPlaying(false);
     setIsPaused(false);
   };
 
   const play = () => {
-    if (!('speechSynthesis' in window)) return;
-    stop();
+    // Always try — don't gate on 'speechSynthesis' in window check
+    // (iOS Safari can return false for that check in some contexts)
+    if (typeof window === 'undefined') return;
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    synth.cancel();
+    setIsPlaying(false);
+    setIsPaused(false);
     // Strip markdown syntax for cleaner reading
     const plainText = text
       .replace(/\*\*([^*]+)\*\*/g, '$1')
@@ -1407,34 +1413,54 @@ function useTTS(text: string) {
     utterance.lang = 'he-IL';
     utterance.rate = 0.9;
     utterance.pitch = 1;
-    // Try to find a Hebrew voice
-    const voices = window.speechSynthesis.getVoices();
-    const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
-    if (hebrewVoice) utterance.voice = hebrewVoice;
     utterance.onend = () => { setIsPlaying(false); setIsPaused(false); };
     utterance.onerror = () => { setIsPlaying(false); setIsPaused(false); };
     utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-    setIsPlaying(true);
-    setIsPaused(false);
+
+    // iOS Safari: voices may not be loaded yet — use onvoiceschanged or speak immediately
+    const doSpeak = () => {
+      const voices = synth.getVoices();
+      const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
+      if (hebrewVoice) utterance.voice = hebrewVoice;
+      synth.speak(utterance);
+      setIsPlaying(true);
+      setIsPaused(false);
+    };
+
+    const voices = synth.getVoices();
+    if (voices.length > 0) {
+      doSpeak();
+    } else {
+      // iOS Safari loads voices asynchronously
+      synth.onvoiceschanged = () => {
+        synth.onvoiceschanged = null;
+        doSpeak();
+      };
+      // Fallback: speak without a specific voice after short delay
+      setTimeout(() => {
+        if (!synth.speaking) doSpeak();
+      }, 300);
+    }
   };
 
   const pause = () => {
-    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-      window.speechSynthesis.pause();
+    const synth = window.speechSynthesis;
+    if (synth && synth.speaking && !synth.paused) {
+      synth.pause();
       setIsPaused(true);
     }
   };
 
   const resume = () => {
-    if (window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
+    const synth = window.speechSynthesis;
+    if (synth && synth.paused) {
+      synth.resume();
       setIsPaused(false);
     }
   };
 
   // Stop on unmount
-  useEffect(() => () => { window.speechSynthesis.cancel(); }, []);
+  useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
 
   return { isPlaying, isPaused, play, pause, resume, stop };
 }
@@ -1505,46 +1531,73 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
             </span>
             <span className="text-xs" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>{article.date}</span>
           </div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
+          <div className="flex items-start justify-between mb-6 gap-3">
+            <h2 className="text-2xl md:text-3xl font-bold flex-1" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
               {article.title}
             </h2>
-            {/* TTS Button */}
-            {'speechSynthesis' in window && (
-              <div className="flex items-center gap-2 mr-4 flex-shrink-0">
-                {!tts.isPlaying ? (
+            {/* TTS Button — always shown, works on mobile */}
+            <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+              {!tts.isPlaying ? (
+                <button
+                  onClick={tts.play}
+                  className="flex items-center gap-2 rounded-full font-medium transition-all active:scale-95"
+                  style={{
+                    background: "rgba(196,149,106,0.15)",
+                    color: "var(--brand-gold)",
+                    border: "1px solid rgba(196,149,106,0.3)",
+                    padding: "10px 16px",
+                    fontSize: "15px",
+                    minWidth: "80px",
+                    minHeight: "44px",
+                    touchAction: "manipulation",
+                    WebkitTapHighlightColor: "transparent",
+                    cursor: "pointer",
+                  }}
+                  aria-label="האזן למאמר"
+                >
+                  <Volume2 size={18} />
+                  <span style={{ fontFamily: "'Assistant', sans-serif" }}>האזן</span>
+                </button>
+              ) : (
+                <div className="flex items-center gap-1">
                   <button
-                    onClick={tts.play}
-                    className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95"
-                    style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.3)" }}
-                    title="האזן למאמר"
+                    onClick={tts.isPaused ? tts.resume : tts.pause}
+                    className="flex items-center gap-1 rounded-full font-medium transition-all active:scale-95"
+                    style={{
+                      background: "rgba(196,149,106,0.2)",
+                      color: "var(--brand-gold)",
+                      border: "1px solid rgba(196,149,106,0.4)",
+                      padding: "10px 14px",
+                      fontSize: "14px",
+                      minHeight: "44px",
+                      touchAction: "manipulation",
+                      WebkitTapHighlightColor: "transparent",
+                      cursor: "pointer",
+                    }}
+                    aria-label={tts.isPaused ? "המשך הקראה" : "השהה הקראה"}
                   >
-                    <Volume2 size={16} />
-                    <span style={{ fontFamily: "'Assistant', sans-serif" }}>האזן</span>
+                    {tts.isPaused ? <Play size={16} /> : <Pause size={16} />}
+                    <span style={{ fontFamily: "'Assistant', sans-serif" }}>{tts.isPaused ? "המשך" : "השהה"}</span>
                   </button>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={tts.isPaused ? tts.resume : tts.pause}
-                      className="flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95"
-                      style={{ background: "rgba(196,149,106,0.2)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.4)" }}
-                      title={tts.isPaused ? "המשך" : "השהה"}
-                    >
-                      {tts.isPaused ? <Play size={15} /> : <Pause size={15} />}
-                      <span style={{ fontFamily: "'Assistant', sans-serif" }}>{tts.isPaused ? "המשך" : "השהה"}</span>
-                    </button>
-                    <button
-                      onClick={tts.stop}
-                      className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
-                      style={{ background: "rgba(196,149,106,0.1)", color: "var(--brand-mid)" }}
-                      title="עצור"
-                    >
-                      <VolumeX size={15} />
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+                  <button
+                    onClick={tts.stop}
+                    className="rounded-full flex items-center justify-center transition-all active:scale-95"
+                    style={{
+                      background: "rgba(196,149,106,0.1)",
+                      color: "var(--brand-mid)",
+                      width: "44px",
+                      height: "44px",
+                      touchAction: "manipulation",
+                      WebkitTapHighlightColor: "transparent",
+                      cursor: "pointer",
+                    }}
+                    aria-label="עצור הקראה"
+                  >
+                    <VolumeX size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <div
             className="text-base leading-loose prose prose-sm max-w-none"

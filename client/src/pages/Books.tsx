@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BookOpen, Download, FileText, ExternalLink, ChevronDown } from "lucide-react";
+import { BookOpen, Download, FileText, ExternalLink, ChevronDown, Volume2, VolumeX, Pause, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
@@ -100,8 +100,54 @@ const books = [
   },
 ];
 
+function useTTS(text: string) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const stop = () => {
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+    setIsPaused(false);
+  };
+
+  const play = () => {
+    if (!("speechSynthesis" in window)) return;
+    stop();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "he-IL";
+    utterance.rate = 0.9;
+    const voices = window.speechSynthesis.getVoices();
+    const hebrewVoice = voices.find(v => v.lang.startsWith("he"));
+    if (hebrewVoice) utterance.voice = hebrewVoice;
+    utterance.onend = () => { setIsPlaying(false); setIsPaused(false); };
+    utterance.onerror = () => { setIsPlaying(false); setIsPaused(false); };
+    window.speechSynthesis.speak(utterance);
+    setIsPlaying(true);
+  };
+
+  const pause = () => {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      window.speechSynthesis.pause();
+      setIsPaused(true);
+    }
+  };
+
+  const resume = () => {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setIsPaused(false);
+    }
+  };
+
+  useEffect(() => () => { window.speechSynthesis.cancel(); }, []);
+
+  return { isPlaying, isPaused, play, pause, resume, stop };
+}
+
 function BookCard({ book, delay }: { book: typeof books[0]; delay: number }) {
   const [hovered, setHovered] = useState(false);
+  const ttsText = `${book.title}. ${book.subtitle}. ${book.description}`;
+  const tts = useTTS(ttsText);
 
   return (
     <AnimatedSection delay={delay}>
@@ -204,6 +250,42 @@ function BookCard({ book, delay }: { book: typeof books[0]; delay: number }) {
               קרא
             </a>
           </div>
+
+          {/* TTS Button */}
+          {"speechSynthesis" in window && (
+            <div className="mt-3 flex items-center gap-2">
+              {!tts.isPlaying ? (
+                <button
+                  onClick={tts.play}
+                  className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium w-full justify-center transition-all hover:scale-105 active:scale-95"
+                  style={{ background: `${book.color}12`, color: book.color, border: `1px solid ${book.color}30` }}
+                  title="האזן לתיאור הספר"
+                >
+                  <Volume2 size={15} />
+                  <span style={{ fontFamily: "'Assistant', sans-serif" }}>האזן לתיאור</span>
+                </button>
+              ) : (
+                <div className="flex items-center gap-2 w-full">
+                  <button
+                    onClick={tts.isPaused ? tts.resume : tts.pause}
+                    className="flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium flex-1 justify-center transition-all hover:scale-105 active:scale-95"
+                    style={{ background: `${book.color}20`, color: book.color, border: `1px solid ${book.color}40` }}
+                  >
+                    {tts.isPaused ? <Play size={14} /> : <Pause size={14} />}
+                    <span style={{ fontFamily: "'Assistant', sans-serif" }}>{tts.isPaused ? "המשך" : "השהה"}</span>
+                  </button>
+                  <button
+                    onClick={tts.stop}
+                    className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                    style={{ background: `${book.color}10`, color: book.color }}
+                    title="עצור"
+                  >
+                    <VolumeX size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </AnimatedSection>
