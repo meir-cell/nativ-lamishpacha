@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Streamdown } from 'streamdown';
-import { BookOpen, ArrowLeft, Search, Tag, Share2, Copy, Check, Facebook } from "lucide-react";
+import { BookOpen, ArrowLeft, Search, Tag, Share2, Copy, Check, Facebook, Volume2, VolumeX, Pause, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { Link, useParams } from "wouter";
@@ -1382,6 +1382,63 @@ function ShareButtons({ title, url }: { title: string; url?: string }) {
 }
 
 // Article modal component
+function useTTS(text: string) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const stop = () => {
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+    setIsPaused(false);
+  };
+
+  const play = () => {
+    if (!('speechSynthesis' in window)) return;
+    stop();
+    // Strip markdown syntax for cleaner reading
+    const plainText = text
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/#{1,6}\s/g, '')
+      .replace(/---/g, '')
+      .replace(/\n{2,}/g, '. ');
+    const utterance = new SpeechSynthesisUtterance(plainText);
+    utterance.lang = 'he-IL';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    // Try to find a Hebrew voice
+    const voices = window.speechSynthesis.getVoices();
+    const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
+    if (hebrewVoice) utterance.voice = hebrewVoice;
+    utterance.onend = () => { setIsPlaying(false); setIsPaused(false); };
+    utterance.onerror = () => { setIsPlaying(false); setIsPaused(false); };
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setIsPlaying(true);
+    setIsPaused(false);
+  };
+
+  const pause = () => {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      window.speechSynthesis.pause();
+      setIsPaused(true);
+    }
+  };
+
+  const resume = () => {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setIsPaused(false);
+    }
+  };
+
+  // Stop on unmount
+  useEffect(() => () => { window.speechSynthesis.cancel(); }, []);
+
+  return { isPlaying, isPaused, play, pause, resume, stop };
+}
+
 function ArticleModal({ article, onClose }: { article: typeof articles[0] | null; onClose: () => void }) {
   useEffect(() => {
     if (article) {
@@ -1399,6 +1456,12 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
     };
   }, [article]);
 
+  // TTS hook — must be called unconditionally
+  const tts = useTTS(article?.content || article?.excerpt || '');
+
+  // Stop TTS when modal closes
+  const handleClose = () => { tts.stop(); onClose(); };
+
   if (!article) return null;
 
   // Build the canonical article URL for sharing
@@ -1411,7 +1474,7 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
     <div
       className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 overflow-y-auto"
       style={{ background: "rgba(0,0,0,0.7)" }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
       <div
         className="relative w-full max-w-3xl rounded-2xl overflow-hidden shadow-2xl"
@@ -1419,7 +1482,7 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 left-4 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
           style={{ background: "rgba(0,0,0,0.3)", color: "white" }}
           aria-label="סגור"
@@ -1442,9 +1505,47 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
             </span>
             <span className="text-xs" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>{article.date}</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-6" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
-            {article.title}
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
+              {article.title}
+            </h2>
+            {/* TTS Button */}
+            {'speechSynthesis' in window && (
+              <div className="flex items-center gap-2 mr-4 flex-shrink-0">
+                {!tts.isPlaying ? (
+                  <button
+                    onClick={tts.play}
+                    className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95"
+                    style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.3)" }}
+                    title="האזן למאמר"
+                  >
+                    <Volume2 size={16} />
+                    <span style={{ fontFamily: "'Assistant', sans-serif" }}>האזן</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={tts.isPaused ? tts.resume : tts.pause}
+                      className="flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 active:scale-95"
+                      style={{ background: "rgba(196,149,106,0.2)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.4)" }}
+                      title={tts.isPaused ? "המשך" : "השהה"}
+                    >
+                      {tts.isPaused ? <Play size={15} /> : <Pause size={15} />}
+                      <span style={{ fontFamily: "'Assistant', sans-serif" }}>{tts.isPaused ? "המשך" : "השהה"}</span>
+                    </button>
+                    <button
+                      onClick={tts.stop}
+                      className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                      style={{ background: "rgba(196,149,106,0.1)", color: "var(--brand-mid)" }}
+                      title="עצור"
+                    >
+                      <VolumeX size={15} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           <div
             className="text-base leading-loose prose prose-sm max-w-none"
             style={{ color: "#3A2A1E", fontFamily: "'Assistant', sans-serif" }}
