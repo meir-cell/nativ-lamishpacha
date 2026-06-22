@@ -415,15 +415,21 @@ function ContactSection() {
           <p className="text-xl font-medium" style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</p>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-5 gap-8 items-start max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
           {/* Info panel */}
-          <AnimatedSection delay={100} className="md:col-span-2 text-right">
+          <AnimatedSection delay={100} className="text-right flex flex-col h-full">
+            {/* Intro text */}
+            <p className="text-sm leading-relaxed mb-5 text-right" style={{ color: "rgba(255,255,255,0.75)", fontFamily: "'Assistant', sans-serif" }}>
+              מלא את הטופס ונחזור אליך בהקדם לתיאום פגישת ייעוץ ראשונית — דיסקרטית, ללא עלות וללא התחייבות.
+            </p>
+
             {/* Contact cards */}
-            <div className="space-y-3 mb-8">
+            <div className="space-y-3 mb-4 flex-1">
               {[
                 { icon: Phone, label: "054-2111-288", sub: "זמין גם בוואצאפ", href: "tel:0542111288" },
                 { icon: Mail, label: "meir@ynrcollege.org", sub: "מייל אישי", href: "mailto:meir@ynrcollege.org" },
                 { icon: MapPin, label: "באר שבע | ירושלים | בני ברק", sub: "שלושה מרכזים", href: "#about" },
+                { icon: Clock, label: "א׳–ה׳: 09:00–20:00", sub: "ו׳: 09:00–13:00", href: "#contact" },
               ].map((item) => (
                 <a
                   key={item.label}
@@ -443,7 +449,7 @@ function ContactSection() {
             </div>
 
             {/* HYP payment badge */}
-            <div className="flex items-center justify-end gap-3 p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(196,149,106,0.15)" }}>
+            <div className="flex items-center justify-end gap-3 p-4 rounded-2xl mt-auto" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(196,149,106,0.15)" }}>
               <div className="text-right">
                 <div className="text-xs font-medium text-white/70" style={{ fontFamily: "'Assistant', sans-serif" }}>תשלום מאובטח</div>
               </div>
@@ -457,7 +463,7 @@ function ContactSection() {
           </AnimatedSection>
 
           {/* Form */}
-          <AnimatedSection delay={200} className="md:col-span-3">
+          <AnimatedSection delay={200}>
             <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(196,149,106,0.2)" }}>
               {/* Form header strip */}
               <div className="px-6 py-4" style={{ background: "linear-gradient(to left, #C4956A, #A67850)" }}>
@@ -466,7 +472,7 @@ function ContactSection() {
                 </h3>
               </div>
 
-              <div className="p-6">
+              <div className="p-5">
               {sent ? (
                 <div className="text-center py-10">
                   <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(196,149,106,0.12)" }}>
@@ -480,7 +486,7 @@ function ContactSection() {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 text-right">
+                <form onSubmit={handleSubmit} className="space-y-3 text-right">
                   {[
                     { key: "name", label: "שם מלא", type: "text", placeholder: "ישראל ישראלי" },
                     { key: "email", label: "כתובת אימייל", type: "email", placeholder: "israel@example.com" },
@@ -496,7 +502,7 @@ function ContactSection() {
                         required
                         value={(form as any)[f.key]}
                         onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
+                        className="w-full px-3 py-2.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
                         style={{
                           borderColor: "rgba(196,149,106,0.25)",
                           fontFamily: "'Assistant', sans-serif",
@@ -518,7 +524,7 @@ function ContactSection() {
                       rows={3}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
+                      className="w-full px-3 py-2.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
                       style={{
                         borderColor: "rgba(196,149,106,0.25)",
                         fontFamily: "'Assistant', sans-serif",
@@ -533,7 +539,7 @@ function ContactSection() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-base transition-all duration-200"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-base transition-all duration-200"
                     style={{
                       background: loading ? "rgba(196,149,106,0.6)" : "linear-gradient(to left, #C4956A, #A67850)",
                       boxShadow: loading ? "none" : "0 8px 24px rgba(196,149,106,0.35)",
