@@ -398,21 +398,21 @@ function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative py-28 overflow-hidden" style={{ background: "linear-gradient(135deg, #2C1810 0%, #3D2314 50%, #2C1810 100%)" }}>
+    <section id="contact" className="relative py-20 overflow-hidden" style={{ background: "linear-gradient(135deg, #2C1810 0%, #3D2314 50%, #2C1810 100%)" }}>
       {/* Decorative background elements */}
       <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #C4956A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #C4956A 0%, transparent 40%)" }} />
       <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(196,149,106,0.4), transparent)" }} />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section header */}
-        <AnimatedSection className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-4" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.3)" }}>
+        <AnimatedSection className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-3" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.3)" }}>
             <span>צור קשר</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-3" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
+          <h2 className="text-3xl md:text-4xl font-black text-white mb-2" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
             פגישת ייעוץ ראשונית
           </h2>
-          <p className="text-xl font-medium" style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</p>
+          <p className="text-base font-medium" style={{ color: "var(--brand-gold)" }}>ללא עלות וללא התחייבות</p>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
@@ -466,13 +466,13 @@ function ContactSection() {
           <AnimatedSection delay={200}>
             <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(196,149,106,0.2)" }}>
               {/* Form header strip */}
-              <div className="px-6 py-4" style={{ background: "linear-gradient(to left, #C4956A, #A67850)" }}>
-                <h3 className="text-lg font-bold text-white text-right" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
+              <div className="px-5 py-3" style={{ background: "linear-gradient(to left, #C4956A, #A67850)" }}>
+                <h3 className="text-base font-bold text-white text-right" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>
                   השאר פרטים ונחזור אליך
                 </h3>
               </div>
 
-              <div className="p-5">
+              <div className="p-4">
               {sent ? (
                 <div className="text-center py-10">
                   <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(196,149,106,0.12)" }}>
@@ -486,7 +486,7 @@ function ContactSection() {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-3 text-right">
+                <form onSubmit={handleSubmit} className="space-y-2 text-right">
                   {[
                     { key: "name", label: "שם מלא", type: "text", placeholder: "ישראל ישראלי" },
                     { key: "email", label: "כתובת אימייל", type: "email", placeholder: "israel@example.com" },
@@ -502,7 +502,7 @@ function ContactSection() {
                         required
                         value={(form as any)[f.key]}
                         onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        className="w-full px-3 py-2.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
+                        className="w-full px-3 py-2 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200"
                         style={{
                           borderColor: "rgba(196,149,106,0.25)",
                           fontFamily: "'Assistant', sans-serif",
@@ -521,10 +521,10 @@ function ContactSection() {
                     </label>
                     <textarea
                       placeholder="כתוב בקצרה את נושא הפנייה..."
-                      rows={3}
+                      rows={2}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className="w-full px-3 py-2.5 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
+                      className="w-full px-3 py-2 rounded-xl border-2 text-right text-sm outline-none transition-all duration-200 resize-none"
                       style={{
                         borderColor: "rgba(196,149,106,0.25)",
                         fontFamily: "'Assistant', sans-serif",
@@ -539,7 +539,7 @@ function ContactSection() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-base transition-all duration-200"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white font-bold text-sm transition-all duration-200"
                     style={{
                       background: loading ? "rgba(196,149,106,0.6)" : "linear-gradient(to left, #C4956A, #A67850)",
                       boxShadow: loading ? "none" : "0 8px 24px rgba(196,149,106,0.35)",
