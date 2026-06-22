@@ -1382,85 +1382,161 @@ function ShareButtons({ title, url }: { title: string; url?: string }) {
 }
 
 // Article modal component
+// Splits text into chunks of ~200 chars at sentence boundaries
+function splitIntoChunks(text: string, maxLen = 200): string[] {
+  const sentences = text.split(/(?<=[.!?\n])\s+/);
+  const chunks: string[] = [];
+  let current = '';
+  for (const s of sentences) {
+    if ((current + ' ' + s).length > maxLen && current) {
+      chunks.push(current.trim());
+      current = s;
+    } else {
+      current = current ? current + ' ' + s : s;
+    }
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks.length ? chunks : [text];
+}
+
 function useTTS(text: string) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const chunksRef = useRef<string[]>([]);
+  const chunkIndexRef = useRef(0);
+  const keepAliveRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearKeepAlive = () => {
+    if (keepAliveRef.current) {
+      clearInterval(keepAliveRef.current);
+      keepAliveRef.current = null;
+    }
+  };
 
   const stop = () => {
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    clearKeepAlive();
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    chunksRef.current = [];
+    chunkIndexRef.current = 0;
     setIsPlaying(false);
     setIsPaused(false);
   };
 
+  const speakChunk = (synth: SpeechSynthesis, chunks: string[], index: number) => {
+    if (index >= chunks.length) {
+      clearKeepAlive();
+      setIsPlaying(false);
+      setIsPaused(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(chunks[index]);
+    utterance.lang = 'he-IL';
+    utterance.rate = 0.85;
+    utterance.pitch = 1;
+    // Pick Hebrew voice if available
+    const voices = synth.getVoices();
+    const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
+    if (hebrewVoice) utterance.voice = hebrewVoice;
+    utterance.onend = () => {
+      chunkIndexRef.current = index + 1;
+      speakChunk(synth, chunks, index + 1);
+    };
+    utterance.onerror = (e) => {
+      // 'interrupted' is normal when stop() is called — don't treat as error
+      if ((e as SpeechSynthesisErrorEvent).error !== 'interrupted') {
+        clearKeepAlive();
+        setIsPlaying(false);
+        setIsPaused(false);
+      }
+    };
+    synth.speak(utterance);
+  };
+
   const play = () => {
-    // Always try — don't gate on 'speechSynthesis' in window check
-    // (iOS Safari can return false for that check in some contexts)
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
     const synth = window.speechSynthesis;
-    if (!synth) return;
     synth.cancel();
-    setIsPlaying(false);
-    setIsPaused(false);
-    // Strip markdown syntax for cleaner reading
+    clearKeepAlive();
+
+    // Strip markdown
     const plainText = text
       .replace(/\*\*([^*]+)\*\*/g, '$1')
       .replace(/\*([^*]+)\*/g, '$1')
       .replace(/#{1,6}\s/g, '')
-      .replace(/---/g, '')
-      .replace(/\n{2,}/g, '. ');
-    const utterance = new SpeechSynthesisUtterance(plainText);
-    utterance.lang = 'he-IL';
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.onend = () => { setIsPlaying(false); setIsPaused(false); };
-    utterance.onerror = () => { setIsPlaying(false); setIsPaused(false); };
-    utteranceRef.current = utterance;
+      .replace(/---+/g, '')
+      .replace(/\n{2,}/g, '. ')
+      .replace(/\n/g, ' ')
+      .trim();
 
-    // iOS Safari: voices may not be loaded yet — use onvoiceschanged or speak immediately
+    const chunks = splitIntoChunks(plainText, 200);
+    chunksRef.current = chunks;
+    chunkIndexRef.current = 0;
+
     const doSpeak = () => {
-      const voices = synth.getVoices();
-      const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
-      if (hebrewVoice) utterance.voice = hebrewVoice;
-      synth.speak(utterance);
       setIsPlaying(true);
       setIsPaused(false);
+      speakChunk(synth, chunks, 0);
+      // Android Chrome workaround: speechSynthesis stops after ~15s without this
+      keepAliveRef.current = setInterval(() => {
+        if (synth.speaking && !synth.paused) {
+          synth.pause();
+          synth.resume();
+        }
+      }, 10000);
     };
 
+    // Wait for voices to load (needed on iOS Safari first load)
     const voices = synth.getVoices();
     if (voices.length > 0) {
       doSpeak();
     } else {
-      // iOS Safari loads voices asynchronously
-      synth.onvoiceschanged = () => {
+      const onVoicesChanged = () => {
         synth.onvoiceschanged = null;
         doSpeak();
       };
-      // Fallback: speak without a specific voice after short delay
+      synth.onvoiceschanged = onVoicesChanged;
+      // Fallback if onvoiceschanged never fires
       setTimeout(() => {
-        if (!synth.speaking) doSpeak();
-      }, 300);
+        if (!synth.speaking && !isPlaying) doSpeak();
+      }, 500);
     }
   };
 
   const pause = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
     const synth = window.speechSynthesis;
-    if (synth && synth.speaking && !synth.paused) {
+    if (synth.speaking && !synth.paused) {
+      clearKeepAlive();
       synth.pause();
       setIsPaused(true);
     }
   };
 
   const resume = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
     const synth = window.speechSynthesis;
-    if (synth && synth.paused) {
+    if (synth.paused) {
       synth.resume();
       setIsPaused(false);
+      // Restart keep-alive
+      keepAliveRef.current = setInterval(() => {
+        if (synth.speaking && !synth.paused) {
+          synth.pause();
+          synth.resume();
+        }
+      }, 10000);
     }
   };
 
-  // Stop on unmount
-  useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
+  // Cleanup on unmount
+  useEffect(() => () => {
+    clearKeepAlive();
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+  }, []);
 
   return { isPlaying, isPaused, play, pause, resume, stop };
 }
