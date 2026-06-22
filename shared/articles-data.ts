@@ -150,6 +150,13 @@ export const ARTICLES_META: ArticleMeta[] = [
     img: "https://meir-asor.co.il/wp-content/uploads/2020/07/gold_bridge.jpg",
     category: "גירושין וייעוץ משפטי",
   },
+  {
+    slug: "gishur-min-hatorah",
+    title: "צדק משפט וגישור מהתורה",
+    excerpt: "בתנ\"ך נזכרים המושגים צדק, משפט, דין, יושר, מישור, מישרים. התורה מעודדת הליך נוסף בשם משפט יושר: משפט המתקבל בהסכמה על-ידי שני הצדדים ומהווה סוג של פשרה ביניהם, או גישור כפתרון יצירתי לישוב הסכסוך.",
+    img: "/manus-storage/gishur-torah_4a94fc80.jpg",
+    category: "גישור ויישוב סכסוכים",
+  },
 ];
 
 // Build a lookup map by slug
