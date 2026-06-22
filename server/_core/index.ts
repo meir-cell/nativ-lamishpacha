@@ -86,6 +86,55 @@ async function startServer() {
     res.status(200).set({ "Content-Type": "text/html" }).end(html);
   });
 
+  // TTS proxy endpoint — uses Google Translate TTS (no API key needed)
+  // Splits long text into chunks of max 200 chars and returns base64 MP3
+  app.post("/api/tts", async (req, res) => {
+    try {
+      const { text } = req.body as { text?: string };
+      if (!text || typeof text !== "string") {
+        return res.status(400).json({ error: "text is required" });
+      }
+
+      // Split into chunks of max 200 chars at word boundaries
+      const chunks: string[] = [];
+      const sentences = text.split(/(?<=[.!?\n])\s+|\n+/);
+      let current = "";
+      for (const s of sentences) {
+        if ((current + " " + s).length > 200 && current) {
+          chunks.push(current.trim());
+          current = s;
+        } else {
+          current = current ? current + " " + s : s;
+        }
+      }
+      if (current.trim()) chunks.push(current.trim());
+
+      // Fetch each chunk from Google Translate TTS
+      const audioBuffers: Buffer[] = [];
+      for (const chunk of chunks) {
+        const encoded = encodeURIComponent(chunk);
+        const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=he&client=tw-ob`;
+        const response = await fetch(url, {
+          headers: { "User-Agent": "Mozilla/5.0 (compatible; nativ-lamishpacha/1.0)" },
+        });
+        if (!response.ok) continue;
+        const buf = Buffer.from(await response.arrayBuffer());
+        audioBuffers.push(buf);
+      }
+
+      if (audioBuffers.length === 0) {
+        return res.status(502).json({ error: "TTS service unavailable" });
+      }
+
+      // Concatenate all MP3 buffers and return as base64
+      const combined = Buffer.concat(audioBuffers);
+      res.json({ audio: combined.toString("base64"), mimeType: "audio/mpeg" });
+    } catch (err) {
+      console.error("TTS error:", err);
+      res.status(500).json({ error: "TTS failed" });
+    }
+  });
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

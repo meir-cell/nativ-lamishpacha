@@ -1382,85 +1382,30 @@ function ShareButtons({ title, url }: { title: string; url?: string }) {
 }
 
 // Article modal component
-// Splits text into chunks of ~200 chars at sentence boundaries
-function splitIntoChunks(text: string, maxLen = 200): string[] {
-  const sentences = text.split(/(?<=[.!?\n])\s+/);
-  const chunks: string[] = [];
-  let current = '';
-  for (const s of sentences) {
-    if ((current + ' ' + s).length > maxLen && current) {
-      chunks.push(current.trim());
-      current = s;
-    } else {
-      current = current ? current + ' ' + s : s;
-    }
-  }
-  if (current.trim()) chunks.push(current.trim());
-  return chunks.length ? chunks : [text];
-}
-
+// TTS hook — uses server-side Google Translate TTS proxy
+// Works on all devices including iOS Safari and Android Chrome
 function useTTS(text: string) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const chunksRef = useRef<string[]>([]);
-  const chunkIndexRef = useRef(0);
-  const keepAliveRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const clearKeepAlive = () => {
-    if (keepAliveRef.current) {
-      clearInterval(keepAliveRef.current);
-      keepAliveRef.current = null;
-    }
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const stop = () => {
-    clearKeepAlive();
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
     }
-    chunksRef.current = [];
-    chunkIndexRef.current = 0;
     setIsPlaying(false);
     setIsPaused(false);
+    setIsLoading(false);
   };
 
-  const speakChunk = (synth: SpeechSynthesis, chunks: string[], index: number) => {
-    if (index >= chunks.length) {
-      clearKeepAlive();
-      setIsPlaying(false);
-      setIsPaused(false);
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(chunks[index]);
-    utterance.lang = 'he-IL';
-    utterance.rate = 0.85;
-    utterance.pitch = 1;
-    // Pick Hebrew voice if available
-    const voices = synth.getVoices();
-    const hebrewVoice = voices.find(v => v.lang.startsWith('he'));
-    if (hebrewVoice) utterance.voice = hebrewVoice;
-    utterance.onend = () => {
-      chunkIndexRef.current = index + 1;
-      speakChunk(synth, chunks, index + 1);
-    };
-    utterance.onerror = (e) => {
-      // 'interrupted' is normal when stop() is called — don't treat as error
-      if ((e as SpeechSynthesisErrorEvent).error !== 'interrupted') {
-        clearKeepAlive();
-        setIsPlaying(false);
-        setIsPaused(false);
-      }
-    };
-    synth.speak(utterance);
-  };
+  const play = async () => {
+    stop();
+    setIsLoading(true);
 
-  const play = () => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    clearKeepAlive();
-
-    // Strip markdown
+    // Strip markdown for cleaner reading
     const plainText = text
       .replace(/\*\*([^*]+)\*\*/g, '$1')
       .replace(/\*([^*]+)\*/g, '$1')
@@ -1470,75 +1415,53 @@ function useTTS(text: string) {
       .replace(/\n/g, ' ')
       .trim();
 
-    const chunks = splitIntoChunks(plainText, 200);
-    chunksRef.current = chunks;
-    chunkIndexRef.current = 0;
+    try {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: plainText }),
+      });
+      if (!res.ok) throw new Error('TTS request failed');
+      const data = await res.json() as { audio: string; mimeType: string };
 
-    const doSpeak = () => {
+      // Convert base64 to blob URL
+      const binary = atob(data.audio);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], { type: data.mimeType });
+      const url = URL.createObjectURL(blob);
+
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => { setIsPlaying(false); setIsPaused(false); URL.revokeObjectURL(url); };
+      audio.onerror = () => { setIsPlaying(false); setIsPaused(false); setIsLoading(false); };
+      audio.oncanplay = () => { setIsLoading(false); };
+      await audio.play();
       setIsPlaying(true);
-      setIsPaused(false);
-      speakChunk(synth, chunks, 0);
-      // Android Chrome workaround: speechSynthesis stops after ~15s without this
-      keepAliveRef.current = setInterval(() => {
-        if (synth.speaking && !synth.paused) {
-          synth.pause();
-          synth.resume();
-        }
-      }, 10000);
-    };
-
-    // Wait for voices to load (needed on iOS Safari first load)
-    const voices = synth.getVoices();
-    if (voices.length > 0) {
-      doSpeak();
-    } else {
-      const onVoicesChanged = () => {
-        synth.onvoiceschanged = null;
-        doSpeak();
-      };
-      synth.onvoiceschanged = onVoicesChanged;
-      // Fallback if onvoiceschanged never fires
-      setTimeout(() => {
-        if (!synth.speaking && !isPlaying) doSpeak();
-      }, 500);
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+      setIsPlaying(false);
     }
   };
 
   const pause = () => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    const synth = window.speechSynthesis;
-    if (synth.speaking && !synth.paused) {
-      clearKeepAlive();
-      synth.pause();
+    if (audioRef.current && isPlaying && !isPaused) {
+      audioRef.current.pause();
       setIsPaused(true);
     }
   };
 
   const resume = () => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    const synth = window.speechSynthesis;
-    if (synth.paused) {
-      synth.resume();
+    if (audioRef.current && isPaused) {
+      audioRef.current.play();
       setIsPaused(false);
-      // Restart keep-alive
-      keepAliveRef.current = setInterval(() => {
-        if (synth.speaking && !synth.paused) {
-          synth.pause();
-          synth.resume();
-        }
-      }, 10000);
     }
   };
 
-  // Cleanup on unmount
-  useEffect(() => () => {
-    clearKeepAlive();
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-  }, []);
+  useEffect(() => () => { stop(); }, []);
 
-  return { isPlaying, isPaused, play, pause, resume, stop };
+  return { isPlaying, isPaused, isLoading, play, pause, resume, stop };
 }
 
 function ArticleModal({ article, onClose }: { article: typeof articles[0] | null; onClose: () => void }) {
@@ -1611,9 +1534,29 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
             <h2 className="text-2xl md:text-3xl font-bold flex-1" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
               {article.title}
             </h2>
-            {/* TTS Button — always shown, works on mobile */}
+            {/* TTS Button — server-side, works on all devices */}
             <div className="flex items-center gap-2 flex-shrink-0 mt-1">
-              {!tts.isPlaying ? (
+              {tts.isLoading ? (
+                <button
+                  disabled
+                  className="flex items-center gap-2 rounded-full font-medium"
+                  style={{
+                    background: "rgba(196,149,106,0.1)",
+                    color: "rgba(196,149,106,0.5)",
+                    border: "1px solid rgba(196,149,106,0.2)",
+                    padding: "10px 16px",
+                    fontSize: "15px",
+                    minWidth: "90px",
+                    minHeight: "44px",
+                    cursor: "wait",
+                  }}
+                >
+                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                  </svg>
+                  <span style={{ fontFamily: "'Assistant', sans-serif" }}>טוען...</span>
+                </button>
+              ) : !tts.isPlaying ? (
                 <button
                   onClick={tts.play}
                   className="flex items-center gap-2 rounded-full font-medium transition-all active:scale-95"
