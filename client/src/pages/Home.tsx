@@ -448,18 +448,6 @@ function ContactSection() {
               ))}
             </div>
 
-            {/* HYP payment badge */}
-            <div className="flex items-center justify-end gap-3 p-4 rounded-2xl mt-auto" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(196,149,106,0.15)" }}>
-              <div className="text-right">
-                <div className="text-xs font-medium text-white/70" style={{ fontFamily: "'Assistant', sans-serif" }}>תשלום מאובטח</div>
-              </div>
-              <img
-                src="/manus-storage/hyp-logo_eb89b174.png"
-                alt="Hyp תשלום מאובטח"
-                className="h-7 w-auto"
-                style={{ filter: "brightness(1.1)" }}
-              />
-            </div>
           </AnimatedSection>
 
           {/* Form */}

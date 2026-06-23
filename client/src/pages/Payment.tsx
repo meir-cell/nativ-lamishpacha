@@ -58,11 +58,12 @@ export default function Payment() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{ background: "rgba(196,149,106,0.15)" }}
-          >
-            <CreditCard size={32} style={{ color: "#C4956A" }} />
+          <div className="flex justify-center mb-4">
+            <img
+              src="/manus-storage/hyp-logo-correct_1b4bf09d.jpg"
+              alt="HYP"
+              className="h-10 object-contain"
+            />
           </div>
           <h1
             className="text-2xl font-bold mb-2"
