@@ -301,6 +301,102 @@ function AboutSection() {
 
 
 
+// ── NLP COURSE BANNER ───────────────────────────────────────────────────────
+function NLPCourseBanner() {
+  return (
+    <section
+      style={{
+        background: "linear-gradient(135deg, #3D2314 0%, #5C3520 60%, #7A4A2E 100%)",
+        padding: "56px 16px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+      dir="rtl"
+    >
+      {/* Decorative circles */}
+      <div style={{
+        position: "absolute", top: "-60px", left: "-60px",
+        width: "220px", height: "220px", borderRadius: "50%",
+        background: "rgba(196,149,106,0.12)", pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "absolute", bottom: "-40px", right: "-40px",
+        width: "160px", height: "160px", borderRadius: "50%",
+        background: "rgba(196,149,106,0.08)", pointerEvents: "none",
+      }} />
+
+      <div className="container mx-auto" style={{ maxWidth: "760px", position: "relative", zIndex: 1 }}>
+        <AnimatedSection className="text-center">
+          {/* Badge */}
+          <div style={{
+            display: "inline-block",
+            background: "rgba(196,149,106,0.2)",
+            border: "1px solid rgba(196,149,106,0.5)",
+            borderRadius: "999px",
+            padding: "5px 18px",
+            marginBottom: "16px",
+          }}>
+            <span style={{ color: "#C4956A", fontSize: "13px", fontWeight: 600, fontFamily: "'Assistant', sans-serif" }}>
+              🎓 קורס חינמי
+            </span>
+          </div>
+
+          <h2 style={{
+            fontFamily: "'Noto Serif Hebrew', serif",
+            color: "#FFFFFF",
+            fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+            fontWeight: 800,
+            marginBottom: "12px",
+            lineHeight: 1.3,
+          }}>
+            קורס NLP Practitioner
+            <span style={{ color: "#C4956A" }}> — בחינם</span>
+          </h2>
+
+          <p style={{
+            color: "rgba(255,255,255,0.8)",
+            fontFamily: "'Assistant', sans-serif",
+            fontSize: "clamp(15px, 2.5vw, 17px)",
+            lineHeight: 1.7,
+            marginBottom: "28px",
+            maxWidth: "520px",
+            margin: "0 auto 28px",
+          }}>
+            מאיר שמעון עשור, NLP Trainer מוסמך, מזמין אתכם לקורס מקצועי ומעשי לשינוי דפוסי חשיבה,
+            שיפור תקשורת ופיתוח אישי — ללא עלות.
+          </p>
+
+          <a
+            href="https://nlpcourse-5wedavl3.manus.space/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              background: "#C4956A",
+              color: "#FFFFFF",
+              fontFamily: "'Assistant', sans-serif",
+              fontWeight: 700,
+              fontSize: "17px",
+              padding: "14px 32px",
+              borderRadius: "14px",
+              textDecoration: "none",
+              boxShadow: "0 4px 20px rgba(196,149,106,0.5)",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "#b8845a")}
+            onMouseLeave={e => (e.currentTarget.style.background = "#C4956A")}
+          >
+            להרשמה לקורס החינמי
+            <ArrowLeft size={18} />
+          </a>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
+}
+
 // ── ARTICLES ──────────────────────────────────────────────────────────────────
 const articles = [
   {
@@ -664,6 +760,7 @@ export default function Home() {
       <ServicesSection />
       <AboutSection />
       {/* TestimonialsSection removed */}
+      <NLPCourseBanner />
       <ArticlesSection />
       <ContactSection />
       <Footer />
