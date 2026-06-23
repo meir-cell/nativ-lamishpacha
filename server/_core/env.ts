@@ -7,4 +7,7 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  hypUsername: process.env.HYP_USERNAME ?? "",
+  hypPassword: process.env.HYP_PASSWORD ?? "",
+  hypTerminalNumber: process.env.HYP_TERMINAL_NUMBER ?? "",
 };

@@ -86,6 +86,99 @@ async function startServer() {
     res.status(200).set({ "Content-Type": "text/html" }).end(html);
   });
 
+  // HYP payment endpoint — creates a payment page and returns the URL
+  app.post("/api/hyp/create-payment", async (req, res) => {
+    try {
+      const { amount, description, successUrl, errorUrl } = req.body as {
+        amount?: number;
+        description?: string;
+        successUrl?: string;
+        errorUrl?: string;
+      };
+
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "amount is required and must be positive" });
+      }
+
+      const { ENV } = await import("./env.js");
+      const terminalNumber = ENV.hypTerminalNumber;
+      const username = ENV.hypUsername;
+      const password = ENV.hypPassword;
+
+      if (!terminalNumber || !username || !password) {
+        return res.status(500).json({ error: "HYP credentials not configured" });
+      }
+
+      // Amount in agorot (cents) — multiply by 100
+      const totalAgorot = Math.round(amount * 100);
+      const uniqueId = `nativ-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+      const origin = successUrl ? new URL(successUrl).origin : "https://www.nativ-lamishpacha.com";
+      const successRedirect = successUrl || `${origin}/payment-success`;
+      const errorRedirect = errorUrl || `${origin}/payment-error`;
+      const cancelRedirect = `${origin}/payment-cancel`;
+
+      const xmlPayload = `<?xml version="1.0" encoding="UTF-8"?>
+<ashrait>
+  <request>
+    <version>2000</version>
+    <language>HEB</language>
+    <command>doDeal</command>
+    <doDeal>
+      <terminalNumber>${terminalNumber}</terminalNumber>
+      <cardNo>CGMPI</cardNo>
+      <total>${totalAgorot}</total>
+      <transactionType>Debit</transactionType>
+      <creditType>RegularCredit</creditType>
+      <currency>ILS</currency>
+      <transactionCode>Internet</transactionCode>
+      <validation>TxnSetup</validation>
+      <uniqueid>${uniqueId}</uniqueid>
+      <mpiValidation>AutoComm</mpiValidation>
+      <successUrl>${successRedirect}</successUrl>
+      <errorUrl>${errorRedirect}</errorUrl>
+      <cancelUrl>${cancelRedirect}</cancelUrl>
+    </doDeal>
+  </request>
+</ashrait>`;
+
+      const formData = new URLSearchParams();
+      formData.append("user", username);
+      formData.append("password", password);
+      formData.append("int_in", xmlPayload);
+
+      // Production URL: https://pps.creditguard.co.il/xpo/Relay
+      // Note: requires HYP to whitelist the server IP for SSLHTTP access (error 405 until approved)
+      const hypBaseUrl = process.env.HYP_API_URL || "https://pps.creditguard.co.il/xpo/Relay";
+      const hypResponse = await fetch(hypBaseUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+
+      const responseText = await hypResponse.text();
+
+      // Extract mpiHostedPageUrl from XML response
+      const urlMatch = responseText.match(/<mpiHostedPageUrl>([^<]+)<\/mpiHostedPageUrl>/);
+      const resultMatch = responseText.match(/<result>([^<]+)<\/result>/);
+      const messageMatch = responseText.match(/<message>([^<]+)<\/message>/);
+
+      if (!urlMatch || resultMatch?.[1] !== "000") {
+        console.error("HYP error response:", responseText.slice(0, 500));
+        return res.status(502).json({
+          error: "HYP payment page creation failed",
+          message: messageMatch?.[1] || "Unknown error",
+        });
+      }
+
+      const paymentUrl = urlMatch[1].trim();
+      return res.json({ paymentUrl, uniqueId });
+    } catch (err) {
+      console.error("HYP payment error:", err);
+      res.status(500).json({ error: "Payment service error" });
+    }
+  });
+
   // TTS proxy endpoint — uses Google Translate TTS (no API key needed)
   // Splits long text into chunks of max 200 chars and returns base64 MP3
   app.post("/api/tts", async (req, res) => {

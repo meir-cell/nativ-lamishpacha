@@ -653,6 +653,29 @@ function Footer() {
 
         </div>
 
+        {/* Payment CTA */}
+        <div className="border-t pt-8 pb-6 mb-2 text-center" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <p className="text-sm text-white/50 mb-4" style={{ fontFamily: "'Assistant', sans-serif" }}>
+            ביצוע תשלום מאובטח
+          </p>
+          <a
+            href="/payment"
+            className="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-sm transition-all active:scale-95 hover:opacity-90"
+            style={{
+              background: "#C4956A",
+              color: "#FFFFFF",
+              fontFamily: "'Assistant', sans-serif",
+              boxShadow: "0 4px 16px rgba(196,149,106,0.3)",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="20" height="14" x="2" y="5" rx="2"/>
+              <line x1="2" x2="22" y1="10" y2="10"/>
+            </svg>
+            לתשלום מאובטח
+          </a>
+        </div>
+
         {/* Bottom bar */}
         <div className="border-t mt-2 pt-5" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs" style={{ fontFamily: "'Assistant', sans-serif", color: "rgba(255,255,255,0.4)" }}>

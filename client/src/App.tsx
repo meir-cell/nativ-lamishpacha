@@ -14,6 +14,9 @@ import FAQPage from "./pages/FAQ";
 import Admin from "./pages/Admin";
 import AccessibilityPage from "./pages/Accessibility";
 import AccessibilityMenu from "./components/AccessibilityMenu";
+import Payment from "./pages/Payment";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentError from "./pages/PaymentError";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -28,6 +31,10 @@ function Router() {
       <Route path={"/faq"} component={FAQPage} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/accessibility"} component={AccessibilityPage} />
+      <Route path={"/payment"} component={Payment} />
+      <Route path={"/payment-success"} component={PaymentSuccess} />
+      <Route path={"/payment-error"} component={PaymentError} />
+      <Route path={"/payment-cancel"} component={PaymentError} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
