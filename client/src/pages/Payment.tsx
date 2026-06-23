@@ -78,7 +78,7 @@ export default function Payment() {
             תשלום מאובטח
           </h1>
           <p style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif", fontSize: "14px" }}>
-            מאיר שמעון עשור — נתיב למשפחה
+            י.נ.ר קליניק בע"מ
           </p>
         </div>
 

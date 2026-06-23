@@ -6,6 +6,9 @@ import {
   FAQ,
   TestimonialsStrip,
 } from "@/components/ServiceLayout";
+import { ListenButton } from "@/components/ListenButton";
+
+const LISTEN_TEXT = "טיפול זוגי — מרחב בטוח לשיקום הקשר. כל זוג עובר משברים. השאלה אינה אם תהיו בקושי, אלא כיצד תצאו ממנו — יחד. הטיפול הזוגי מעניק לכם את הכלים, השפה והמרחב לעשות זאת. טיפול זוגי הוא תהליך מובנה ומקצועי שמסייע לשני בני הזוג להבין את הדינמיקה הפנימית של הקשר שלהם — את הדפוסים החוזרים, את הצרכים הלא-מדוברים ואת הכאבים הנסתרים. בניגוד לשיחה עם חברים או בני משפחה, הטיפול מתנהל בסביבה נייטרלית ומקצועית, שבה שני הצדדים מרגישים נשמעים ומוגנים. המטפל אינו שופט ואינו לוקח צד — הוא מנחה את הזוג לגלות יחד את הדרך קדימה.";
 
 const HERO_IMG =
   "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=1400&q=80&fit=crop";
@@ -142,9 +145,12 @@ export default function CoupleTherapy() {
             </p>
           </AnimatedSection>
           <AnimatedSection delay={400}>
-            <a href="/#contact" className="btn-cta text-base">
-              קבע פגישת ייעוץ חינם
-            </a>
+            <div className="flex flex-wrap gap-3 items-center">
+              <a href="/#contact" className="btn-cta text-base">
+                קבע פגישת ייעוץ חינם
+              </a>
+              <ListenButton text={LISTEN_TEXT} label="האזן לתוכן" />
+            </div>
           </AnimatedSection>
         </div>
       </section>

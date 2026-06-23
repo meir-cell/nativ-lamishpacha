@@ -6,6 +6,9 @@ import {
   FAQ,
   TestimonialsStrip,
 } from "@/components/ServiceLayout";
+import { ListenButton } from "@/components/ListenButton";
+
+const LISTEN_TEXT = "גישור טיפולי — מוצא ממבוי סתום בדרך מכובדת. גישור טיפולי מאפשר לפתור סכסוכים מורכבים — גירושין, חלוקת רכוש, מזונות ומשמורת — בדרך מהירה, זולה ומכבדת יותר מהליכים משפטיים מסורתיים. ההליך נמשך שבועות עד חודשים בלבד, לעומת שנים בבית משפט או בית דין. עלות הגישור נמוכה משמעותית מהוצאות משפטיות ממוצעות. במיוחד כשיש ילדים משותפים, הגישור מאפשר לשמור על שיתוף פעולה עתידי.";
 
 const HERO_IMG =
   "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=1400&q=80&fit=crop";
@@ -168,9 +171,12 @@ export default function Mediation() {
             </p>
           </AnimatedSection>
           <AnimatedSection delay={400}>
-            <a href="/#contact" className="btn-cta text-base" style={{ background: "#6B7C5C" }}>
-              קבע פגישת ייעוץ חינם
-            </a>
+            <div className="flex flex-wrap gap-3 items-center">
+              <a href="/#contact" className="btn-cta text-base" style={{ background: "#6B7C5C" }}>
+                קבע פגישת ייעוץ חינם
+              </a>
+              <ListenButton text={LISTEN_TEXT} label="האזן לתוכן" />
+            </div>
           </AnimatedSection>
         </div>
       </section>

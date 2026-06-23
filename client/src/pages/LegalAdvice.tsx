@@ -6,6 +6,9 @@ import {
   FAQ,
   TestimonialsStrip,
 } from "@/components/ServiceLayout";
+import { ListenButton } from "@/components/ListenButton";
+
+const LISTEN_TEXT = "ייעוץ משפטי — ייצוג מקצועי בבתי הדין הרבניים. ידע משפטי והלכתי מעמיק, ניסיון של 33 שנה וגישה אישית — כדי שתוכל להתמודד עם ההליכים בבית הדין הרבני בביטחון ובשקט נפשי. השירות כולל גירושין וגט, מזונות, משמורת והסדרי שהות, חלוקת רכוש, כתובה, והסכמים משפחתיים. פגישת הייעוץ הראשונה היא ללא עלות וללא התחייבות.";
 
 const HERO_IMG =
   "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1400&q=80&fit=crop";
@@ -177,9 +180,12 @@ export default function LegalAdvice() {
             </p>
           </AnimatedSection>
           <AnimatedSection delay={400}>
-            <a href="/#contact" className="btn-cta text-base" style={{ background: "#5C6490" }}>
-              קבע ייעוץ ראשוני חינם
-            </a>
+            <div className="flex flex-wrap gap-3 items-center">
+              <a href="/#contact" className="btn-cta text-base" style={{ background: "#5C6490" }}>
+                קבע ייעוץ ראשוני חינם
+              </a>
+              <ListenButton text={LISTEN_TEXT} label="האזן לתוכן" />
+            </div>
           </AnimatedSection>
         </div>
       </section>
