@@ -110,12 +110,27 @@ export default function Payment() {
               <input
                 type="number"
                 inputMode="numeric"
-                min="1"
+                min="0.01"
                 step="1"
                 value={amount}
                 onChange={(e) => {
-                  setAmount(e.target.value);
-                  setError(null);
+                  const val = e.target.value;
+                  // Block negative sign and zero
+                  if (val === "-" || val === "0" || val === "00") return;
+                  setAmount(val);
+                  // Inline validation
+                  const num = parseFloat(val);
+                  if (val && (isNaN(num) || num <= 0)) {
+                    setError("הסכום חייב להיות מספר חיובי גדול מאפס");
+                  } else {
+                    setError(null);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  // Block minus sign and 'e' (scientific notation)
+                  if (e.key === "-" || e.key === "e" || e.key === "+") {
+                    e.preventDefault();
+                  }
                 }}
                 placeholder="הזן סכום"
                 style={{
