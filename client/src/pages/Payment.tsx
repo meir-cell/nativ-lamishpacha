@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CreditCard, ShieldCheck, Lock, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, ArrowLeft, AlertCircle } from "lucide-react";
 
 export default function Payment() {
   const [amount, setAmount] = useState("");
@@ -40,7 +40,6 @@ export default function Payment() {
         return;
       }
 
-      // Redirect to HYP payment page
       window.location.href = data.paymentUrl;
     } catch {
       setError("שגיאת תקשורת. נסה שוב.");
@@ -51,47 +50,66 @@ export default function Payment() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center py-16 px-4"
-      style={{ background: "var(--brand-cream, #FAF7F2)" }}
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: "var(--brand-cream, #FAF7F2)", padding: "48px 16px" }}
       dir="rtl"
     >
-      <div className="w-full max-w-md">
+      <div style={{ width: "100%", maxWidth: "420px" }}>
+
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
             <img
               src="/manus-storage/hyp-logo-correct_1b4bf09d.jpg"
               alt="HYP"
-              className="h-10 object-contain"
+              style={{ height: "36px", width: "auto", objectFit: "contain" }}
             />
           </div>
           <h1
-            className="text-2xl font-bold mb-2"
-            style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "#3D2314" }}
+            style={{
+              fontFamily: "'Noto Serif Hebrew', serif",
+              color: "#3D2314",
+              fontSize: "clamp(1.4rem, 5vw, 1.75rem)",
+              fontWeight: 700,
+              marginBottom: "6px",
+              lineHeight: 1.3,
+            }}
           >
             תשלום מאובטח
           </h1>
-          <p className="text-sm" style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif" }}>
+          <p style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif", fontSize: "14px" }}>
             מאיר שמעון עשור — נתיב למשפחה
           </p>
         </div>
 
         {/* Card */}
         <div
-          className="rounded-2xl p-8 shadow-lg"
-          style={{ background: "#FFFFFF", border: "1px solid rgba(196,149,106,0.15)" }}
+          style={{
+            background: "#FFFFFF",
+            borderRadius: "20px",
+            padding: "clamp(20px, 5vw, 32px)",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.08)",
+            border: "1px solid rgba(196,149,106,0.15)",
+          }}
         >
           {/* Amount */}
-          <div className="mb-5">
+          <div style={{ marginBottom: "20px" }}>
             <label
-              className="block text-sm font-semibold mb-2"
-              style={{ color: "#3D2314", fontFamily: "'Assistant', sans-serif" }}
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                color: "#3D2314",
+                fontFamily: "'Assistant', sans-serif",
+              }}
             >
               סכום לתשלום (₪)
             </label>
-            <div className="relative">
+            <div style={{ position: "relative" }}>
               <input
                 type="number"
+                inputMode="numeric"
                 min="1"
                 step="1"
                 value={amount}
@@ -100,30 +118,52 @@ export default function Payment() {
                   setError(null);
                 }}
                 placeholder="הזן סכום"
-                className="w-full rounded-xl px-4 py-3 text-lg font-bold outline-none transition-all"
                 style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  borderRadius: "12px",
+                  padding: "14px 16px 14px 48px",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  outline: "none",
                   border: `2px solid ${error ? "#E53E3E" : amount ? "#C4956A" : "rgba(196,149,106,0.3)"}`,
                   fontFamily: "'Assistant', sans-serif",
                   color: "#3D2314",
                   background: "#FAFAFA",
                   direction: "ltr",
                   textAlign: "right",
+                  WebkitAppearance: "none",
+                  MozAppearance: "textfield",
                 }}
               />
               <span
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold"
-                style={{ color: "#C4956A" }}
+                style={{
+                  position: "absolute",
+                  left: "16px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  color: "#C4956A",
+                  pointerEvents: "none",
+                }}
               >
                 ₪
               </span>
             </div>
           </div>
 
-          {/* Optional description */}
-          <div className="mb-6">
+          {/* Description */}
+          <div style={{ marginBottom: "24px" }}>
             <label
-              className="block text-sm font-semibold mb-2"
-              style={{ color: "#3D2314", fontFamily: "'Assistant', sans-serif" }}
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: 600,
+                marginBottom: "8px",
+                color: "#3D2314",
+                fontFamily: "'Assistant', sans-serif",
+              }}
             >
               הערה (אופציונלי)
             </label>
@@ -132,25 +172,37 @@ export default function Payment() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="לדוגמה: פגישת ייעוץ, טיפול זוגי..."
-              className="w-full rounded-xl px-4 py-3 outline-none transition-all"
               style={{
+                width: "100%",
+                boxSizing: "border-box",
+                borderRadius: "12px",
+                padding: "12px 16px",
+                fontSize: "15px",
+                outline: "none",
                 border: "2px solid rgba(196,149,106,0.3)",
                 fontFamily: "'Assistant', sans-serif",
                 color: "#3D2314",
                 background: "#FAFAFA",
-                fontSize: "15px",
               }}
             />
           </div>
 
-          {/* Error message */}
+          {/* Error */}
           {error && (
             <div
-              className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4"
-              style={{ background: "rgba(229,62,62,0.08)", border: "1px solid rgba(229,62,62,0.2)" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "12px",
+                padding: "12px 16px",
+                marginBottom: "16px",
+                background: "rgba(229,62,62,0.08)",
+                border: "1px solid rgba(229,62,62,0.2)",
+              }}
             >
               <AlertCircle size={16} style={{ color: "#E53E3E", flexShrink: 0 }} />
-              <span className="text-sm" style={{ color: "#C53030", fontFamily: "'Assistant', sans-serif" }}>
+              <span style={{ fontSize: "14px", color: "#C53030", fontFamily: "'Assistant', sans-serif" }}>
                 {error}
               </span>
             </div>
@@ -159,13 +211,21 @@ export default function Payment() {
           {/* Summary */}
           {amount && parseFloat(amount) > 0 && (
             <div
-              className="rounded-xl px-4 py-3 mb-5 flex items-center justify-between"
-              style={{ background: "rgba(196,149,106,0.08)", border: "1px solid rgba(196,149,106,0.2)" }}
+              style={{
+                borderRadius: "12px",
+                padding: "12px 16px",
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "rgba(196,149,106,0.08)",
+                border: "1px solid rgba(196,149,106,0.2)",
+              }}
             >
-              <span className="text-sm font-medium" style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif" }}>
+              <span style={{ fontSize: "14px", fontWeight: 500, color: "#7A5C4A", fontFamily: "'Assistant', sans-serif" }}>
                 סה"כ לתשלום
               </span>
-              <span className="text-xl font-black" style={{ color: "#C4956A", fontFamily: "'Noto Serif Hebrew', serif" }}>
+              <span style={{ fontSize: "20px", fontWeight: 900, color: "#C4956A", fontFamily: "'Noto Serif Hebrew', serif" }}>
                 ₪{parseFloat(amount).toLocaleString("he-IL")}
               </span>
             </div>
@@ -175,18 +235,29 @@ export default function Payment() {
           <button
             onClick={handlePayment}
             disabled={loading || !amount || parseFloat(amount) <= 0}
-            className="w-full flex items-center justify-center gap-3 rounded-xl py-4 font-bold text-lg transition-all active:scale-[0.98]"
             style={{
-              background:
-                loading || !amount || parseFloat(amount) <= 0
-                  ? "rgba(196,149,106,0.4)"
-                  : "#C4956A",
-              color: "#FFFFFF",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              borderRadius: "14px",
+              padding: "16px",
+              fontSize: "17px",
+              fontWeight: 700,
               fontFamily: "'Assistant', sans-serif",
+              color: "#FFFFFF",
+              border: "none",
               cursor: loading || !amount || parseFloat(amount) <= 0 ? "not-allowed" : "pointer",
+              background: loading || !amount || parseFloat(amount) <= 0
+                ? "rgba(196,149,106,0.4)"
+                : "#C4956A",
               boxShadow: loading || !amount || parseFloat(amount) <= 0
                 ? "none"
                 : "0 4px 20px rgba(196,149,106,0.4)",
+              transition: "all 0.15s ease",
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
             }}
           >
             {loading ? (
@@ -204,19 +275,18 @@ export default function Payment() {
               </>
             )}
           </button>
-
         </div>
 
         {/* Back link */}
-        <div className="text-center mt-6">
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
           <a
             href="/"
-            className="text-sm transition-all"
-            style={{ color: "#C4956A", fontFamily: "'Assistant', sans-serif" }}
+            style={{ fontSize: "14px", color: "#C4956A", fontFamily: "'Assistant', sans-serif", textDecoration: "none" }}
           >
             ← חזרה לאתר
           </a>
         </div>
+
       </div>
     </div>
   );
