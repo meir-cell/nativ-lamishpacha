@@ -30,6 +30,7 @@ export default function Payment() {
           description: description || "תשלום — נתיב למשפחה",
           successUrl: `${window.location.origin}/payment-success`,
           errorUrl: `${window.location.origin}/payment-error`,
+          origin: window.location.origin,
         }),
       });
 

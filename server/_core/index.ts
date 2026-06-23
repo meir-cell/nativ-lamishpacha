@@ -86,14 +86,16 @@ async function startServer() {
     res.status(200).set({ "Content-Type": "text/html" }).end(html);
   });
 
-  // HYP payment endpoint — creates a payment page and returns the URL
+  // HYP Pay payment endpoint — uses HYP Pay API (pay.hyp.co.il)
+  // Flow: backend calls APISign → gets signed params → frontend redirects to pay.hyp.co.il
   app.post("/api/hyp/create-payment", async (req, res) => {
     try {
-      const { amount, description, successUrl, errorUrl } = req.body as {
+      const { amount, description, successUrl, errorUrl, origin: clientOrigin } = req.body as {
         amount?: number;
         description?: string;
         successUrl?: string;
         errorUrl?: string;
+        origin?: string;
       };
 
       if (!amount || amount <= 0) {
@@ -102,77 +104,55 @@ async function startServer() {
 
       const { ENV } = await import("./env.js");
       const terminalNumber = ENV.hypTerminalNumber;
-      const username = ENV.hypUsername;
-      const password = ENV.hypPassword;
+      const apiKey = ENV.hypApiToken;   // API Key (KEY param)
+      const passP = ENV.hypPassword;    // PassP param
 
-      if (!terminalNumber || !username || !password) {
+      if (!terminalNumber || !apiKey || !passP) {
         return res.status(500).json({ error: "HYP credentials not configured" });
       }
 
-      // Amount in agorot (cents) — multiply by 100
-      const totalAgorot = Math.round(amount * 100);
-      const uniqueId = `nativ-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const siteOrigin = clientOrigin || "https://www.nativ-lamishpacha.com";
+      const successRedirect = successUrl || `${siteOrigin}/payment-success`;
+      const errorRedirect = errorUrl || `${siteOrigin}/payment-error`;
+      const cancelRedirect = `${siteOrigin}/payment`;
+      const orderId = `nativ-${Date.now()}`;
 
-      const origin = successUrl ? new URL(successUrl).origin : "https://www.nativ-lamishpacha.com";
-      const successRedirect = successUrl || `${origin}/payment-success`;
-      const errorRedirect = errorUrl || `${origin}/payment-error`;
-      const cancelRedirect = `${origin}/payment-cancel`;
-
-      const xmlPayload = `<?xml version="1.0" encoding="UTF-8"?>
-<ashrait>
-  <request>
-    <version>2000</version>
-    <language>HEB</language>
-    <command>doDeal</command>
-    <doDeal>
-      <terminalNumber>${terminalNumber}</terminalNumber>
-      <cardNo>CGMPI</cardNo>
-      <total>${totalAgorot}</total>
-      <transactionType>Debit</transactionType>
-      <creditType>RegularCredit</creditType>
-      <currency>ILS</currency>
-      <transactionCode>Internet</transactionCode>
-      <validation>TxnSetup</validation>
-      <uniqueid>${uniqueId}</uniqueid>
-      <mpiValidation>AutoComm</mpiValidation>
-      <successUrl>${successRedirect}</successUrl>
-      <errorUrl>${errorRedirect}</errorUrl>
-      <cancelUrl>${cancelRedirect}</cancelUrl>
-    </doDeal>
-  </request>
-</ashrait>`;
-
-      const formData = new URLSearchParams();
-      formData.append("user", username);
-      formData.append("password", password);
-      formData.append("int_in", xmlPayload);
-
-      // Production URL: https://pps.creditguard.co.il/xpo/Relay
-      // Note: requires HYP to whitelist the server IP for SSLHTTP access (error 405 until approved)
-      const hypBaseUrl = process.env.HYP_API_URL || "https://pps.creditguard.co.il/xpo/Relay";
-      const hypResponse = await fetch(hypBaseUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
+      // Build APISign request URL
+      const params = new URLSearchParams({
+        action: "APISign",
+        What: "SIGN",
+        Sign: "True",
+        KEY: apiKey,
+        PassP: passP,
+        Masof: terminalNumber,
+        Amount: String(amount),
+        Coin: "1",           // ILS
+        PageLang: "HEB",
+        Order: orderId,
+        SuccessUrl: successRedirect,
+        ErrorUrl: errorRedirect,
+        CancelUrl: cancelRedirect,
       });
 
+      if (description) {
+        params.set("Info", description);
+      }
+
+      const apiSignUrl = `https://pay.hyp.co.il/p/?${params.toString()}`;
+      const hypResponse = await fetch(apiSignUrl, { method: "GET" });
       const responseText = await hypResponse.text();
 
-      // Extract mpiHostedPageUrl from XML response
-      const urlMatch = responseText.match(/<mpiHostedPageUrl>([^<]+)<\/mpiHostedPageUrl>/);
-      const resultMatch = responseText.match(/<result>([^<]+)<\/result>/);
-      const messageMatch = responseText.match(/<message>([^<]+)<\/message>/);
-
-      if (!urlMatch || resultMatch?.[1] !== "000") {
-        console.error("HYP error response:", responseText.slice(0, 500));
+      if (!hypResponse.ok || !responseText.includes("signature=")) {
+        console.error("HYP APISign error:", responseText.slice(0, 500));
         return res.status(502).json({
           error: "HYP payment page creation failed",
-          message: messageMatch?.[1] || "Unknown error",
+          message: responseText.slice(0, 200) || "Unknown error",
         });
       }
 
-      const paymentUrl = urlMatch[1].trim();
-      return res.json({ paymentUrl, uniqueId });
+      // The response is query params — append to pay.hyp.co.il/p/ for redirect
+      const paymentUrl = `https://pay.hyp.co.il/p/?${responseText}`;
+      return res.json({ paymentUrl, orderId });
     } catch (err) {
       console.error("HYP payment error:", err);
       res.status(500).json({ error: "Payment service error" });

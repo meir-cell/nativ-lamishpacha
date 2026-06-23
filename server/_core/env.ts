@@ -10,4 +10,5 @@ export const ENV = {
   hypUsername: process.env.HYP_USERNAME ?? "",
   hypPassword: process.env.HYP_PASSWORD ?? "",
   hypTerminalNumber: process.env.HYP_TERMINAL_NUMBER ?? "",
+  hypApiToken: process.env.HYP_API_TOKEN ?? "",
 };
