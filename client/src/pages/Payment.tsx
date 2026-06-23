@@ -303,6 +303,40 @@ export default function Payment() {
           </a>
         </div>
 
+        {/* HYP Contact Info */}
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "24px",
+            padding: "16px 20px",
+            borderRadius: "12px",
+            background: "rgba(196,149,106,0.07)",
+            border: "1px solid rgba(196,149,106,0.15)",
+            fontFamily: "'Assistant', sans-serif",
+          }}
+        >
+          <p style={{ fontSize: "13px", color: "#7A5C4A", lineHeight: 1.7, margin: 0 }}>
+            כאן בשבילכם לכל שאלה ועזרה בנושא,
+            <br />
+            בטלפון{" "}
+            <a
+              href="tel:*6488"
+              style={{ color: "#C4956A", textDecoration: "none", fontWeight: 600 }}
+            >
+              6488*
+            </a>{" "}
+            שלוחה 1
+            <br />
+            ובמייל{" "}
+            <a
+              href="mailto:contact.ez@hyp.co.il"
+              style={{ color: "#C4956A", textDecoration: "none", fontWeight: 600 }}
+            >
+              contact.ez@hyp.co.il
+            </a>
+          </p>
+        </div>
+
       </div>
     </div>
   );
