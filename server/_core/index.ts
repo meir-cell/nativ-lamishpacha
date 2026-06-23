@@ -134,8 +134,9 @@ async function startServer() {
         CancelUrl: cancelRedirect,
       });
 
-      if (description) {
-        params.set("Info", description);
+      // Only add Info if description is non-empty (avoids garbled text on HYP page)
+      if (description && description.trim()) {
+        params.set("Info", description.trim());
       }
 
       const apiSignUrl = `https://pay.hyp.co.il/p/?${params.toString()}`;

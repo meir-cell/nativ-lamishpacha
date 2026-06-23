@@ -27,7 +27,7 @@ export default function Payment() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: numAmount,
-          description: description || "תשלום — נתיב למשפחה",
+          description: description || "",
           successUrl: `${window.location.origin}/payment-success`,
           errorUrl: `${window.location.origin}/payment-error`,
           origin: window.location.origin,
