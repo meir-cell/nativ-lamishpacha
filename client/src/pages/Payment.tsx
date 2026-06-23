@@ -204,27 +204,6 @@ export default function Payment() {
             )}
           </button>
 
-          {/* Security badges */}
-          <div className="flex items-center justify-center gap-4 mt-5 pt-4" style={{ borderTop: "1px solid rgba(196,149,106,0.12)" }}>
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck size={14} style={{ color: "#6B7C5C" }} />
-              <span className="text-xs" style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif" }}>
-                SSL מאובטח
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 size={14} style={{ color: "#6B7C5C" }} />
-              <span className="text-xs" style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif" }}>
-                PCI DSS
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CreditCard size={14} style={{ color: "#6B7C5C" }} />
-              <span className="text-xs" style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif" }}>
-                Hyp / CreditGuard
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* Back link */}
