@@ -1,15 +1,69 @@
-import { useState } from "react";
-import { Lock, ArrowLeft, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Lock, ArrowLeft, AlertCircle, MessageCircle, Mail, Send } from "lucide-react";
+
+const WHATSAPP_NUMBER = "972542111288"; // מספר הוואטסאפ של מאיר
+const OWNER_EMAIL = "meir@ynrcollege.org";
+const SITE_URL = "https://www.nativ-lamishpacha.com";
 
 export default function Payment() {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shareMode, setShareMode] = useState<"pay" | "share">("pay");
 
+  // קריאת פרמטרים מה-URL כשלקוח מגיע דרך קישור ששלח מאיר
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlAmount = params.get("amount");
+    const urlNote = params.get("note");
+    if (urlAmount && parseFloat(urlAmount) > 0) setAmount(urlAmount);
+    if (urlNote) setDescription(urlNote);
+  }, []);
+
+  const numAmount = parseFloat(amount);
+  const isValidAmount = amount !== "" && !isNaN(numAmount) && numAmount > 0;
+
+  // בניית קישור תשלום עם פרמטרים
+  const buildPaymentLink = () => {
+    const params = new URLSearchParams();
+    if (amount) params.set("amount", amount);
+    if (description) params.set("note", description);
+    return `${SITE_URL}/payment?${params.toString()}`;
+  };
+
+  // שליחה בוואטסאפ
+  const handleSendWhatsApp = () => {
+    if (!isValidAmount) {
+      setError("נא להזין סכום תקין לפני השליחה");
+      return;
+    }
+    const link = buildPaymentLink();
+    const noteText = description ? `\nהערה: ${description}` : "";
+    const msg = `שלום,\n\nמצורף קישור לתשלום מאובטח בסך ₪${parseFloat(amount).toLocaleString("he-IL")}${noteText}\n\n${link}\n\nבברכה,\nמאיר שמעון עשור — נתיב למשפחה`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+  };
+
+  // שליחה במייל
+  const handleSendEmail = () => {
+    if (!isValidAmount) {
+      setError("נא להזין סכום תקין לפני השליחה");
+      return;
+    }
+    const link = buildPaymentLink();
+    const noteText = description ? `\nהערה: ${description}` : "";
+    const subject = `קישור לתשלום — נתיב למשפחה`;
+    const body = `שלום,\n\nמצורף קישור לתשלום מאובטח בסך ₪${parseFloat(amount).toLocaleString("he-IL")}${noteText}\n\nלתשלום לחץ/י כאן:\n${link}\n\nבברכה,\nמאיר שמעון עשור\nנתיב למשפחה\nטל: 054-2111-288`;
+    const to = clientEmail || "";
+    const mailtoUrl = `mailto:${to}?from=${encodeURIComponent(OWNER_EMAIL)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+  };
+
+  // תשלום ישיר
   const handlePayment = async () => {
-    const numAmount = parseFloat(amount);
-    if (!numAmount || numAmount <= 0) {
+    if (!isValidAmount) {
       setError("נא להזין סכום תקין");
       return;
     }
@@ -55,7 +109,7 @@ export default function Payment() {
       style={{ background: "var(--brand-cream, #FAF7F2)", padding: "48px 16px" }}
       dir="rtl"
     >
-      <div style={{ width: "100%", maxWidth: "420px" }}>
+      <div style={{ width: "100%", maxWidth: "440px" }}>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
@@ -81,6 +135,58 @@ export default function Payment() {
           <p style={{ color: "#7A5C4A", fontFamily: "'Assistant', sans-serif", fontSize: "14px" }}>
             י.נ.ר קליניק בע"מ
           </p>
+        </div>
+
+        {/* Mode Toggle */}
+        <div
+          style={{
+            display: "flex",
+            borderRadius: "14px",
+            background: "rgba(196,149,106,0.1)",
+            padding: "4px",
+            marginBottom: "20px",
+            gap: "4px",
+          }}
+        >
+          <button
+            onClick={() => setShareMode("pay")}
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: 600,
+              fontFamily: "'Assistant', sans-serif",
+              transition: "all 0.2s ease",
+              background: shareMode === "pay" ? "#C4956A" : "transparent",
+              color: shareMode === "pay" ? "#fff" : "#7A5C4A",
+              boxShadow: shareMode === "pay" ? "0 2px 8px rgba(196,149,106,0.4)" : "none",
+            }}
+          >
+            💳 תשלום עצמי
+          </button>
+          <button
+            onClick={() => setShareMode("share")}
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: 600,
+              fontFamily: "'Assistant', sans-serif",
+              transition: "all 0.2s ease",
+              background: shareMode === "share" ? "#C4956A" : "transparent",
+              color: shareMode === "share" ? "#fff" : "#7A5C4A",
+              boxShadow: shareMode === "share" ? "0 2px 8px rgba(196,149,106,0.4)" : "none",
+            }}
+          >
+            <Send size={14} style={{ display: "inline", marginLeft: "4px" }} />
+            שלח ללקוח
+          </button>
         </div>
 
         {/* Card */}
@@ -116,10 +222,8 @@ export default function Payment() {
                 value={amount}
                 onChange={(e) => {
                   const val = e.target.value;
-                  // Block negative sign and zero
                   if (val === "-" || val === "0" || val === "00") return;
                   setAmount(val);
-                  // Inline validation
                   const num = parseFloat(val);
                   if (val && (isNaN(num) || num <= 0)) {
                     setError("הסכום חייב להיות מספר חיובי גדול מאפס");
@@ -128,7 +232,6 @@ export default function Payment() {
                   }
                 }}
                 onKeyDown={(e) => {
-                  // Block minus sign and 'e' (scientific notation)
                   if (e.key === "-" || e.key === "e" || e.key === "+") {
                     e.preventDefault();
                   }
@@ -170,7 +273,7 @@ export default function Payment() {
           </div>
 
           {/* Description */}
-          <div style={{ marginBottom: "24px" }}>
+          <div style={{ marginBottom: shareMode === "share" ? "20px" : "24px" }}>
             <label
               style={{
                 display: "block",
@@ -203,6 +306,43 @@ export default function Payment() {
             />
           </div>
 
+          {/* Client Email — only in share mode */}
+          {shareMode === "share" && (
+            <div style={{ marginBottom: "24px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  marginBottom: "8px",
+                  color: "#3D2314",
+                  fontFamily: "'Assistant', sans-serif",
+                }}
+              >
+                מייל הלקוח (לשליחה במייל)
+              </label>
+              <input
+                type="email"
+                value={clientEmail}
+                onChange={(e) => setClientEmail(e.target.value)}
+                placeholder="client@example.com"
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  borderRadius: "12px",
+                  padding: "12px 16px",
+                  fontSize: "15px",
+                  outline: "none",
+                  border: "2px solid rgba(196,149,106,0.3)",
+                  fontFamily: "'Assistant', sans-serif",
+                  color: "#3D2314",
+                  background: "#FAFAFA",
+                  direction: "ltr",
+                }}
+              />
+            </div>
+          )}
+
           {/* Error */}
           {error && (
             <div
@@ -225,7 +365,7 @@ export default function Payment() {
           )}
 
           {/* Summary */}
-          {amount && parseFloat(amount) > 0 && (
+          {isValidAmount && (
             <div
               style={{
                 borderRadius: "12px",
@@ -242,55 +382,144 @@ export default function Payment() {
                 סה"כ לתשלום
               </span>
               <span style={{ fontSize: "20px", fontWeight: 900, color: "#C4956A", fontFamily: "'Noto Serif Hebrew', serif" }}>
-                ₪{parseFloat(amount).toLocaleString("he-IL")}
+                ₪{numAmount.toLocaleString("he-IL")}
               </span>
             </div>
           )}
 
-          {/* Pay button */}
-          <button
-            onClick={handlePayment}
-            disabled={loading || !amount || parseFloat(amount) <= 0}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              borderRadius: "14px",
-              padding: "16px",
-              fontSize: "17px",
-              fontWeight: 700,
-              fontFamily: "'Assistant', sans-serif",
-              color: "#FFFFFF",
-              border: "none",
-              cursor: loading || !amount || parseFloat(amount) <= 0 ? "not-allowed" : "pointer",
-              background: loading || !amount || parseFloat(amount) <= 0
-                ? "rgba(196,149,106,0.4)"
-                : "#C4956A",
-              boxShadow: loading || !amount || parseFloat(amount) <= 0
-                ? "none"
-                : "0 4px 20px rgba(196,149,106,0.4)",
-              transition: "all 0.15s ease",
-              WebkitTapHighlightColor: "transparent",
-              touchAction: "manipulation",
-            }}
-          >
-            {loading ? (
-              <>
-                <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                </svg>
-                מעבד...
-              </>
-            ) : (
-              <>
-                <Lock size={20} />
-                לתשלום מאובטח
-                <ArrowLeft size={18} />
-              </>
-            )}
-          </button>
+          {/* Buttons */}
+          {shareMode === "pay" ? (
+            /* Pay button */
+            <button
+              onClick={handlePayment}
+              disabled={loading || !isValidAmount}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                borderRadius: "14px",
+                padding: "16px",
+                fontSize: "17px",
+                fontWeight: 700,
+                fontFamily: "'Assistant', sans-serif",
+                color: "#FFFFFF",
+                border: "none",
+                cursor: loading || !isValidAmount ? "not-allowed" : "pointer",
+                background: loading || !isValidAmount ? "rgba(196,149,106,0.4)" : "#C4956A",
+                boxShadow: loading || !isValidAmount ? "none" : "0 4px 20px rgba(196,149,106,0.4)",
+                transition: "all 0.15s ease",
+                WebkitTapHighlightColor: "transparent",
+                touchAction: "manipulation",
+              }}
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                  </svg>
+                  מעבד...
+                </>
+              ) : (
+                <>
+                  <Lock size={20} />
+                  לתשלום מאובטח
+                  <ArrowLeft size={18} />
+                </>
+              )}
+            </button>
+          ) : (
+            /* Share buttons */
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {/* WhatsApp */}
+              <button
+                onClick={handleSendWhatsApp}
+                disabled={!isValidAmount}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  borderRadius: "14px",
+                  padding: "15px",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  fontFamily: "'Assistant', sans-serif",
+                  color: "#FFFFFF",
+                  border: "none",
+                  cursor: !isValidAmount ? "not-allowed" : "pointer",
+                  background: !isValidAmount ? "rgba(37,211,102,0.35)" : "#25D366",
+                  boxShadow: !isValidAmount ? "none" : "0 4px 16px rgba(37,211,102,0.4)",
+                  transition: "all 0.15s ease",
+                  WebkitTapHighlightColor: "transparent",
+                  touchAction: "manipulation",
+                }}
+              >
+                <MessageCircle size={20} />
+                שלח קישור בוואטסאפ
+              </button>
+
+              {/* Email */}
+              <button
+                onClick={handleSendEmail}
+                disabled={!isValidAmount}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  borderRadius: "14px",
+                  padding: "15px",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  fontFamily: "'Assistant', sans-serif",
+                  color: "#FFFFFF",
+                  border: "none",
+                  cursor: !isValidAmount ? "not-allowed" : "pointer",
+                  background: !isValidAmount ? "rgba(196,149,106,0.35)" : "#C4956A",
+                  boxShadow: !isValidAmount ? "none" : "0 4px 16px rgba(196,149,106,0.4)",
+                  transition: "all 0.15s ease",
+                  WebkitTapHighlightColor: "transparent",
+                  touchAction: "manipulation",
+                }}
+              >
+                <Mail size={20} />
+                שלח קישור במייל
+              </button>
+
+              {/* Link preview */}
+              {isValidAmount && (
+                <div
+                  style={{
+                    borderRadius: "10px",
+                    padding: "10px 14px",
+                    background: "rgba(196,149,106,0.06)",
+                    border: "1px solid rgba(196,149,106,0.2)",
+                  }}
+                >
+                  <p style={{ fontSize: "11px", color: "#9A7A6A", fontFamily: "'Assistant', sans-serif", margin: "0 0 4px 0" }}>
+                    הקישור שישלח:
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#C4956A",
+                      fontFamily: "monospace",
+                      margin: 0,
+                      wordBreak: "break-all",
+                      direction: "ltr",
+                      textAlign: "left",
+                    }}
+                  >
+                    {buildPaymentLink()}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Back link */}
@@ -319,19 +548,13 @@ export default function Payment() {
             כאן בשבילכם לכל שאלה ועזרה בנושא,
             <br />
             בטלפון{" "}
-            <a
-              href="tel:*6488"
-              style={{ color: "#C4956A", textDecoration: "none", fontWeight: 600 }}
-            >
+            <a href="tel:*6488" style={{ color: "#C4956A", textDecoration: "none", fontWeight: 600 }}>
               6488*
             </a>{" "}
             שלוחה 1
             <br />
             ובמייל{" "}
-            <a
-              href="mailto:contact.ez@hyp.co.il"
-              style={{ color: "#C4956A", textDecoration: "none", fontWeight: 600 }}
-            >
+            <a href="mailto:contact.ez@hyp.co.il" style={{ color: "#C4956A", textDecoration: "none", fontWeight: 600 }}>
               contact.ez@hyp.co.il
             </a>
           </p>
