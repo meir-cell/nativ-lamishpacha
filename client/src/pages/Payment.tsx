@@ -7,8 +7,6 @@ export default function Payment() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const presetAmounts = [100, 200, 300, 500];
-
   const handlePayment = async () => {
     const numAmount = parseFloat(amount);
     if (!numAmount || numAmount <= 0) {
@@ -82,37 +80,7 @@ export default function Payment() {
           className="rounded-2xl p-8 shadow-lg"
           style={{ background: "#FFFFFF", border: "1px solid rgba(196,149,106,0.15)" }}
         >
-          {/* Preset amounts */}
-          <div className="mb-6">
-            <label
-              className="block text-sm font-semibold mb-3"
-              style={{ color: "#3D2314", fontFamily: "'Assistant', sans-serif" }}
-            >
-              בחר סכום מהיר
-            </label>
-            <div className="grid grid-cols-4 gap-2">
-              {presetAmounts.map((preset) => (
-                <button
-                  key={preset}
-                  onClick={() => setAmount(String(preset))}
-                  className="rounded-xl py-2 text-sm font-semibold transition-all active:scale-95"
-                  style={{
-                    background:
-                      amount === String(preset)
-                        ? "#C4956A"
-                        : "rgba(196,149,106,0.1)",
-                    color: amount === String(preset) ? "#FFFFFF" : "#C4956A",
-                    border: `1px solid ${amount === String(preset) ? "#C4956A" : "rgba(196,149,106,0.3)"}`,
-                    fontFamily: "'Assistant', sans-serif",
-                  }}
-                >
-                  ₪{preset}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Custom amount */}
+          {/* Amount */}
           <div className="mb-5">
             <label
               className="block text-sm font-semibold mb-2"
