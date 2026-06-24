@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { articles as allArticles } from "./Articles";
 import {
   Phone, Mail, MapPin, Heart, Scale, Users, CheckCircle2,
-  ArrowLeft, ChevronDown, Star, BookOpen, Calendar, Clock, Facebook
+  ArrowLeft, ChevronDown, Star, BookOpen, Calendar, Clock, Facebook, Search
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
@@ -422,16 +422,116 @@ const latestArticles = [...allArticles]
   .slice(0, 3);
 
 function ArticlesSection() {
+  const [query, setQuery] = useState("");
+  const [focused, setFocused] = useState(false);
+
+  const searchResults = query.trim().length >= 2
+    ? allArticles.filter((a) =>
+        a.title.includes(query) ||
+        a.excerpt?.includes(query) ||
+        (a as any).category?.includes(query)
+      ).slice(0, 6)
+    : [];
+
+  const showResults = focused && query.trim().length >= 2;
+
   return (
     <section id="articles" className="py-24" style={{ background: "white" }}>
       <div className="container mx-auto px-4">
-        <AnimatedSection className="text-center mb-12">
+        <AnimatedSection className="text-center mb-10">
           <div className="inline-block text-sm font-semibold mb-2 px-3 py-1 rounded-full" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
             ידע מקצועי
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
             מאמרים מקצועיים
           </h2>
+
+          {/* Search bar */}
+          <div className="relative max-w-xl mx-auto mb-8" dir="rtl">
+            <div
+              className="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all duration-200"
+              style={{
+                background: "var(--brand-cream)",
+                border: focused ? "2px solid var(--brand-gold)" : "2px solid rgba(196,149,106,0.25)",
+                boxShadow: focused ? "0 4px 24px rgba(196,149,106,0.18)" : "0 2px 8px rgba(0,0,0,0.05)",
+              }}
+            >
+              <Search size={18} style={{ color: query ? "var(--brand-gold)" : "var(--brand-mid)", flexShrink: 0, transition: "color 0.2s" }} />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setTimeout(() => setFocused(false), 180)}
+                placeholder="חפש מאמר לפי כותרת, נושא או קטגוריה..."
+                className="flex-1 bg-transparent outline-none text-right text-base"
+                style={{ fontFamily: "'Assistant', sans-serif", color: "var(--brand-dark)", minWidth: 0 }}
+              />
+              {query && (
+                <button
+                  onClick={() => setQuery("")}
+                  className="text-xs px-2 py-1 rounded-lg transition-colors"
+                  style={{ color: "var(--brand-mid)", background: "rgba(196,149,106,0.12)", fontFamily: "'Assistant', sans-serif" }}
+                >
+                  נקה
+                </button>
+              )}
+            </div>
+
+            {/* Dropdown results */}
+            {showResults && (
+              <div
+                className="absolute top-full right-0 left-0 mt-2 rounded-2xl overflow-hidden z-50"
+                style={{
+                  background: "white",
+                  border: "1px solid rgba(196,149,106,0.2)",
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.12)",
+                }}
+              >
+                {searchResults.length === 0 ? (
+                  <div className="px-5 py-4 text-sm text-right" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+                    לא נמצאו תוצאות לחיפוש “{query}”
+                  </div>
+                ) : (
+                  <>
+                    {searchResults.map((a, i) => (
+                      <Link key={(a as any).slug} href={`/articles/${(a as any).slug}`}>
+                        <a
+                          className="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-amber-50 border-b last:border-b-0"
+                          style={{ borderColor: "rgba(196,149,106,0.1)", textDecoration: "none" }}
+                        >
+                          <img
+                            src={a.img}
+                            alt={a.title}
+                            className="w-12 h-12 rounded-xl object-cover flex-shrink-0"
+                          />
+                          <div className="flex-1 text-right min-w-0">
+                            <div className="font-semibold text-sm leading-snug truncate" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>
+                              {a.title}
+                            </div>
+                            <div className="text-xs mt-0.5" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+                              {(a as any).category} • {a.date}
+                            </div>
+                          </div>
+                          <ArrowLeft size={14} style={{ color: "var(--brand-gold)", flexShrink: 0 }} />
+                        </a>
+                      </Link>
+                    ))}
+                    <Link href={`/articles?q=${encodeURIComponent(query)}`}>
+                      <a
+                        className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium transition-colors"
+                        style={{ color: "var(--brand-gold)", background: "rgba(196,149,106,0.06)", fontFamily: "'Assistant', sans-serif" }}
+                      >
+                        ראה כל התוצאות ({allArticles.filter(a => a.title.includes(query) || a.excerpt?.includes(query)).length})
+                        <ArrowLeft size={13} />
+                      </a>
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
           <Link href="/articles">
             <a className="btn-outline text-sm inline-flex">
               לכל המאמרים
