@@ -421,9 +421,33 @@ const latestArticles = [...allArticles]
   })
   .slice(0, 3);
 
+const CATEGORIES = ["הכל", "גישור ויישוב סכסוכים", "טיפול זוגי בנישואין", "משפטיים", "פסיכולוגיה יהודית", "הלכתיים - בין בני זוג"];
+
 function ArticlesSection() {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("הכל");
+
+  const filteredArticles = allArticles.filter((a) => {
+    const matchCat = activeCategory === "הכל" || (a as any).category === activeCategory;
+    const matchQ = query.trim().length < 2 || a.title.includes(query) || a.excerpt?.includes(query) || (a as any).category?.includes(query);
+    return matchCat && matchQ;
+  });
+
+  const displayedArticles = [...filteredArticles]
+    .sort((a, b) => {
+      const months: Record<string, number> = {
+        "ינואר": 0, "פברואר": 1, "מרץ": 2, "אפריל": 3, "מאי": 4, "יוני": 5,
+        "יולי": 6, "אוגוסט": 7, "ספטמבר": 8, "אוקטובר": 9, "נובמבר": 10, "דצמבר": 11,
+      };
+      const parseDate = (d: string) => {
+        const parts = d.split(" ");
+        if (parts.length === 3) return new Date(parseInt(parts[2]), months[parts[1]] ?? 0, parseInt(parts[0])).getTime();
+        return 0;
+      };
+      return parseDate(b.date) - parseDate(a.date);
+    })
+    .slice(0, 3);
 
   const searchResults = query.trim().length >= 2
     ? allArticles.filter((a) =>
@@ -532,6 +556,32 @@ function ArticlesSection() {
             )}
           </div>
 
+          {/* Category filter pills */}
+          <div className="flex flex-wrap justify-center gap-2 mt-6 mb-6" dir="rtl">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200"
+                style={{
+                  background: activeCategory === cat ? "var(--brand-gold)" : "rgba(196,149,106,0.1)",
+                  color: activeCategory === cat ? "white" : "var(--brand-mid)",
+                  border: activeCategory === cat ? "2px solid var(--brand-gold)" : "2px solid transparent",
+                  fontFamily: "'Assistant', sans-serif",
+                  transform: activeCategory === cat ? "scale(1.05)" : "scale(1)",
+                  boxShadow: activeCategory === cat ? "0 2px 12px rgba(196,149,106,0.35)" : "none",
+                }}
+              >
+                {cat}
+                {cat !== "הכל" && (
+                  <span className="mr-1 text-xs opacity-70">
+                    ({allArticles.filter(a => (a as any).category === cat).length})
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
           <Link href="/articles">
             <a className="btn-outline text-sm inline-flex">
               לכל המאמרים
@@ -540,8 +590,13 @@ function ArticlesSection() {
           </Link>
         </AnimatedSection>
 
+        {displayedArticles.length === 0 ? (
+          <div className="text-center py-12" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+            לא נמצאו מאמרים בקטגוריה זו
+          </div>
+        ) : (
         <div className="grid md:grid-cols-3 gap-6">
-          {latestArticles.map((a, i) => (
+          {displayedArticles.map((a, i) => (
             <AnimatedSection key={a.title} delay={i * 100}>
               <Link href={`/articles/${(a as any).slug}`}>
               <a
@@ -573,6 +628,7 @@ function ArticlesSection() {
             </AnimatedSection>
           ))}
         </div>
+        )}
       </div>
     </section>
   );
