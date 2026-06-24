@@ -400,25 +400,30 @@ function NLPCourseBanner() {
 }
 
 // ── ARTICLES ──────────────────────────────────────────────────────────────────
-// Latest 3 articles are pulled dynamically from allArticles (sorted by date desc)
+// Supports two date formats: "יוני 24, 2026" (month day, year) and "24 יוני 2026" (day month year)
+const MONTHS: Record<string, number> = {
+  "ינואר": 0, "פברואר": 1, "מרץ": 2, "אפריל": 3, "מאי": 4, "יוני": 5,
+  "יולי": 6, "אוגוסט": 7, "ספטמבר": 8, "אוקטובר": 9, "נובמבר": 10, "דצמבר": 11,
+};
+
+function parseArticleDate(d: string): number {
+  // Format 1: "יוני 24, 2026" — month day, year
+  const m1 = d.match(/^(\S+)\s+(\d+),\s*(\d{4})$/);
+  if (m1) {
+    const month = MONTHS[m1[1]] ?? 0;
+    return new Date(parseInt(m1[3]), month, parseInt(m1[2])).getTime();
+  }
+  // Format 2: "24 יוני 2026" — day month year
+  const m2 = d.match(/^(\d+)\s+(\S+)\s+(\d{4})$/);
+  if (m2) {
+    const month = MONTHS[m2[2]] ?? 0;
+    return new Date(parseInt(m2[3]), month, parseInt(m2[1])).getTime();
+  }
+  return 0;
+}
+
 const latestArticles = [...allArticles]
-  .sort((a, b) => {
-    const parseDate = (d: string) => {
-      const months: Record<string, number> = {
-        "ינואר": 0, "פברואר": 1, "מרץ": 2, "אפריל": 3, "מאי": 4, "יוני": 5,
-        "יולי": 6, "אוגוסט": 7, "ספטמבר": 8, "אוקטובר": 9, "נובמבר": 10, "דצמבר": 11,
-      };
-      const parts = d.split(" ");
-      if (parts.length === 3) {
-        const day = parseInt(parts[0]);
-        const month = months[parts[1]] ?? 0;
-        const year = parseInt(parts[2]);
-        return new Date(year, month, day).getTime();
-      }
-      return 0;
-    };
-    return parseDate(b.date) - parseDate(a.date);
-  })
+  .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date))
   .slice(0, 3);
 
 const CATEGORIES = ["הכל", "גישור ויישוב סכסוכים", "טיפול זוגי בנישואין", "משפטיים", "פסיכולוגיה יהודית", "הלכתיים - בין בני זוג"];
@@ -435,18 +440,7 @@ function ArticlesSection() {
   });
 
   const displayedArticles = [...filteredArticles]
-    .sort((a, b) => {
-      const months: Record<string, number> = {
-        "ינואר": 0, "פברואר": 1, "מרץ": 2, "אפריל": 3, "מאי": 4, "יוני": 5,
-        "יולי": 6, "אוגוסט": 7, "ספטמבר": 8, "אוקטובר": 9, "נובמבר": 10, "דצמבר": 11,
-      };
-      const parseDate = (d: string) => {
-        const parts = d.split(" ");
-        if (parts.length === 3) return new Date(parseInt(parts[2]), months[parts[1]] ?? 0, parseInt(parts[0])).getTime();
-        return 0;
-      };
-      return parseDate(b.date) - parseDate(a.date);
-    })
+    .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date))
     .slice(0, 3);
 
   const searchResults = query.trim().length >= 2
