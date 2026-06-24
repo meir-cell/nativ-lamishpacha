@@ -1901,11 +1901,27 @@ export default function ArticlesPage() {
     }
   }, [params.slug]);
 
-  const filtered = articles.filter((a) => {
-    const matchCat = activeCategory === "הכל" || a.category === activeCategory;
-    const matchSearch = a.title.includes(search) || a.excerpt.includes(search);
-    return matchCat && matchSearch;
-  });
+  const parseDate = (d: string): number => {
+    const MONTHS: Record<string, number> = {
+      "ינואר": 0, "פברואר": 1, "מרץ": 2, "אפריל": 3, "מאי": 4, "יוני": 5,
+      "יולי": 6, "אוגוסט": 7, "ספטמבר": 8, "אוקטובר": 9, "נובמבר": 10, "דצמבר": 11,
+    };
+    // Format 1: "יוני 24, 2026"
+    const m1 = d.match(/^(\S+)\s+(\d+),\s*(\d{4})$/);
+    if (m1) return new Date(parseInt(m1[3]), MONTHS[m1[1]] ?? 0, parseInt(m1[2])).getTime();
+    // Format 2: "24 יוני 2026"
+    const m2 = d.match(/^(\d+)\s+(\S+)\s+(\d{4})$/);
+    if (m2) return new Date(parseInt(m2[3]), MONTHS[m2[2]] ?? 0, parseInt(m2[1])).getTime();
+    return 0;
+  };
+
+  const filtered = articles
+    .filter((a) => {
+      const matchCat = activeCategory === "הכל" || a.category === activeCategory;
+      const matchSearch = a.title.includes(search) || a.excerpt.includes(search);
+      return matchCat && matchSearch;
+    })
+    .sort((a, b) => parseDate(b.date) - parseDate(a.date));
 
   return (
     <div className="min-h-screen" dir="rtl" style={{ background: "var(--brand-cream)" }}>
