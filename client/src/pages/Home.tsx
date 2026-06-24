@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { articles as allArticles } from "./Articles";
 import {
   Phone, Mail, MapPin, Heart, Scale, Users, CheckCircle2,
   ArrowLeft, ChevronDown, Star, BookOpen, Calendar, Clock, Facebook
@@ -399,26 +400,26 @@ function NLPCourseBanner() {
 }
 
 // ── ARTICLES ──────────────────────────────────────────────────────────────────
-const articles = [
-  {
-    title: "מדריך ממוקד לניהול גירושין",
-    date: "יוני 13, 2026",
-    img: "https://meir-asor.co.il/wp-content/uploads/2026/06/madrich-leguroshun-1024x683.png",
-    href: "/articles",
-  },
-  {
-    title: "מונחים בפסיכולוגיה יהודית",
-    date: "יוני 6, 2026",
-    img: "https://meir-asor.co.il/wp-content/uploads/2026/06/pesishlogya-1024x683.png",
-    href: "/articles",
-  },
-  {
-    title: "שלבי תהליך הגישור",
-    date: "יוני 3, 2026",
-    img: "https://meir-asor.co.il/wp-content/uploads/2026/06/gishur-1024x683.png",
-    href: "/articles",
-  },
-];
+// Latest 3 articles are pulled dynamically from allArticles (sorted by date desc)
+const latestArticles = [...allArticles]
+  .sort((a, b) => {
+    const parseDate = (d: string) => {
+      const months: Record<string, number> = {
+        "ינואר": 0, "פברואר": 1, "מרץ": 2, "אפריל": 3, "מאי": 4, "יוני": 5,
+        "יולי": 6, "אוגוסט": 7, "ספטמבר": 8, "אוקטובר": 9, "נובמבר": 10, "דצמבר": 11,
+      };
+      const parts = d.split(" ");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0]);
+        const month = months[parts[1]] ?? 0;
+        const year = parseInt(parts[2]);
+        return new Date(year, month, day).getTime();
+      }
+      return 0;
+    };
+    return parseDate(b.date) - parseDate(a.date);
+  })
+  .slice(0, 3);
 
 function ArticlesSection() {
   return (
@@ -440,9 +441,9 @@ function ArticlesSection() {
         </AnimatedSection>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {articles.map((a, i) => (
+          {latestArticles.map((a, i) => (
             <AnimatedSection key={a.title} delay={i * 100}>
-              <Link href={a.href}>
+              <Link href={`/articles/${(a as any).slug}`}>
               <a
                 className="block rounded-2xl overflow-hidden shadow-sm border group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
                 style={{ borderColor: "rgba(196,149,106,0.2)" }}

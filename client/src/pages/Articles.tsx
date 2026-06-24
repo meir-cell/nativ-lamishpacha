@@ -31,7 +31,7 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
 
 const categories = ["הכל", "גישור ויישוב סכסוכים", "הלכתיים - בין בני זוג", "טיפול זוגי בנישואין", "משפטיים", "פסיכולוגיה יהודית"];
 
-const articles = [
+export const articles = [
   {
     title: `מדריך ממוקד לניהול גירושין`,
     content: `**מדריך ממוקד לניהול הליך הגירושין בבית הדין הרבני**
