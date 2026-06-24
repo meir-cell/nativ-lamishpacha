@@ -64,7 +64,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto flex items-center justify-between py-3 px-4 md:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <a href="/" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }} className="flex items-center gap-2 group" style={{ cursor: 'pointer' }}>
           <img src={LOGO_URL} alt="נתיב למשפחה" className="h-12 w-12 object-contain" />
           <div className="text-right">
             <div
@@ -77,17 +77,18 @@ export default function Navbar() {
               מאיר שמעון עשור
             </div>
           </div>
-        </Link>
+        </a>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-5">
-          <Link
+          <a
             href="/"
+            onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}
             className="text-sm font-medium transition-colors duration-200 hover:opacity-70"
-            style={linkStyle}
+            style={{ ...linkStyle, cursor: 'pointer' }}
           >
             דף הבית
-          </Link>
+          </a>
 
           {/* Services dropdown */}
           <div className="relative" ref={dropdownRef}>
@@ -162,14 +163,14 @@ export default function Navbar() {
           style={{ background: "var(--brand-cream)" }}
         >
           <div className="container py-4 flex flex-col gap-1">
-            <Link
+            <a
               href="/"
+              onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.location.href = '/'; }}
               className="text-right py-3 px-4 rounded-lg text-base font-medium transition-colors hover:bg-amber-50"
-              style={linkStyle}
-              onClick={() => setMenuOpen(false)}
+              style={{ ...linkStyle, cursor: 'pointer' }}
             >
               דף הבית
-            </Link>
+            </a>
             <div className="px-4 py-2 text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>
               שירותים
             </div>
