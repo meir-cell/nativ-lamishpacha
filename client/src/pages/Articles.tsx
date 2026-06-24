@@ -1913,42 +1913,152 @@ export default function ArticlesPage() {
 
       {/* Hero */}
       <section
-        className="relative pt-36 pb-24 text-right overflow-hidden"
-        style={{
-          background: "var(--brand-dark)",
-          backgroundImage: `url(https://meir-asor.co.il/wp-content/uploads/2023/11/gisor.png)`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        className="relative overflow-hidden"
+        style={{ minHeight: "520px", background: "#1a0f08" }}
       >
-        {/* Overlay */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to left, rgba(42,24,12,0.92) 0%, rgba(42,24,12,0.75) 50%, rgba(42,24,12,0.6) 100%)" }} />
-        <div className="relative z-10 container mx-auto px-4">
-          <AnimatedSection delay={100}>
-            <Link href="/">
-              <a className="inline-flex items-center gap-2 text-sm mb-8 opacity-70 hover:opacity-100 transition-opacity" style={{ color: "var(--brand-gold)" }}>
-                <ArrowLeft size={14} style={{ transform: "rotate(180deg)" }} />
-                חזרה לדף הבית
-              </a>
-            </Link>
-          </AnimatedSection>
-          <AnimatedSection delay={150}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-5" style={{ background: "rgba(196,149,106,0.2)", color: "var(--brand-gold)", border: "1px solid rgba(196,149,106,0.4)" }}>
-              <BookOpen size={14} />
-              מאמרים מקצועיים
-            </div>
-          </AnimatedSection>
-          <AnimatedSection delay={200}>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-5" style={{ fontFamily: "'Noto Serif Hebrew', serif", textShadow: "0 2px 20px rgba(0,0,0,0.4)" }}>
-              ידע שמחזק אתכם
-            </h1>
-          </AnimatedSection>
-          <AnimatedSection delay={300}>
-            <p className="text-white/80 max-w-xl leading-relaxed text-lg" style={{ fontFamily: "'Assistant', sans-serif" }}>
-              {filtered.length} מאמרים מקצועיים בנושאי גישור, טיפול זוגי, ייעוץ משפטי, הלכה ופסיכולוגיה יהודית — מאת מאיר שמעון עשור.
-            </p>
-          </AnimatedSection>
+        {/* Background image with parallax feel */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(https://meir-asor.co.il/wp-content/uploads/2023/11/gisor.png)`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 30%",
+            filter: "brightness(0.45) saturate(0.8)",
+          }}
+        />
+        {/* Rich gradient overlay — dark on right (text side), lighter on left */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(105deg, rgba(10,5,2,0.15) 0%, rgba(30,16,8,0.55) 35%, rgba(42,22,10,0.93) 65%, rgba(42,22,10,0.98) 100%)",
+          }}
+        />
+        {/* Decorative gold vertical line */}
+        <div
+          className="absolute top-0 bottom-0"
+          style={{ right: "calc(50% + 80px)", width: "1px", background: "linear-gradient(to bottom, transparent, rgba(196,149,106,0.4) 30%, rgba(196,149,106,0.4) 70%, transparent)", display: "none" }}
+        />
+        {/* Subtle radial glow behind text */}
+        <div
+          className="absolute"
+          style={{
+            top: "50%", right: 0, transform: "translateY(-50%)",
+            width: "60%", height: "120%",
+            background: "radial-gradient(ellipse at right center, rgba(196,149,106,0.08) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div className="relative z-10 container mx-auto px-4" style={{ paddingTop: "140px", paddingBottom: "72px" }}>
+          <div className="flex flex-col items-end text-right max-w-2xl mr-0 ml-auto">
+            {/* Breadcrumb */}
+            <AnimatedSection delay={80}>
+              <Link href="/">
+                <a
+                  className="inline-flex items-center gap-2 text-sm mb-7 group"
+                  style={{ color: "rgba(196,149,106,0.75)", fontFamily: "'Assistant', sans-serif", letterSpacing: "0.02em" }}
+                >
+                  <span className="group-hover:opacity-100 opacity-80 transition-opacity">חזרה לדף הבית</span>
+                  <ArrowLeft size={13} style={{ transform: "rotate(180deg)", transition: "transform 0.2s" }} className="group-hover:-translate-x-1" />
+                </a>
+              </Link>
+            </AnimatedSection>
+
+            {/* Badge */}
+            <AnimatedSection delay={140}>
+              <div
+                className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full text-sm font-semibold mb-6"
+                style={{
+                  background: "rgba(196,149,106,0.15)",
+                  color: "#e8c48a",
+                  border: "1px solid rgba(196,149,106,0.35)",
+                  fontFamily: "'Assistant', sans-serif",
+                  backdropFilter: "blur(8px)",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                <BookOpen size={14} />
+                מאמרים מקצועיים
+              </div>
+            </AnimatedSection>
+
+            {/* Headline */}
+            <AnimatedSection delay={200}>
+              <h1
+                className="font-black text-white mb-2 leading-tight"
+                style={{
+                  fontFamily: "'Noto Serif Hebrew', serif",
+                  fontSize: "clamp(2.6rem, 6vw, 4.2rem)",
+                  textShadow: "0 4px 32px rgba(0,0,0,0.5)",
+                  lineHeight: 1.15,
+                }}
+              >
+                ידע שמחזק אתכם
+              </h1>
+            </AnimatedSection>
+
+            {/* Gold underline accent */}
+            <AnimatedSection delay={260}>
+              <div
+                style={{
+                  height: "3px",
+                  width: "72px",
+                  background: "linear-gradient(to left, #C4956A, #e8c48a)",
+                  borderRadius: "2px",
+                  marginBottom: "20px",
+                  marginRight: "2px",
+                }}
+              />
+            </AnimatedSection>
+
+            {/* Subtitle */}
+            <AnimatedSection delay={320}>
+              <p
+                className="leading-relaxed mb-10"
+                style={{
+                  fontFamily: "'Assistant', sans-serif",
+                  fontSize: "1.1rem",
+                  color: "rgba(255,255,255,0.78)",
+                  maxWidth: "520px",
+                  lineHeight: 1.75,
+                }}
+              >
+                {filtered.length} מאמרים מקצועיים בנושאי גישור, טיפול זוגי, ייעוץ משפטי, הלכה ופסיכולוגיה יהודית — מאת מאיר שמעון עשור.
+              </p>
+            </AnimatedSection>
+
+            {/* Stats row */}
+            <AnimatedSection delay={400}>
+              <div className="flex gap-8 flex-wrap justify-end">
+                {[
+                  { num: `${articles.length}`, label: "מאמרים" },
+                  { num: "5", label: "תחומי עיסוק" },
+                  { num: "28+", label: "שנות ניסיון" },
+                ].map((s) => (
+                  <div key={s.label} className="text-right">
+                    <div
+                      className="font-black leading-none mb-1"
+                      style={{ fontFamily: "'Noto Serif Hebrew', serif", fontSize: "1.9rem", color: "#C4956A" }}
+                    >
+                      {s.num}
+                    </div>
+                    <div
+                      style={{ fontFamily: "'Assistant', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.55)", letterSpacing: "0.04em" }}
+                    >
+                      {s.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </AnimatedSection>
+          </div>
         </div>
+
+        {/* Bottom fade to cream */}
+        <div
+          className="absolute bottom-0 left-0 right-0"
+          style={{ height: "64px", background: "linear-gradient(to bottom, transparent, var(--brand-cream))" }}
+        />
       </section>
 
       {/* Filters */}
