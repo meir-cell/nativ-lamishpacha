@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Streamdown } from 'streamdown';
-import { BookOpen, ArrowLeft, Search, Tag, Share2, Copy, Check, Facebook, Volume2, VolumeX, Pause, Play } from "lucide-react";
+import { BookOpen, ArrowLeft, Search, Tag, Share2, Copy, Check, Facebook, Volume2, VolumeX, Pause, Play, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import { Link, useParams } from "wouter";
@@ -1703,6 +1703,53 @@ export const articles = [
 ];
 
 // Mini copy button for article cards
+// ── FAVORITES ──────────────────────────────────────────────────────────────
+function useFavorites() {
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('article-favorites') || '[]');
+    } catch { return []; }
+  });
+
+  const toggle = (slug: string) => {
+    setFavorites(prev => {
+      const next = prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug];
+      localStorage.setItem('article-favorites', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const isFav = (slug: string) => favorites.includes(slug);
+  return { favorites, toggle, isFav };
+}
+
+function FavoriteButton({ slug, title, onToggle, isFav }: { slug: string; title: string; onToggle: (slug: string) => void; isFav: boolean }) {
+  const [animate, setAnimate] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAnimate(true);
+    setTimeout(() => setAnimate(false), 400);
+    onToggle(slug);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      title={isFav ? 'הסר ממועדפים' : 'שמור למועדפים'}
+      className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+      style={{
+        background: isFav ? 'rgba(220,38,38,0.12)' : 'rgba(196,149,106,0.12)',
+        color: isFav ? '#dc2626' : 'var(--brand-mid)',
+        transform: animate ? 'scale(1.3)' : 'scale(1)',
+        transition: 'transform 0.2s cubic-bezier(0.23,1,0.32,1), background 0.2s, color 0.2s',
+      }}
+    >
+      <Heart size={12} fill={isFav ? '#dc2626' : 'none'} />
+    </button>
+  );
+}
+
 function CardCopyButton({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -2092,6 +2139,8 @@ export default function ArticlesPage() {
   const [activeCategory, setActiveCategory] = useState("הכל");
   const [search, setSearch] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<typeof articles[0] | null>(null);
+  const [showFavOnly, setShowFavOnly] = useState(false);
+  const { favorites, toggle: toggleFav, isFav } = useFavorites();
   const params = useParams<{ slug?: string }>();
 
   // Auto-open article when arriving via direct URL (e.g. from shared link)
@@ -2120,7 +2169,8 @@ export default function ArticlesPage() {
     .filter((a) => {
       const matchCat = activeCategory === "הכל" || a.category === activeCategory;
       const matchSearch = a.title.includes(search) || a.excerpt.includes(search);
-      return matchCat && matchSearch;
+      const matchFav = !showFavOnly || isFav((a as any).slug);
+      return matchCat && matchSearch && matchFav;
     })
     .sort((a, b) => parseDate(b.date) - parseDate(a.date));
 
@@ -2299,6 +2349,22 @@ export default function ArticlesPage() {
                 }}
               />
             </div>
+            {/* Favorites toggle */}
+            <div className="flex items-center justify-end mb-3">
+              <button
+                onClick={() => setShowFavOnly(f => !f)}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all"
+                style={{
+                  background: showFavOnly ? 'rgba(220,38,38,0.1)' : 'var(--brand-cream)',
+                  color: showFavOnly ? '#dc2626' : 'var(--brand-dark)',
+                  border: showFavOnly ? '1px solid rgba(220,38,38,0.3)' : '1px solid rgba(196,149,106,0.3)',
+                  fontFamily: "'Assistant', sans-serif",
+                }}
+              >
+                <Heart size={14} fill={showFavOnly ? '#dc2626' : 'none'} />
+                {showFavOnly ? `המועדפים שלי (${favorites.length})` : 'הצג מועדפים בלבד'}
+              </button>
+            </div>
             {/* Categories */}
             <div className="flex flex-wrap gap-2 justify-end">
               {categories.map((cat) => (
@@ -2369,9 +2435,15 @@ export default function ArticlesPage() {
                         </div>
                       </div>
                     </button>
-                    {/* Mini share buttons on card */}
+                    {/* Mini share + favorite buttons on card */}
                     <div className="px-5 pb-4 pt-2 border-t flex items-center gap-2" style={{ borderColor: "rgba(196,149,106,0.12)" }} dir="rtl">
-                      <span className="text-xs" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>שתף:</span>
+                      <FavoriteButton
+                        slug={(a as any).slug}
+                        title={a.title}
+                        onToggle={toggleFav}
+                        isFav={isFav((a as any).slug)}
+                      />
+                      <span className="text-xs mr-1" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>שתף:</span>
                       <a
                         href={`https://wa.me/?text=${encodeURIComponent(a.title)}%20${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
                         target="_blank"
