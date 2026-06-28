@@ -9,7 +9,7 @@ import {
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
-const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663762108963/mLbezbk5ZAEXFd46ngs4DG/hero-family-FembyC8jdmBD7L2hb3zZ3V.webp";
+const HERO_IMG = "/manus-storage/hero_family_13d15f66.webp";
 const ABOUT_IMG = "/manus-storage/courtroom_93b9f0ff.jpg";
 
 // Intersection Observer hook for animations
@@ -809,7 +809,7 @@ function ContactSection() {
 
 // ── FOOTER ────────────────────────────────────────────────────────────────────
 function Footer() {
-  const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663762108963/mLbezbk5ZAEXFd46ngs4DG/logo-nativ-VMgivypQydA7w944gD7SQh.png";
+  const LOGO_URL = "/manus-storage/logo_nativ_630a6168.png";
 
   return (
     <footer dir="rtl" style={{ background: "#1A0E08", color: "white" }}>
