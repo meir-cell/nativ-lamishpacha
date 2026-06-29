@@ -237,13 +237,43 @@
     animation: pulse-wa 2.5s infinite;
   }
 
-  /* Article content - justify text for Hebrew readability */
+  /* Article content - justify text and proper spacing for Hebrew readability */
   .article-content p,
   .article-content li,
   .text-justify p,
   .text-justify li {
     text-align: justify !important;
     text-align-last: right !important;
+  }
+  .article-content h2,
+  .article-content h3,
+  .article-content h4 {
+    color: var(--brand-dark) !important;
+    font-family: 'Noto Serif Hebrew', serif !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+    font-weight: 700 !important;
+  }
+  .article-content h2 { font-size: 1.3rem !important; }
+  .article-content h3 { font-size: 1.1rem !important; color: var(--brand-brown) !important; }
+  .article-content p {
+    margin-bottom: 0.85rem !important;
+    line-height: 1.9 !important;
+  }
+  .article-content ol,
+  .article-content ul {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+    padding-right: 1.5rem !important;
+    padding-left: 0 !important;
+  }
+  .article-content li {
+    margin-bottom: 0.4rem !important;
+    line-height: 1.8 !important;
+  }
+  .article-content strong {
+    color: var(--brand-dark) !important;
+    font-weight: 700 !important;
   }
 
   /* Sticky nav scroll effect */
