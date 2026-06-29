@@ -237,6 +237,15 @@
     animation: pulse-wa 2.5s infinite;
   }
 
+  /* Article content - justify text for Hebrew readability */
+  .article-content p,
+  .article-content li,
+  .text-justify p,
+  .text-justify li {
+    text-align: justify !important;
+    text-align-last: right !important;
+  }
+
   /* Sticky nav scroll effect */
   .nav-scrolled {
     background: rgba(253, 250, 246, 0.95) !important;

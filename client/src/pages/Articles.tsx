@@ -190,7 +190,7 @@ export const articles = [
     category: `פרקים בתניא`,
     date: `יוני 29, 2026`,
     readTime: `15 דקות קריאה`,
-    img: `/manus-storage/perek22_article-CTNDUc83SZcnC8vhu9SvAq.png`,
+    img: `/manus-storage/perek22_v2_1516179a.jpg`,
     audioSrc: `/manus-storage/perek22_full_aba37547.wav`,
     href: "",
   },
@@ -2101,8 +2101,8 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
             </div>
           </div>
           <div
-            className="text-base leading-loose prose prose-sm max-w-none"
-            style={{ color: "#3A2A1E", fontFamily: "'Assistant', sans-serif" }}
+            className="text-base leading-loose prose prose-sm max-w-none text-justify article-content"
+            style={{ color: "#3A2A1E", fontFamily: "'Assistant', sans-serif", textAlignLast: "right" }}
           >
             <Streamdown>{article.content || article.excerpt}</Streamdown>
           </div>
