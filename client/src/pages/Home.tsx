@@ -426,7 +426,7 @@ const latestArticles = [...allArticles]
   .sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date))
   .slice(0, 3);
 
-const CATEGORIES = ["הכל", "גישור ויישוב סכסוכים", "טיפול זוגי בנישואין", "משפטיים", "פסיכולוגיה יהודית", "הלכתיים - בין בני זוג"];
+const CATEGORIES = ["הכל", "גישור ויישוב סכסוכים", "טיפול זוגי בנישואין", "משפטיים", "פסיכולוגיה יהודית", "הלכתיים - בין בני זוג", "פרקים בתניא"];
 
 function ArticlesSection() {
   const [query, setQuery] = useState("");
