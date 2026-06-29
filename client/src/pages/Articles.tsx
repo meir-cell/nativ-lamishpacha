@@ -120,7 +120,63 @@ function ArticleContent({ content }: { content: string }) {
       )}
       {postQuiz && (
         <div style={{ marginTop: '2rem', padding: '1.2rem 1.4rem', background: 'rgba(196,149,106,0.06)', borderRadius: '0.75rem', borderRight: '4px solid var(--brand-mid)' }}>
-          <Streamdown>{postQuiz}</Streamdown>
+          {(() => {
+            const lines = postQuiz.split('\n');
+            const elements: React.ReactNode[] = [];
+            let key = 0;
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed) continue;
+              // Check if line starts with a quoted saying (opening ")
+              const quoteMatch = trimmed.match(/^"(.+?)"[.!]?\s*(.*)$/);
+              if (quoteMatch) {
+                const saying = quoteMatch[1];
+                const source = quoteMatch[2].trim();
+                elements.push(
+                  <div key={key++} style={{ marginBottom: '1rem' }}>
+                    <div style={{
+                      fontFamily: "'Noto Serif Hebrew', serif",
+                      fontSize: '1.05rem',
+                      fontWeight: 700,
+                      color: 'var(--brand-dark)',
+                      lineHeight: 1.7,
+                      marginBottom: source ? '0.2rem' : 0,
+                    }}>
+                      &ldquo;{saying}&rdquo;
+                    </div>
+                    {source && (
+                      <div style={{
+                        fontFamily: "'Assistant', sans-serif",
+                        fontSize: '0.8rem',
+                        color: 'rgba(74,55,40,0.65)',
+                        lineHeight: 1.5,
+                      }}>
+                        ({source})
+                      </div>
+                    )}
+                  </div>
+                );
+              } else if (trimmed.endsWith(':') || trimmed === 'משפטי סיום:') {
+                // Section header
+                elements.push(
+                  <h4 key={key++} style={{
+                    fontFamily: "'Noto Serif Hebrew', serif",
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    color: 'var(--brand-mid)',
+                    marginBottom: '0.8rem',
+                    borderBottom: '1px solid rgba(196,149,106,0.3)',
+                    paddingBottom: '0.3rem',
+                  }}>{trimmed}</h4>
+                );
+              } else {
+                elements.push(
+                  <p key={key++} style={{ fontFamily: "'Assistant', sans-serif", fontSize: '0.9rem', color: '#4A3728', marginBottom: '0.5rem' }}>{trimmed}</p>
+                );
+              }
+            }
+            return <>{elements}</>;
+          })()}
         </div>
       )}
     </>
