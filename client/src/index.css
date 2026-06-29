@@ -276,6 +276,25 @@
     font-weight: 700 !important;
   }
 
+  /* Quiz question styling */
+  /* Bold paragraphs that start with a number = quiz questions */
+  .article-content p strong:first-child {
+    display: block;
+    font-size: 1.1rem !important;
+    color: oklch(0.28 0.05 45) !important;
+    margin-bottom: 0.3rem !important;
+  }
+
+  /* Correct answer line (starts with ⭕) */
+  .article-content p:has(> strong:first-child:not(:only-child)) {
+    /* fallback handled below */
+  }
+
+  /* Lines containing ⭕ = correct answer */
+  .article-content p:has(strong) {
+    /* handled per element */
+  }
+
   /* Sticky nav scroll effect */
   .nav-scrolled {
     background: rgba(253, 250, 246, 0.95) !important;

@@ -1,5 +1,108 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { Streamdown } from 'streamdown';
+
+// Custom renderer that detects quiz sections and renders them with styled UI
+function ArticleContent({ content }: { content: string }) {
+  const hasQuiz = content.includes('שאלות רב בררתיות') || content.includes('⭕');
+  
+  if (!hasQuiz) {
+    return <Streamdown>{content}</Streamdown>;
+  }
+
+  // Split into pre-quiz and quiz sections
+  const quizMarker = 'שאלות רב בררתיות';
+  const quizIdx = content.indexOf(quizMarker);
+  const preQuiz = content.substring(0, quizIdx);
+  const quizSection = content.substring(quizIdx);
+
+  // Parse quiz questions
+  const lines = quizSection.split('\n');
+  const questions: Array<{ num: number; text: string; answers: Array<{ letter: string; text: string; correct: boolean }> }> = [];
+  let currentQ: typeof questions[0] | null = null;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    // Question line: **N. text**
+    const qMatch = trimmed.match(/^\*\*(\d+)\.\s*(.+?)\*\*$/);
+    if (qMatch) {
+      if (currentQ) questions.push(currentQ);
+      currentQ = { num: parseInt(qMatch[1]), text: qMatch[2], answers: [] };
+      continue;
+    }
+
+    // Correct answer: ⭕ **א. text**
+    const correctMatch = trimmed.match(/^⭕\s*\*\*([\u05d0-\u05d3])\.\s*(.+?)\*\*$/);
+    if (correctMatch && currentQ) {
+      currentQ.answers.push({ letter: correctMatch[1], text: correctMatch[2], correct: true });
+      continue;
+    }
+
+    // Regular answer: א. text
+    const ansMatch = trimmed.match(/^([\u05d0-\u05d3])\.\s*(.+)$/);
+    if (ansMatch && currentQ) {
+      currentQ.answers.push({ letter: ansMatch[1], text: ansMatch[2].replace(/\*\*/g, ''), correct: false });
+      continue;
+    }
+  }
+  if (currentQ) questions.push(currentQ);
+
+  return (
+    <>
+      <Streamdown>{preQuiz}</Streamdown>
+      {questions.length > 0 && (
+        <div className="quiz-section" style={{ marginTop: '1.5rem' }}>
+          <h3 style={{ fontFamily: "'Noto Serif Hebrew', serif", color: 'var(--brand-dark)', fontSize: '1.2rem', fontWeight: 700, marginBottom: '1.2rem', borderBottom: '2px solid var(--brand-mid)', paddingBottom: '0.5rem' }}>
+            שאלות רב-בררתיות
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {questions.map((q) => (
+              <div key={q.num} style={{ background: 'rgba(196,149,106,0.06)', borderRadius: '0.75rem', padding: '1rem 1.2rem', border: '1px solid rgba(196,149,106,0.15)' }}>
+                {/* Question header with circled number */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    minWidth: '2rem', height: '2rem', borderRadius: '50%',
+                    background: 'var(--brand-dark)', color: 'white',
+                    fontSize: '0.85rem', fontWeight: 700, flexShrink: 0
+                  }}>{q.num}</span>
+                  <span style={{ fontFamily: "'Assistant', sans-serif", fontSize: '1.05rem', fontWeight: 700, color: 'var(--brand-dark)', lineHeight: 1.6 }}>{q.text}</span>
+                </div>
+                {/* Answers */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingRight: '2.75rem' }}>
+                  {q.answers.map((ans) => (
+                    <div key={ans.letter} style={{
+                      display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
+                      padding: '0.35rem 0.6rem', borderRadius: '0.4rem',
+                      background: ans.correct ? 'rgba(34,197,94,0.12)' : 'transparent',
+                      border: ans.correct ? '1px solid rgba(34,197,94,0.4)' : '1px solid transparent',
+                    }}>
+                      <span style={{
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        minWidth: '1.5rem', height: '1.5rem', borderRadius: '50%',
+                        background: ans.correct ? 'rgba(34,197,94,0.85)' : 'rgba(196,149,106,0.2)',
+                        color: ans.correct ? 'white' : 'var(--brand-dark)',
+                        fontSize: '0.75rem', fontWeight: 700, flexShrink: 0
+                      }}>{ans.letter}</span>
+                      <span style={{
+                        fontFamily: "'Assistant', sans-serif",
+                        fontSize: '0.95rem',
+                        color: ans.correct ? 'oklch(0.35 0.12 145)' : '#4A3728',
+                        fontWeight: ans.correct ? 600 : 400,
+                        lineHeight: 1.6
+                      }}>{ans.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 import { BookOpen, ArrowLeft, Search, Tag, Share2, Copy, Check, Facebook, Volume2, VolumeX, Pause, Play, Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
@@ -2255,7 +2358,7 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
             className="text-base leading-loose prose prose-sm max-w-none text-justify article-content"
             style={{ color: "#3A2A1E", fontFamily: "'Assistant', sans-serif", textAlignLast: "right" }}
           >
-            <Streamdown>{article.content || article.excerpt}</Streamdown>
+            <ArticleContent content={article.content || article.excerpt} />
           </div>
           {/* Share buttons */}
           <div className="mt-6 pt-5 border-t" style={{ borderColor: "rgba(196,149,106,0.15)" }}>
