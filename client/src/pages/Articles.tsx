@@ -15,13 +15,22 @@ function ArticleContent({ content }: { content: string }) {
   const preQuiz = content.substring(0, quizIdx);
   const quizSection = content.substring(quizIdx);
 
-  // Parse quiz questions
+  // Parse quiz questions and collect post-quiz content
   const lines = quizSection.split('\n');
   const questions: Array<{ num: number; text: string; answers: Array<{ letter: string; text: string; correct: boolean }> }> = [];
   let currentQ: typeof questions[0] | null = null;
+  let postQuizLines: string[] = [];
+  let inPostQuiz = false;
 
   for (const line of lines) {
     const trimmed = line.trim();
+
+    // If we're already in post-quiz mode, collect everything
+    if (inPostQuiz) {
+      postQuizLines.push(line);
+      continue;
+    }
+
     if (!trimmed) continue;
 
     // Question line: **N. text**
@@ -39,14 +48,23 @@ function ArticleContent({ content }: { content: string }) {
       continue;
     }
 
-    // Regular answer: א. text
-    const ansMatch = trimmed.match(/^([\u05d0-\u05d3])\.\s*(.+)$/);
+    // Regular answer: א. text  (also handles ### א. text)
+    const ansMatch = trimmed.replace(/^###\s*/, '').match(/^([\u05d0-\u05d3])\.\s*(.+)$/);
     if (ansMatch && currentQ) {
       currentQ.answers.push({ letter: ansMatch[1], text: ansMatch[2].replace(/\*\*/g, ''), correct: false });
       continue;
     }
+
+    // If we have questions and this line doesn't match any quiz pattern, it's post-quiz content
+    if (questions.length > 0 || currentQ) {
+      if (currentQ) { questions.push(currentQ); currentQ = null; }
+      inPostQuiz = true;
+      postQuizLines.push(line);
+      continue;
+    }
   }
   if (currentQ) questions.push(currentQ);
+  const postQuiz = postQuizLines.join('\n').trim();
 
   return (
     <>
@@ -98,6 +116,11 @@ function ArticleContent({ content }: { content: string }) {
               </div>
             ))}
           </div>
+        </div>
+      )}
+      {postQuiz && (
+        <div style={{ marginTop: '2rem', padding: '1.2rem 1.4rem', background: 'rgba(196,149,106,0.06)', borderRadius: '0.75rem', borderRight: '4px solid var(--brand-mid)' }}>
+          <Streamdown>{postQuiz}</Streamdown>
         </div>
       )}
     </>
