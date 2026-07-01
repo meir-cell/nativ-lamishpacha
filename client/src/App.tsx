@@ -28,6 +28,7 @@ function Router() {
       <Route path={"/articles"} component={ArticlesPage} />
       <Route path={"/articles/:slug"} component={ArticlesPage} />
       <Route path={"/books"} component={BooksPage} />
+      <Route path={"/books/:slug"} component={BooksPage} />
       <Route path={"/faq"} component={FAQPage} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/accessibility"} component={AccessibilityPage} />

@@ -148,6 +148,73 @@ async function startServer() {
     res.status(200).set({ "Content-Type": "text/html" }).end(html);
   });
 
+  // Per-book OG image proxy — serves each book's cover image directly (no presigned redirect)
+  app.get("/og-book-image/:slug.jpg", async (req, res) => {
+    try {
+      const { BOOKS_BY_SLUG } = await import("../../shared/books-data.js");
+      const book = BOOKS_BY_SLUG[req.params.slug];
+      if (!book) { res.status(404).end(); return; }
+      const { ENV } = await import("./env.js");
+      const forgeBaseUrl = (ENV.forgeApiUrl || "").replace(/\/+$/, "");
+      const forgeKey = ENV.forgeApiKey;
+      const forgeUrl = new URL("v1/storage/presign/get", forgeBaseUrl + "/");
+      forgeUrl.searchParams.set("path", book.imageStorageKey);
+      const forgeResp = await fetch(forgeUrl.toString(), {
+        headers: { Authorization: `Bearer ${forgeKey}` },
+      });
+      if (!forgeResp.ok) { res.status(502).end(); return; }
+      const { url } = await forgeResp.json() as { url: string };
+      const imgResp = await fetch(url);
+      if (!imgResp.ok) { res.status(502).end(); return; }
+      const buf = await imgResp.arrayBuffer();
+      res.set({
+        "Content-Type": imgResp.headers.get("content-type") || "image/jpeg",
+        "Cache-Control": "public, max-age=86400",
+      }).end(Buffer.from(buf));
+    } catch { res.status(500).end(); }
+  });
+
+  // Open Graph tags for /books/:slug — each book gets its own OG metadata
+  app.get("/books/:slug", async (req, res, next) => {
+    const { BOOKS_BY_SLUG } = await import("../../shared/books-data.js");
+    const book = BOOKS_BY_SLUG[req.params.slug];
+    const ua = req.headers["user-agent"] || "";
+    const isBot = /facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Pinterest|Google|Bingbot|Applebot|Googlebot|crawler|spider|bot/i.test(ua);
+    if (!book || !isBot) {
+      return next();
+    }
+    const siteUrl = "https://www.nativ-lamishpacha.com";
+    const bookUrl = `${siteUrl}/books/${book.slug}`;
+    const imgUrl = `${siteUrl}/og-book-image/${book.slug}.jpg`;
+    const title = `${book.title} — ${book.subtitle} | נתיב למשפחה`;
+    const html = `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>${title}</title>
+  <meta name="description" content="${book.description}" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="${bookUrl}" />
+  <meta property="og:title" content="${book.title}" />
+  <meta property="og:description" content="${book.description}" />
+  <meta property="og:image" content="${imgUrl}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="נתיב למשפחה" />
+  <meta property="og:locale" content="he_IL" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${book.title}" />
+  <meta name="twitter:description" content="${book.description}" />
+  <meta name="twitter:image" content="${imgUrl}" />
+  <meta http-equiv="refresh" content="0; url=${bookUrl}" />
+</head>
+<body>
+  <a href="${bookUrl}">${book.title}</a>
+</body>
+</html>`;
+    res.status(200).set({ "Content-Type": "text/html" }).end(html);
+  });
+
   // HYP Pay payment endpoint — uses HYP Pay API (pay.hyp.co.il)
   // Flow: backend calls APISign → gets signed params → frontend redirects to pay.hyp.co.il
   app.post("/api/hyp/create-payment", async (req, res) => {

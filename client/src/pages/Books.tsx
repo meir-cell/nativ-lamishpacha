@@ -33,6 +33,7 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
 
 type Book = {
   id: number;
+  slug: string;
   title: string;
   subtitle: string;
   description: string;
@@ -47,6 +48,7 @@ type Book = {
 const books: Book[] = [
   {
     id: 1,
+    slug: "lihyot-metapel",
     title: "להיות מטפל",
     subtitle: "מחקר בתחום הייעוץ הנישואין והמשפחה",
     description: "תזה מחקרית מאת מאיר שמעון עשור M.A — עוסקת בהשפעת ההכשרה לייעוץ נישואין ומשפחה על איכות חיי המשפחה של היועץ עצמו. מחקר מעמיק המשלב פסיכולוגיה יהודית עם גישות טיפוליות מודרניות.",
@@ -59,6 +61,7 @@ const books: Book[] = [
   },
   {
     id: 2,
+    slug: "lalecet-bedarkav",
     title: "ללכת בדרכיו ולדבוק בו",
     subtitle: "הליכה בדרכי ה' ודבקות",
     description: "ספר עיון המתמקד במצוות הליכה בדרכי ה' — מצווה אמצעית למטרה גדולה יותר. הספר מציג את הדרך לדבקות בהשם דרך לימוד, מעשה ואמונה, תוך שילוב מקורות מהתורה, הגמרא וספרי המוסר.",
@@ -71,6 +74,7 @@ const books: Book[] = [
   },
   {
     id: 3,
+    slug: "mitzvas-haemuna",
     title: "מצוות האמונה בה'",
     subtitle: "יסודות האמונה היהודית",
     description: "ספר מקיף העוסק במצוות האמונה בה' — הבסיס לכל התורה כולה. הספר מקבץ ידע מספרים ומאמרים שונים העוסקים באמונה לאורך ההיסטוריה היהודית, ומציג אותו בצורה נגישה ומעמיקה.",
@@ -83,6 +87,7 @@ const books: Book[] = [
   },
   {
     id: 4,
+    slug: "sulam-aliya",
     title: "סולם עליה",
     subtitle: "לדבקות בה'",
     description: "קונטרס 'סולם עליה לדבקות בה'' — נערך ונכתב בסיעתא דשמיא על ידי מאיר שמעון עשור. הספר מציג מדרגות ושלבים בעבודת ה' ובדרך לדבקות, ומהווה מדריך מעשי לצמיחה רוחנית.",
@@ -95,6 +100,7 @@ const books: Book[] = [
   },
   {
     id: 5,
+    slug: "rabi-rafael-ashor",
     title: "קורות חייו של רבי רפאל יחיאל עשור זצ\"ל",
     subtitle: "זיכרון ועדות",
     description: "ספרון לזכרו של רבי רפאל יחיאל עשור זצוק\"ל (1939–1974), שנפטר בדמי ימיו. הספר יוצא כמהדורה ראשונה לעורר זיכרונות בקרב משפחתו ומכריו, ומציג את דמותו כאדם גדול בענקים, ירא שמים ואוהב תורה.",
@@ -107,6 +113,7 @@ const books: Book[] = [
   },
   {
     id: 7,
+    slug: "bati-legani",
     title: "מאמר באתי לגני",
     subtitle: "מהדורה מבוארת — האדמו\"ר הריי\"צ",
     description: "מאמר חסידי עמוק מאת רבי יוסף יצחק שניאורסון (האדמו\"ר הריי\"צ), בעריכה והוספת ביאורים מאת מאיר שמעון עשור. המאמר עוסק בפסוק \"באתי לגני אחותי כלה\" ומבאר את ירידת השכינה לתחתונים ואת עבודת ה' בעולם הגשמי. מהדורה מבוארת עם מילות קישור, הסברים ומקורות — להנגשת המאמר ללומד בן זמננו.",
@@ -119,6 +126,7 @@ const books: Book[] = [
   },
   {
     id: 6,
+    slug: "shaar-hayira",
     title: "שער היראה והאהבה להשם",
     subtitle: "יסודות יראת שמים ואהבת ה'",
     description: "ספר יסוד לכל אדם המבקש להעמיק את אמונתו. מטרת הספר להקנות ידע בסיסי ומקיף ברכישת יראת שמים ואהבה להשם ולתורתו. הידע נאסף ממקורות מקובלים ומומלצים מהספרייה התורנית.",
@@ -307,7 +315,7 @@ function BookCard({ book, delay }: { book: Book; delay: number }) {
           {/* Share buttons */}
           <div className="mt-3 flex gap-2">
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(`${book.title} — ${book.subtitle}\n${book.description}\n\nלקריאה והורדה: ${window.location.origin}/books`)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(`${book.title} — ${book.subtitle}\n${book.description}\n\nלקריאה והורדה: ${window.location.origin}/books/${book.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold flex-1 justify-center transition-all duration-200 hover:opacity-90 active:scale-95"
@@ -318,7 +326,7 @@ function BookCard({ book, delay }: { book: Book; delay: number }) {
               וואטסאפ
             </a>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/books`)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/books/${book.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold flex-1 justify-center transition-all duration-200 hover:opacity-90 active:scale-95"
