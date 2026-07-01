@@ -87,13 +87,37 @@ async function startServer() {
   });
 
   // Open Graph tags for /books page (Facebook, WhatsApp, etc.)
+  // Static OG image endpoint — serves the image directly (no presigned redirect) so Facebook can fetch it
+  app.get("/og-books-image.jpg", async (req, res) => {
+    try {
+      const { ENV } = await import("./env.js");
+      const forgeBaseUrl = (ENV.forgeApiUrl || "").replace(/\/+$/, "");
+      const forgeKey = ENV.forgeApiKey;
+      const key = "book_lalecet_bedarkav_375f6007.jpg";
+      const forgeUrl = new URL("v1/storage/presign/get", forgeBaseUrl + "/");
+      forgeUrl.searchParams.set("path", key);
+      const forgeResp = await fetch(forgeUrl.toString(), {
+        headers: { Authorization: `Bearer ${forgeKey}` },
+      });
+      if (!forgeResp.ok) { res.status(502).end(); return; }
+      const { url } = await forgeResp.json() as { url: string };
+      const imgResp = await fetch(url);
+      if (!imgResp.ok) { res.status(502).end(); return; }
+      const buf = await imgResp.arrayBuffer();
+      res.set({
+        "Content-Type": imgResp.headers.get("content-type") || "image/jpeg",
+        "Cache-Control": "public, max-age=86400",
+      }).end(Buffer.from(buf));
+    } catch { res.status(500).end(); }
+  });
+
   app.get("/books", async (req, res, next) => {
     const ua = req.headers["user-agent"] || "";
     const isBot = /facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Pinterest|Google|Bingbot|Applebot|Googlebot|crawler|spider|bot/i.test(ua);
     if (!isBot) return next();
     const siteUrl = "https://www.nativ-lamishpacha.com";
     const booksUrl = `${siteUrl}/books`;
-    const imgUrl = `${siteUrl}/manus-storage/book_lalecet_bedarkav_375f6007.jpg`;
+    const imgUrl = `${siteUrl}/og-books-image.jpg`;
     const title = "הספרים שלי | נתיב למשפחה — מאיר שמעון עשור";
     const description = "שבעה ספרים ומחקרים בתחומי הפסיכולוגיה היהודית, הגישור, הייעוץ המשפחתי והאמונה. כולם זמינים להורדה חינם כקובץ PDF.";
     const html = `<!DOCTYPE html>
