@@ -31,7 +31,20 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
   );
 }
 
-const books = [
+type Book = {
+  id: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  pages: number;
+  category: string;
+  pdfUrl: string;
+  color: string;
+  icon: string;
+  img?: string;
+};
+
+const books: Book[] = [
   {
     id: 1,
     title: "להיות מטפל",
@@ -86,6 +99,18 @@ const books = [
     pdfUrl: "/manus-storage/rabi-rafael-ashor_47aeace8.pdf",
     color: "#4A3728",
     icon: "📖",
+  },
+  {
+    id: 7,
+    title: "מאמר באתי לגני",
+    subtitle: "מהדורה מבוארת — האדמו\"ר הריי\"צ",
+    description: "מאמר חסידי עמוק מאת רבי יוסף יצחק שניאורסון (האדמו\"ר הריי\"צ), בעריכה והוספת ביאורים מאת מאיר שמעון עשור. המאמר עוסק בפסוק \"באתי לגני אחותי כלה\" ומבאר את ירידת השכינה לתחתונים ואת עבודת ה' בעולם הגשמי. מהדורה מבוארת עם מילות קישור, הסברים ומקורות — להנגשת המאמר ללומד בן זמננו.",
+    pages: 64,
+    category: "חסידות",
+    pdfUrl: "/manus-storage/bati_legani_1ab6e75d.pdf",
+    img: "/manus-storage/bati_legani_garden_3d7cdee1.jpg",
+    color: "#2E7D32",
+    icon: "🌿",
   },
   {
     id: 6,
@@ -144,7 +169,7 @@ function useTTS(text: string) {
   return { isPlaying, isPaused, play, pause, resume, stop };
 }
 
-function BookCard({ book, delay }: { book: typeof books[0]; delay: number }) {
+function BookCard({ book, delay }: { book: Book; delay: number }) {
   const [hovered, setHovered] = useState(false);
   const ttsText = `${book.title}. ${book.subtitle}. ${book.description}`;
   const tts = useTTS(ttsText);
@@ -166,29 +191,51 @@ function BookCard({ book, delay }: { book: typeof books[0]; delay: number }) {
       >
         {/* Book cover area */}
         <div
-          className="relative flex items-center justify-center py-10 px-6"
+          className="relative flex items-center justify-center overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, ${book.color}18 0%, ${book.color}30 100%)`,
+            background: book.img ? undefined : `linear-gradient(135deg, ${book.color}18 0%, ${book.color}30 100%)`,
             borderBottom: `3px solid ${book.color}40`,
+            height: book.img ? "180px" : undefined,
+            paddingTop: book.img ? 0 : "2.5rem",
+            paddingBottom: book.img ? 0 : "2.5rem",
+            paddingLeft: book.img ? 0 : "1.5rem",
+            paddingRight: book.img ? 0 : "1.5rem",
           }}
         >
           {/* Decorative book spine */}
           <div
-            className="absolute right-0 top-0 bottom-0 w-3 rounded-r-none"
+            className="absolute right-0 top-0 bottom-0 w-3 rounded-r-none z-10"
             style={{ background: book.color, opacity: 0.7 }}
           />
-          <div className="text-center">
-            <div className="text-6xl mb-3">{book.icon}</div>
-            <div
-              className="inline-block text-xs font-semibold px-3 py-1 rounded-full"
-              style={{ background: `${book.color}20`, color: book.color }}
-            >
-              {book.category}
+          {book.img ? (
+            <>
+              <img
+                src={book.img}
+                alt={book.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${book.color}80 0%, transparent 60%)` }} />
+              <div
+                className="absolute bottom-3 right-5 inline-block text-xs font-semibold px-3 py-1 rounded-full z-10"
+                style={{ background: "rgba(255,255,255,0.92)", color: book.color }}
+              >
+                {book.category}
+              </div>
+            </>
+          ) : (
+            <div className="text-center">
+              <div className="text-6xl mb-3">{book.icon}</div>
+              <div
+                className="inline-block text-xs font-semibold px-3 py-1 rounded-full"
+                style={{ background: `${book.color}20`, color: book.color }}
+              >
+                {book.category}
+              </div>
             </div>
-          </div>
+          )}
           {/* Pages badge */}
           <div
-            className="absolute top-3 left-3 flex items-center gap-1 text-xs px-2 py-1 rounded-full"
+            className="absolute top-3 left-3 flex items-center gap-1 text-xs px-2 py-1 rounded-full z-10"
             style={{ background: "rgba(255,255,255,0.9)", color: book.color }}
           >
             <FileText size={11} />
@@ -333,7 +380,7 @@ export default function Books() {
               className="text-lg text-white/80 max-w-2xl mx-auto leading-relaxed"
               style={{ fontFamily: "'Assistant', sans-serif" }}
             >
-              שישה ספרים ומחקרים שכתבתי לאורך השנים — בתחומי הפסיכולוגיה היהודית, הגישור, הייעוץ המשפחתי והאמונה.
+              שבעה ספרים ומחקרים שכתבתי לאורך השנים — בתחומי הפסיכולוגיה היהודית, הגישור, הייעוץ המשפחתי והאמונה.
               כולם זמינים להורדה חינם כקובץ PDF.
             </p>
           </AnimatedSection>
@@ -351,8 +398,8 @@ export default function Books() {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-8 md:gap-16">
             {[
-              { num: "6", label: "ספרים ומחקרים" },
-              { num: "915", label: "עמודים בסך הכל" },
+              { num: "7", label: "ספרים ומחקרים" },
+              { num: "979", label: "עמודים בסך הכל" },
               { num: "100%", label: "חינם להורדה" },
             ].map((s) => (
               <div key={s.label} className="text-center">
