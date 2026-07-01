@@ -86,6 +86,44 @@ async function startServer() {
     res.status(200).set({ "Content-Type": "text/html" }).end(html);
   });
 
+  // Open Graph tags for /books page (Facebook, WhatsApp, etc.)
+  app.get("/books", async (req, res, next) => {
+    const ua = req.headers["user-agent"] || "";
+    const isBot = /facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Pinterest|Google|Bingbot|Applebot|Googlebot|crawler|spider|bot/i.test(ua);
+    if (!isBot) return next();
+    const siteUrl = "https://www.nativ-lamishpacha.com";
+    const booksUrl = `${siteUrl}/books`;
+    const imgUrl = `${siteUrl}/manus-storage/book_lalecet_bedarkav_375f6007.jpg`;
+    const title = "הספרים שלי | נתיב למשפחה — מאיר שמעון עשור";
+    const description = "שבעה ספרים ומחקרים בתחומי הפסיכולוגיה היהודית, הגישור, הייעוץ המשפחתי והאמונה. כולם זמינים להורדה חינם כקובץ PDF.";
+    const html = `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="${booksUrl}" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:image" content="${imgUrl}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="נתיב למשפחה" />
+  <meta property="og:locale" content="he_IL" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${imgUrl}" />
+  <meta http-equiv="refresh" content="0; url=${booksUrl}" />
+</head>
+<body>
+  <a href="${booksUrl}">${title}</a>
+</body>
+</html>`;
+    res.status(200).set({ "Content-Type": "text/html" }).end(html);
+  });
+
   // HYP Pay payment endpoint — uses HYP Pay API (pay.hyp.co.il)
   // Flow: backend calls APISign → gets signed params → frontend redirects to pay.hyp.co.il
   app.post("/api/hyp/create-payment", async (req, res) => {
