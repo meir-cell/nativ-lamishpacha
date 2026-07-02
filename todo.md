@@ -6,8 +6,8 @@
 - [x] הוספת דף PaymentSuccess ודף PaymentError
 - [x] רישום נתיבים ב-App.tsx
 - [x] הוספת כפתור "לתשלום" בתחתית האתר (Footer)
-- [ ] קבלת אישור SSLHTTP מ-HYP למסוף 4502340126 (פנייה ל-supportyaad@hyp.co.il)
-- [ ] בדיקת end-to-end של תשלום אמיתי לאחר קבלת האישור
+- [ ] קבלת אישור SSLHTTP מ-HYP למסוף 4502340126 (פנייה ל-supportyaad@hyp.co.il) — ממתין לאישור חיצוני
+- [ ] בדיקת end-to-end של תשלום אמיתי לאחר קבלת האישור — ממתין לאישור חיצוני
 - [x] העתקת כל תמונות meir-asor.co.il לאחסון קבוע (17 תמונות)
 - [x] העתקת כל תמונות Unsplash לאחסון קבוע (5 תמונות)
 - [x] העתקת כל תמונות cloudfront לאחסון קבוע (4 תמונות)
@@ -18,3 +18,9 @@
 - [x] יצירת TTS לכל 17 המאמרים שחסר להם שמע
 - [x] עדכון כל 28 המאמרים עם audioSrc
 - [x] הוספת ספר "באתי לגני" לדף הספרים עם תמונה מתאימה ותיאור
+- [x] הוספת slug ייחודי לכל 7 הספרים ב-Books.tsx
+- [x] עדכון כפתורי WhatsApp ופייסבוק לשלוח URL ספציפי (/books/:slug)
+- [x] יצירת shared/books-data.ts עם מטאדטה לשרת (slug, title, subtitle, description, imageStorageKey)
+- [x] הוספת endpoint /og-book-image/:slug.jpg שמחזיר תמונה ישירות (HTTP 200, ללא redirect)
+- [x] הוספת OG middleware לנתיב /books/:slug עם og:title, og:description, og:image ייחודיים
+- [x] הוספת route /books/:slug ב-App.tsx

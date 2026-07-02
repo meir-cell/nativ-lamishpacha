@@ -315,7 +315,7 @@ function BookCard({ book, delay }: { book: Book; delay: number }) {
           {/* Share buttons */}
           <div className="mt-3 flex gap-2">
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(`${book.title} — ${book.subtitle}\n${book.description}\n\nלקריאה והורדה: ${window.location.origin}/books/${book.slug}`)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(`קראתי את הספר “${book.title}” של מאיר שמעון עשור — משתף איתך:\n${window.location.origin}/books/${book.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold flex-1 justify-center transition-all duration-200 hover:opacity-90 active:scale-95"
