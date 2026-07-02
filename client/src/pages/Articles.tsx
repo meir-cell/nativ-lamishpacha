@@ -3398,7 +3398,7 @@ export default function ArticlesPage() {
                       />
                       <span className="text-xs mr-1" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>שתף:</span>
                       <a
-                        href={`https://wa.me/?text=${encodeURIComponent(a.title)}%20${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                        href={`https://wa.me/?text=${encodeURIComponent(a.title)}%20${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/articles/${(a as any).slug}` : '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         title="שתף בוואטסאפ"
@@ -3411,7 +3411,7 @@ export default function ArticlesPage() {
                         </svg>
                       </a>
                       <a
-                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/articles/${(a as any).slug}` : '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         title="שתף בפייסבוק"
