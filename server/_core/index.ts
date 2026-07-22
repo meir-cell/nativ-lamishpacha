@@ -9,7 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
-function isPortAvailable(port: number): Promise<boolean> {
+function isPortAvailable(port: number ): Promise<boolean> {
   return new Promise(resolve => {
     const server = net.createServer();
     server.listen(port, () => {
@@ -28,15 +28,32 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
+// Encode Hebrew text for Hyp APISign: Hyp expects ISO-8859-8 (Windows-1255) percent-encoding
+// Standard URLSearchParams uses UTF-8 which causes garbled Hebrew in Hyp invoices
+function encodeHebrew(text: string): string {
+  let result = "";
+  for (const char of text) {
+    const code = char.charCodeAt(0);
+    if (code >= 0x05D0 && code <= 0x05EA) {
+      const win1255 = code - 0x05D0 + 0xE0;
+      result += "%" + win1255.toString(16).toUpperCase();
+    } else if (code >= 0x05F0 && code <= 0x05F4) {
+      const win1255 = code - 0x05F0 + 0xFB;
+      result += "%" + win1255.toString(16).toUpperCase();
+    } else {
+      result += encodeURIComponent(char);
+    }
+  }
+  return result;
+}
+
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
-  // tRPC API
   app.use(
     "/api/trpc",
     createExpressMiddleware({
@@ -44,12 +61,9 @@ async function startServer() {
       createContext,
     })
   );
-  // Open Graph tags for article sharing (Facebook, WhatsApp, etc.)
-  // Must be registered BEFORE Vite/static middleware so bots get proper OG HTML
   app.get("/articles/:slug", async (req, res, next) => {
     const { ARTICLES_BY_SLUG } = await import("../../shared/articles-data.js");
     const article = ARTICLES_BY_SLUG[req.params.slug];
-    // Only intercept bot/crawler requests; let browsers through to the SPA
     const ua = req.headers["user-agent"] || "";
     const isBot = /facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Pinterest|Google|Bingbot|Applebot|Googlebot|crawler|spider|bot/i.test(ua);
     if (!article || !isBot) {
@@ -83,12 +97,10 @@ async function startServer() {
   <a href="${articleUrl}">${article.title}</a>
 </body>
 </html>`;
-    res.status(200).set({ "Content-Type": "text/html" }).end(html);
+    res.status(200 ).set({ "Content-Type": "text/html" }).end(html);
   });
 
-  // Legacy GET endpoint used by ynrclinics.co.il proxy calls
-  // Accepts: ?amount=&description=&successUrl=&errorUrl=&email=&phone=&firstName=&lastName=
-  // Returns: { url: "https://pay.hyp.co.il/p/?..." }
+  // Legacy GET endpoint used by ynrclinics.co.il
   app.get("/api/payment/create", async (req, res) => {
     try {
       const amount = parseFloat(req.query.amount as string);
@@ -118,7 +130,7 @@ async function startServer() {
       const successRedirect = successUrl || `${siteOrigin}/payment-success`;
       const errorRedirect = errorUrl || `${siteOrigin}/payment-error`;
       const cancelRedirect = `${siteOrigin}/payment`;
-      const orderId = `ynr-${Date.now()}`;
+      const orderId = `ynr-${Date.now( )}`;
 
       const params = new URLSearchParams({
         action: "APISign",
@@ -139,23 +151,22 @@ async function startServer() {
       if (description && description.trim()) {
         params.set("Info", description.trim());
       }
-
-      // Forward payer details to Hyp for automatic invoice/receipt emails
       if (email && email.trim()) {
         params.set("email", email.trim());
-        params.set("SendHesh", "True");  // Ask Hyp to send invoice to payer
+        params.set("SendHesh", "True");
       }
       if (phone && phone.trim()) {
         params.set("cell", phone.trim());
       }
+
+      let apiSignUrl = `https://pay.hyp.co.il/p/?${params.toString( )}`;
       if (firstName && firstName.trim()) {
-        params.set("ClientName", firstName.trim());
+        apiSignUrl += `&ClientName=${encodeHebrew(firstName.trim())}`;
       }
       if (lastName && lastName.trim()) {
-        params.set("ClientLName", lastName.trim());
+        apiSignUrl += `&ClientLName=${encodeHebrew(lastName.trim())}`;
       }
 
-      const apiSignUrl = `https://pay.hyp.co.il/p/?${params.toString()}`;
       const hypResponse = await fetch(apiSignUrl, { method: "GET" });
       const responseText = await hypResponse.text();
 
@@ -168,15 +179,14 @@ async function startServer() {
       }
 
       const paymentUrl = `https://pay.hyp.co.il/p/?${responseText}`;
-      return res.json({ url: paymentUrl, paymentUrl, orderId });
+      return res.json({ url: paymentUrl, paymentUrl, orderId } );
     } catch (err) {
       console.error("HYP payment/create error:", err);
       res.status(500).json({ error: "Payment service error" });
     }
   });
 
-  // HYP Pay payment endpoint — uses HYP Pay API (pay.hyp.co.il)
-  // Flow: backend calls APISign → gets signed params → frontend redirects to pay.hyp.co.il
+  // HYP Pay POST endpoint
   app.post("/api/hyp/create-payment", async (req, res) => {
     try {
       const { amount, description, successUrl, errorUrl, origin: clientOrigin, email, phone, firstName, lastName } = req.body as {
@@ -197,8 +207,8 @@ async function startServer() {
 
       const { ENV } = await import("./env.js");
       const terminalNumber = ENV.hypTerminalNumber;
-      const apiKey = ENV.hypApiToken;   // API Key (KEY param)
-      const passP = ENV.hypPassword;    // PassP param
+      const apiKey = ENV.hypApiToken;
+      const passP = ENV.hypPassword;
 
       if (!terminalNumber || !apiKey || !passP) {
         return res.status(500).json({ error: "HYP credentials not configured" });
@@ -208,9 +218,8 @@ async function startServer() {
       const successRedirect = successUrl || `${siteOrigin}/payment-success`;
       const errorRedirect = errorUrl || `${siteOrigin}/payment-error`;
       const cancelRedirect = `${siteOrigin}/payment`;
-      const orderId = `nativ-${Date.now()}`;
+      const orderId = `nativ-${Date.now( )}`;
 
-      // Build APISign request URL
       const params = new URLSearchParams({
         action: "APISign",
         What: "SIGN",
@@ -219,7 +228,7 @@ async function startServer() {
         PassP: passP,
         Masof: terminalNumber,
         Amount: String(amount),
-        Coin: "1",           // ILS
+        Coin: "1",
         PageLang: "HEB",
         Order: orderId,
         SuccessUrl: successRedirect,
@@ -227,27 +236,25 @@ async function startServer() {
         CancelUrl: cancelRedirect,
       });
 
-      // Only add Info if description is non-empty (avoids garbled text on HYP page)
       if (description && description.trim()) {
         params.set("Info", description.trim());
       }
-
-      // Forward payer details to Hyp for automatic invoice/receipt emails
       if (email && email.trim()) {
         params.set("email", email.trim());
-        params.set("SendHesh", "True");  // Ask Hyp to send invoice to payer
+        params.set("SendHesh", "True");
       }
       if (phone && phone.trim()) {
         params.set("cell", phone.trim());
       }
+
+      let apiSignUrl = `https://pay.hyp.co.il/p/?${params.toString( )}`;
       if (firstName && firstName.trim()) {
-        params.set("ClientName", firstName.trim());
+        apiSignUrl += `&ClientName=${encodeHebrew(firstName.trim())}`;
       }
       if (lastName && lastName.trim()) {
-        params.set("ClientLName", lastName.trim());
+        apiSignUrl += `&ClientLName=${encodeHebrew(lastName.trim())}`;
       }
 
-      const apiSignUrl = `https://pay.hyp.co.il/p/?${params.toString()}`;
       const hypResponse = await fetch(apiSignUrl, { method: "GET" });
       const responseText = await hypResponse.text();
 
@@ -259,17 +266,15 @@ async function startServer() {
         });
       }
 
-      // The response is query params — append to pay.hyp.co.il/p/ for redirect
       const paymentUrl = `https://pay.hyp.co.il/p/?${responseText}`;
-      return res.json({ paymentUrl, orderId });
+      return res.json({ paymentUrl, orderId } );
     } catch (err) {
       console.error("HYP payment error:", err);
       res.status(500).json({ error: "Payment service error" });
     }
   });
 
-  // TTS proxy endpoint — uses Google Translate TTS (no API key needed)
-  // Splits long text into chunks of max 200 chars and returns base64 MP3
+  // TTS proxy endpoint
   app.post("/api/tts", async (req, res) => {
     try {
       const { text } = req.body as { text?: string };
@@ -277,7 +282,6 @@ async function startServer() {
         return res.status(400).json({ error: "text is required" });
       }
 
-      // Split into chunks of max 200 chars at word boundaries
       const chunks: string[] = [];
       const sentences = text.split(/(?<=[.!?\n])\s+|\n+/);
       let current = "";
@@ -291,13 +295,12 @@ async function startServer() {
       }
       if (current.trim()) chunks.push(current.trim());
 
-      // Fetch each chunk from Google Translate TTS
       const audioBuffers: Buffer[] = [];
       for (const chunk of chunks) {
         const encoded = encodeURIComponent(chunk);
         const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=he&client=tw-ob`;
         const response = await fetch(url, {
-          headers: { "User-Agent": "Mozilla/5.0 (compatible; nativ-lamishpacha/1.0)" },
+          headers: { "User-Agent": "Mozilla/5.0 (compatible; nativ-lamishpacha/1.0 )" },
         });
         if (!response.ok) continue;
         const buf = Buffer.from(await response.arrayBuffer());
@@ -308,7 +311,6 @@ async function startServer() {
         return res.status(502).json({ error: "TTS service unavailable" });
       }
 
-      // Concatenate all MP3 buffers and return as base64
       const combined = Buffer.concat(audioBuffers);
       res.json({ audio: combined.toString("base64"), mimeType: "audio/mpeg" });
     } catch (err) {
@@ -317,7 +319,6 @@ async function startServer() {
     }
   });
 
-  // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
@@ -332,7 +333,7 @@ async function startServer() {
   }
 
   server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+    console.log(`Server running on http://localhost:${port}/` );
   });
 }
 
