@@ -28,3 +28,6 @@
 - [x] הוספת נתיבים /nlp/* לאתר נתיב למשפחה
 - [x] תיקון כניסה לקורס NLP — הרחבת עמודת token מ-varchar(64) ל-varchar(512) בטבלת registrations
 - [x] תיקון כל קישורי URL בדפי NLP — /admin → /nlp/admin, /chat → /nlp/chat, /terms → /nlp/terms, /forgot-password → /nlp/forgot-password
+- [x] הוספת מפתח OpenAI API לפרויקט המאוחד לצורך TTS בשיעורים
+- [x] שינוי ברירת מחדל של טאב כניסה ל"כניסה" (במקום "הרשמה")
+- [x] הוספת route לדף נגישות NLP (/nlp/accessibility)

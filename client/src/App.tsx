@@ -31,6 +31,7 @@ import NlpTerms from "./pages/nlp/Terms";
 import NlpUnsubscribe from "./pages/nlp/Unsubscribe";
 import NlpForgotPassword from "./pages/nlp/ForgotPassword";
 import NlpResetPassword from "./pages/nlp/ResetPassword";
+import NlpAccessibility from "./pages/nlp/Accessibility";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -64,6 +65,7 @@ function Router() {
       <Route path={"/nlp/unsubscribe"} component={NlpUnsubscribe} />
       <Route path={"/nlp/forgot-password"} component={NlpForgotPassword} />
       <Route path={"/nlp/reset-password"} component={NlpResetPassword} />
+      <Route path={"/nlp/accessibility"} component={NlpAccessibility} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

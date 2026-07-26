@@ -28,7 +28,7 @@ interface Props {
 }
 
 export default function RegistrationGate({ onAuthenticated }: Props) {
-  const [tab, setTab] = useState<"register" | "login">("register");
+  const [tab, setTab] = useState<"register" | "login">("login");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
