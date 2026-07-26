@@ -24,3 +24,5 @@
 - [x] הוספת endpoint /og-book-image/:slug.jpg שמחזיר תמונה ישירות (HTTP 200, ללא redirect)
 - [x] הוספת OG middleware לנתיב /books/:slug עם og:title, og:description, og:image ייחודיים
 - [x] הוספת route /books/:slug ב-App.tsx
+- [x] שילוב קורס NLP Practitioner — 14 טבלאות DB, כל ה-routers, דפים, קומפוננטים, lib files
+- [x] הוספת נתיבים /nlp/* לאתר נתיב למשפחה

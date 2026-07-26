@@ -1,6 +1,11 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { contacts, InsertContact, InsertUser, users } from "../drizzle/schema";
+import {
+  contacts, InsertContact, InsertUser, users,
+  lessonUpdates, lessonExtraSections, lessonExtraKeyPoints,
+  lessonExtraExercises, researchRuns,
+  type InsertLessonUpdate,
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -125,4 +130,152 @@ export async function getContactStats() {
     readCount: all.filter(c => c.status === "read").length,
     repliedCount: all.filter(c => c.status === "replied").length,
   };
+}
+
+// ── NLP Lesson Updates (pending review) ──────────────────────────────────────
+
+export async function getPendingUpdates() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(lessonUpdates)
+    .where(eq(lessonUpdates.status, "pending"))
+    .orderBy(desc(lessonUpdates.researchedAt));
+}
+
+export async function getAllUpdates(limit = 200) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(lessonUpdates)
+    .orderBy(desc(lessonUpdates.researchedAt))
+    .limit(limit);
+}
+
+export async function getUpdateById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(lessonUpdates).where(eq(lessonUpdates.id, id)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function insertLessonUpdates(updates: InsertLessonUpdate[]) {
+  if (updates.length === 0) return;
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(lessonUpdates).values(updates);
+}
+
+export async function approveUpdate(id: number, reviewNote?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const update = await getUpdateById(id);
+  if (!update) throw new Error("Update not found");
+  await db.update(lessonUpdates)
+    .set({ status: "approved", reviewedAt: new Date(), reviewNote: reviewNote ?? null, updatedAt: new Date() })
+    .where(eq(lessonUpdates.id, id));
+  if (update.updateType === "section" && update.title && update.body) {
+    const existing = await db.select().from(lessonExtraSections)
+      .where(eq(lessonExtraSections.lessonId, update.lessonId));
+    const maxOrder = existing.reduce((m, r) => Math.max(m, r.sortOrder), 0);
+    await db.insert(lessonExtraSections).values({
+      lessonId: update.lessonId,
+      title: update.title,
+      body: update.body,
+      highlight: update.highlight ?? null,
+      source: update.source ?? null,
+      sourceUrl: update.sourceUrl ?? null,
+      sortOrder: maxOrder + 1,
+      isVisible: true,
+      approvedAt: new Date(),
+    });
+  } else if (update.updateType === "keyPoint" && update.title) {
+    await db.insert(lessonExtraKeyPoints).values({
+      lessonId: update.lessonId,
+      text: update.title,
+      source: update.source ?? null,
+      sourceUrl: update.sourceUrl ?? null,
+      isVisible: true,
+      approvedAt: new Date(),
+    });
+  } else if (update.updateType === "exercise" && update.title) {
+    await db.insert(lessonExtraExercises).values({
+      lessonId: update.lessonId,
+      text: update.title,
+      source: update.source ?? null,
+      sourceUrl: update.sourceUrl ?? null,
+      isVisible: true,
+      approvedAt: new Date(),
+    });
+  }
+}
+
+export async function rejectUpdate(id: number, reviewNote?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(lessonUpdates)
+    .set({ status: "rejected", reviewedAt: new Date(), reviewNote: reviewNote ?? null, updatedAt: new Date() })
+    .where(eq(lessonUpdates.id, id));
+}
+
+// ── Approved content (student-facing) ────────────────────────────────────────
+
+export async function getExtraSectionsForLesson(lessonId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(lessonExtraSections)
+    .where(and(eq(lessonExtraSections.lessonId, lessonId), eq(lessonExtraSections.isVisible, true)))
+    .orderBy(lessonExtraSections.sortOrder);
+}
+
+export async function getExtraKeyPointsForLesson(lessonId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(lessonExtraKeyPoints)
+    .where(and(eq(lessonExtraKeyPoints.lessonId, lessonId), eq(lessonExtraKeyPoints.isVisible, true)));
+}
+
+export async function getExtraExercisesForLesson(lessonId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(lessonExtraExercises)
+    .where(and(eq(lessonExtraExercises.lessonId, lessonId), eq(lessonExtraExercises.isVisible, true)));
+}
+
+export async function getLessonsWithNewContent(): Promise<number[]> {
+  const db = await getDb();
+  if (!db) return [];
+  const sections = await db.select({ lessonId: lessonExtraSections.lessonId }).from(lessonExtraSections)
+    .where(eq(lessonExtraSections.isVisible, true));
+  const kps = await db.select({ lessonId: lessonExtraKeyPoints.lessonId }).from(lessonExtraKeyPoints)
+    .where(eq(lessonExtraKeyPoints.isVisible, true));
+  const exs = await db.select({ lessonId: lessonExtraExercises.lessonId }).from(lessonExtraExercises)
+    .where(eq(lessonExtraExercises.isVisible, true));
+  const ids = new Set([...sections, ...kps, ...exs].map(r => r.lessonId));
+  return Array.from(ids);
+}
+
+// ── Research run log ──────────────────────────────────────────────────────────
+
+export async function logResearchRun(data: {
+  taskUid?: string;
+  updatesSubmitted: number;
+  summary?: string;
+  error?: string;
+  status: "success" | "partial" | "failed";
+}) {
+  const db = await getDb();
+  if (!db) return;
+  return db.insert(researchRuns).values({
+    taskUid: data.taskUid ?? null,
+    updatesSubmitted: data.updatesSubmitted,
+    summary: data.summary ?? null,
+    error: data.error ?? null,
+    status: data.status,
+    ranAt: new Date(),
+  });
+}
+
+export async function getRecentResearchRuns(limit = 20) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(researchRuns).orderBy(desc(researchRuns.ranAt)).limit(limit);
 }

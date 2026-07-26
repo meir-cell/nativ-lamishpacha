@@ -13,6 +13,25 @@ import {
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 
+// NLP routers
+import { lessonUpdatesRouter } from "./routers_nlp/lessonUpdates";
+import { nlpChatRouter } from "./routers_nlp/nlpChat";
+import { registrationRouter } from "./routers_nlp/registration";
+import { lessonTranslateRouter } from "./routers_nlp/lessonTranslate";
+import { slideTranslateRouter } from "./routers_nlp/slideTranslate";
+import { lessonProgressRouter } from "./routers_nlp/lessonProgress";
+import { surveyExamRouter } from "./routers_nlp/surveyExam";
+import { expandSlideRouter } from "./routers_nlp/expandSlide";
+import { lessonPositionRouter } from "./routers_nlp/lessonPosition";
+import { certificateRouter } from "./routers_nlp/certificate";
+import { adminRouter as nlpAdminRouter } from "./routers_nlp/admin";
+import { examVersionsRouter } from "./routers_nlp/examVersions";
+import { nikudRouter } from "./routers_nlp/nikud";
+import { pronunciationOverridesRouter } from "./routers_nlp/pronunciationOverrides";
+import { courseIndexRouter } from "./routers_nlp/courseIndex";
+import { ttsSettingsRouter } from "./routers_nlp/ttsSettings";
+import { ttsRouter } from "./routers_nlp/tts";
+
 // Admin-only guard
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
@@ -50,7 +69,6 @@ export const appRouter = router({
           message: input.message,
           status: "new",
         });
-        // Notify owner
         await notifyOwner({
           title: `פנייה חדשה מ-${input.name}`,
           content: `שם: ${input.name}\nאימייל: ${input.email}\nטלפון: ${input.phone}\nהודעה: ${input.message}`,
@@ -59,19 +77,14 @@ export const appRouter = router({
       }),
   }),
 
-  // ── Admin panel ────────────────────────────────────────────────────────────
+  // ── Admin panel (nativ-lamishpacha contacts) ───────────────────────────────
   admin: router({
-    // Stats dashboard
     stats: adminProcedure.query(async () => {
       return getContactStats();
     }),
-
-    // List all contacts
     listContacts: adminProcedure.query(async () => {
       return getAllContacts();
     }),
-
-    // Update contact status
     updateStatus: adminProcedure
       .input(z.object({
         id: z.number(),
@@ -81,8 +94,6 @@ export const appRouter = router({
         await updateContactStatus(input.id, input.status);
         return { success: true };
       }),
-
-    // Delete contact
     deleteContact: adminProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
@@ -90,6 +101,25 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  // ── NLP Course routers ─────────────────────────────────────────────────────
+  lessonUpdates: lessonUpdatesRouter,
+  nlp: nlpChatRouter,
+  registration: registrationRouter,
+  lessonTranslate: lessonTranslateRouter,
+  slideTranslate: slideTranslateRouter,
+  lessonProgress: lessonProgressRouter,
+  surveyExam: surveyExamRouter,
+  expandSlide: expandSlideRouter,
+  lessonPosition: lessonPositionRouter,
+  certificate: certificateRouter,
+  nlpAdmin: nlpAdminRouter,
+  examVersions: examVersionsRouter,
+  nikud: nikudRouter,
+  pronunciationOverrides: pronunciationOverridesRouter,
+  courseIndex: courseIndexRouter,
+  ttsSettings: ttsSettingsRouter,
+  tts: ttsRouter,
 });
 
 export type AppRouter = typeof appRouter;

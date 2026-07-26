@@ -1,0 +1,137 @@
+/**
+ * Admin router — procedures available only to the site owner/admin.
+ * Access is granted if:
+ * 1. The request includes a valid ADMIN_SECRET, OR
+ * 2. The request includes a valid registration token belonging to the owner (OWNER_EMAIL), OR
+ * 3. The user is authenticated via OAuth and has role "admin"
+ */
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { publicProcedure, router } from "../_core/trpc";
+import { getDb } from "../db";
+import { registrations, certificates, moduleExamResults, lessonProgress } from "../../drizzle/schema";
+import { eq, count } from "drizzle-orm";
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
+import type { User } from "../../drizzle/schema";
+
+const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret";
+
+/** Shared input schema — accepts either adminSecret or ownerToken */
+const adminInput = z.object({
+  adminSecret: z.string().optional(),
+  ownerToken: z.string().optional(),
+});
+
+/** Verify admin access — by secret, owner token, or OAuth admin user */
+async function checkAdmin(input: { adminSecret?: string; ownerToken?: string }, user?: User | null) {
+  // Method 1: OAuth admin user
+  if (user && user.role === "admin") {
+    return; // Access granted — OAuth admin
+  }
+
+  // Method 2: ADMIN_SECRET
+  const secret = process.env.ADMIN_SECRET;
+  if (secret && input.adminSecret && input.adminSecret === secret) {
+    return; // Access granted
+  }
+
+  // Method 3: Owner token (registration JWT with owner email)
+  if (input.ownerToken) {
+    try {
+      const payload = jwt.verify(input.ownerToken, JWT_SECRET) as { id: number; email: string };
+      const ownerEmail = process.env.OWNER_EMAIL || "";
+      if (ownerEmail && payload.email && payload.email.toLowerCase() === ownerEmail.toLowerCase()) {
+        return; // Access granted — owner
+      }
+    } catch {
+      // Token invalid, fall through
+    }
+  }
+
+  throw new TRPCError({ code: "UNAUTHORIZED", message: "גישה אסורה" });
+}
+
+export const adminRouter = router({
+  /**
+   * Test SMTP connection — verifies the configured credentials work.
+   * Returns { ok, message } — never throws so the UI can show the result.
+   */
+  testSmtp: publicProcedure
+    .input(adminInput)
+    .mutation(async ({ input, ctx }) => {
+      await checkAdmin(input, ctx.user);
+
+      const host = process.env.SMTP_HOST;
+      const port = parseInt(process.env.SMTP_PORT || "587", 10);
+      const user = process.env.SMTP_USER;
+      const pass = process.env.SMTP_PASS;
+
+      if (!host || !user || !pass) {
+        return {
+          ok: false,
+          message: "פרטי SMTP חסרים — הגדר SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS",
+        };
+      }
+
+      try {
+        const transporter = nodemailer.createTransport({
+          host,
+          port,
+          secure: port === 465,
+          auth: { user, pass },
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+        });
+
+        await transporter.verify();
+        return {
+          ok: true,
+          message: `חיבור SMTP תקין ✓ (${host}:${port})`,
+        };
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return {
+          ok: false,
+          message: `חיבור SMTP נכשל: ${msg}`,
+        };
+      }
+    }),
+
+  /**
+   * Get system stats for the admin dashboard.
+   */
+  getStats: publicProcedure
+    .input(adminInput)
+    .query(async ({ input, ctx }) => {
+      await checkAdmin(input, ctx.user);
+
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
+
+      const [totalRegs] = await db.select({ count: count() }).from(registrations);
+      const [totalCerts] = await db.select({ count: count() }).from(certificates);
+      const [totalExams] = await db.select({ count: count() }).from(moduleExamResults);
+      const [totalLessons] = await db.select({ count: count() }).from(lessonProgress);
+      const [optedIn] = await db
+        .select({ count: count() })
+        .from(registrations)
+        .where(eq(registrations.emailOptIn, true));
+
+      const smtpConfigured = !!(
+        process.env.SMTP_HOST &&
+        process.env.SMTP_USER &&
+        process.env.SMTP_PASS
+      );
+
+      return {
+        totalRegistrations: totalRegs.count,
+        totalCertificates: totalCerts.count,
+        totalExamResults: totalExams.count,
+        totalLessonCompletions: totalLessons.count,
+        emailOptInCount: optedIn.count,
+        smtpConfigured,
+        smtpHost: process.env.SMTP_HOST || null,
+      };
+    }),
+});

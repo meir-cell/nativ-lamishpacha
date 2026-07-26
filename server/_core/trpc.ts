@@ -2,6 +2,11 @@ import { NOT_ADMIN_ERR_MSG, UNAUTHED_ERR_MSG } from '@shared/const';
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { TrpcContext } from "./context";
+import { ENV } from "./env";
+import jwt from "jsonwebtoken";
+import { getDb } from "../db";
+import { registrations } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -41,5 +46,42 @@ export const adminProcedure = t.procedure.use(
         user: ctx.user,
       },
     });
+  }),
+);
+
+/**
+ * ownerProcedure — accepts EITHER Manus admin OAuth OR a valid registration
+ * token belonging to the OWNER_EMAIL address.
+ */
+export const ownerProcedure = t.procedure.use(
+  t.middleware(async opts => {
+    const { ctx, next } = opts;
+    // Path 1: Manus OAuth admin
+    if (ctx.user && ctx.user.role === 'admin') {
+      return next({ ctx: { ...ctx, user: ctx.user } });
+    }
+    // Path 2: registration token in x-owner-token header
+    const authHeader = ctx.req.headers['x-owner-token'] as string | undefined;
+    const ownerEmail = ENV.ownerEmail;
+    if (authHeader && ownerEmail) {
+      try {
+        const JWT_SECRET = process.env.JWT_SECRET || 'nlp-course-secret';
+        const payload = jwt.verify(authHeader, JWT_SECRET) as { id: number; email: string };
+        const db = await getDb();
+        if (db) {
+          const rows = await db
+            .select({ email: registrations.email })
+            .from(registrations)
+            .where(eq(registrations.id, payload.id))
+            .limit(1);
+          if (rows.length > 0 && rows[0].email.toLowerCase() === ownerEmail.toLowerCase()) {
+            return next({ ctx });
+          }
+        }
+      } catch {
+        // invalid token — fall through to error
+      }
+    }
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'גישה מוגבלת — מנהלים בלבד' });
   }),
 );

@@ -17,6 +17,20 @@ import AccessibilityMenu from "./components/AccessibilityMenu";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentError from "./pages/PaymentError";
+// NLP Practitioner Course pages
+import NlpHome from "./pages/nlp/Home";
+import NlpAdminUpdates from "./pages/nlp/AdminUpdates";
+import NlpAdminRegistrations from "./pages/nlp/AdminRegistrations";
+import NlpAdminSurveys from "./pages/nlp/AdminSurveys";
+import NlpAdminSettings from "./pages/nlp/AdminSettings";
+import NlpAdminDashboard from "./pages/nlp/AdminDashboard";
+import NlpAdminPronunciation from "./pages/nlp/AdminPronunciation";
+import NlpAdminTtsEditor from "./pages/nlp/AdminTtsEditor";
+import NlpChatPage from "./pages/nlp/NlpChatPage";
+import NlpTerms from "./pages/nlp/Terms";
+import NlpUnsubscribe from "./pages/nlp/Unsubscribe";
+import NlpForgotPassword from "./pages/nlp/ForgotPassword";
+import NlpResetPassword from "./pages/nlp/ResetPassword";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -36,6 +50,20 @@ function Router() {
       <Route path={"/payment-success"} component={PaymentSuccess} />
       <Route path={"/payment-error"} component={PaymentError} />
       <Route path={"/payment-cancel"} component={PaymentError} />
+      {/* NLP Practitioner Course routes */}
+      <Route path={"/nlp"} component={NlpHome} />
+      <Route path={"/nlp/admin"} component={NlpAdminDashboard} />
+      <Route path={"/nlp/admin/updates"} component={NlpAdminUpdates} />
+      <Route path={"/nlp/admin/registrations"} component={NlpAdminRegistrations} />
+      <Route path={"/nlp/admin/surveys"} component={NlpAdminSurveys} />
+      <Route path={"/nlp/admin/settings"} component={NlpAdminSettings} />
+      <Route path={"/nlp/admin/pronunciation"} component={NlpAdminPronunciation} />
+      <Route path={"/nlp/admin/tts-editor"} component={NlpAdminTtsEditor} />
+      <Route path={"/nlp/chat"} component={NlpChatPage} />
+      <Route path={"/nlp/terms"} component={NlpTerms} />
+      <Route path={"/nlp/unsubscribe"} component={NlpUnsubscribe} />
+      <Route path={"/nlp/forgot-password"} component={NlpForgotPassword} />
+      <Route path={"/nlp/reset-password"} component={NlpResetPassword} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
