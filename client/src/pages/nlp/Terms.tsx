@@ -33,7 +33,7 @@ export default function Terms() {
             קורס NLP Practitioner
           </span>
         </div>
-        <Link href="/">
+        <Link href="/nlp">
           <a
             className="flex items-center gap-1 text-sm font-medium transition-colors px-3 py-1.5 rounded-lg"
             style={{ color: "oklch(0.75 0.01 265)", background: "oklch(0.18 0.015 265)" }}

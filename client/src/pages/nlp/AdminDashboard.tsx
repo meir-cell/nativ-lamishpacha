@@ -22,13 +22,13 @@ export default function AdminDashboard() {
   );
 
   const navItems = [
-    { label: "דשבורד", href: "/admin", active: true },
-    { label: "רישומים", href: "/admin/registrations" },
-    { label: "עדכוני תוכן", href: "/admin/updates" },
-    { label: "סקרים", href: "/admin/surveys" },
-    { label: "הגדרות", href: "/admin/settings" },
-    { label: "מילון הגייה", href: "/admin/pronunciation" },
-    { label: "עורך הקראה", href: "/admin/tts-editor" },
+    { label: "דשבורד", href: "/nlp/admin", active: true },
+    { label: "רישומים", href: "/nlp/admin/registrations" },
+    { label: "עדכוני תוכן", href: "/nlp/admin/updates" },
+    { label: "סקרים", href: "/nlp/admin/surveys" },
+    { label: "הגדרות", href: "/nlp/admin/settings" },
+    { label: "מילון הגייה", href: "/nlp/admin/pronunciation" },
+    { label: "עורך הקראה", href: "/nlp/admin/tts-editor" },
   ];
 
   // Show loading while checking auth
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
             <br />
             אם אתה הבעלים, התחבר דרך הקורס עם המייל שלך.
           </p>
-          <Link href="/" className="text-amber-400 underline text-sm">חזרה לדף הראשי</Link>
+          <Link href="/nlp" className="text-amber-400 underline text-sm">חזרה לקורס</Link>
         </div>
       </div>
     );
@@ -153,19 +153,19 @@ export default function AdminDashboard() {
             <h2 className="text-lg font-bold mb-4" style={{ color: "#F0C040" }}>גישה מהירה</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <QuickLink
-                href="/admin/registrations"
+                href="/nlp/admin/registrations"
                 icon={<Users size={18} />}
                 label="ניהול נרשמים"
                 description="צפייה ברשימת הנרשמים, סטטוס, ופעילות"
               />
               <QuickLink
-                href="/admin/surveys"
+                href="/nlp/admin/surveys"
                 icon={<MessageSquare size={18} />}
                 label="סקרים ומבחנים"
                 description="תוצאות סקרי שביעות רצון ומבחנים"
               />
               <QuickLink
-                href="/admin/updates"
+                href="/nlp/admin/updates"
                 icon={<FileText size={18} />}
                 label="עדכוני תוכן"
                 description="ניהול תוכן נוסף לשיעורים"

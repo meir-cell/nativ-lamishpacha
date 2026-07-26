@@ -67,7 +67,7 @@ export default function AdminSettings() {
             <br />
             אם אתה הבעלים, התחבר דרך הקורס עם המייל שלך.
           </p>
-          <Link href="/" className="text-amber-400 underline text-sm">חזרה לדף הראשי</Link>
+          <Link href="/nlp" className="text-amber-400 underline text-sm">חזרה לקורס</Link>
         </div>
       </div>
     );

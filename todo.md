@@ -26,3 +26,5 @@
 - [x] הוספת route /books/:slug ב-App.tsx
 - [x] שילוב קורס NLP Practitioner — 14 טבלאות DB, כל ה-routers, דפים, קומפוננטים, lib files
 - [x] הוספת נתיבים /nlp/* לאתר נתיב למשפחה
+- [x] תיקון כניסה לקורס NLP — הרחבת עמודת token מ-varchar(64) ל-varchar(512) בטבלת registrations
+- [x] תיקון כל קישורי URL בדפי NLP — /admin → /nlp/admin, /chat → /nlp/chat, /terms → /nlp/terms, /forgot-password → /nlp/forgot-password

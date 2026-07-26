@@ -93,7 +93,7 @@ export default function AdminUpdates() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <a href="/" className="text-xs px-3 py-1.5 rounded-lg font-medium transition-colors hover:bg-gray-100"
+          <a href="/nlp" className="text-xs px-3 py-1.5 rounded-lg font-medium transition-colors hover:bg-gray-100"
             style={{ color: "oklch(0.45 0.01 250)" }}>
             ← חזרה לקורס
           </a>

@@ -115,7 +115,7 @@ export default function AdminRegistrations() {
           </div>
           <div className="flex items-center gap-2">
             <a
-              href="/admin/surveys"
+              href="/nlp/admin/surveys"
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
               style={{ background: "oklch(0.94 0.005 250)", color: textMid, border: `1px solid ${border}` }}
             >

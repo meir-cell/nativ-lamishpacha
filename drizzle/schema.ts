@@ -132,7 +132,7 @@ export const registrations = mysqlTable("registrations", {
   email: varchar("email", { length: 320 }).notNull().unique(),
   phone: varchar("phone", { length: 30 }).notNull(),
   passwordHash: varchar("passwordHash", { length: 100 }).notNull(),
-  token: varchar("token", { length: 256 }).notNull().unique(),
+  token: varchar("token", { length: 512 }).notNull().default(""),
   emailOptIn: boolean("emailOptIn").default(false).notNull(),
   unsubscribeToken: varchar("unsubscribeToken", { length: 128 }),
   firstLessonEmailSent: boolean("firstLessonEmailSent").default(false).notNull(),

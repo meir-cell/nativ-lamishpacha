@@ -418,7 +418,7 @@ export default function AdminTtsEditor() {
       <div className="min-h-screen bg-background flex items-center justify-center text-foreground" dir="rtl">
         <div className="text-center">
           <p className="mb-4">יש להתחבר עם חשבון הבעלים כדי לגשת לדף זה.</p>
-          <Link href="/" className="text-amber-500 underline">חזרה לדף הראשי</Link>
+          <Link href="/nlp" className="text-amber-500 underline">חזרה לקורס</Link>
         </div>
       </div>
     );
@@ -434,7 +434,7 @@ export default function AdminTtsEditor() {
               <Mic className="w-6 h-6 text-amber-500" />
               <h1 className="text-xl font-bold">עורך הקראה מתקדם</h1>
             </div>
-            <Link href="/admin" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/nlp/admin" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
               חזרה לדשבורד
               <ArrowRight className="w-4 h-4" />
             </Link>

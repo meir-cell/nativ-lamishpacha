@@ -372,7 +372,7 @@ export default function Home() {
         <div className="flex items-center gap-3">
           {(authUser?.role === "admin" || isOwner || localStorage.getItem("admin-token")) && (
             <a
-              href="/admin"
+              href="/nlp/admin"
               className="relative z-50 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-105 active:scale-95 cursor-pointer"
               style={{ background: "rgba(201,168,76,0.20)", color: "#F0C040", border: "1px solid rgba(201,168,76,0.45)", pointerEvents: "auto" }}
               aria-label="פאנל מנהל"
@@ -446,7 +446,7 @@ export default function Home() {
                 )}
                 {(authUser?.role === "admin" || isOwner || localStorage.getItem("admin-token")) && (
                   <a
-                    href="/admin"
+                    href="/nlp/admin"
                     className="flex items-center gap-2 px-4 py-2 text-xs hover:bg-white/5 transition-colors"
                     style={{ color: "#F0C040" }}
                   >
@@ -864,7 +864,7 @@ export default function Home() {
                 boxShadow: "0 2px 12px rgba(201,168,76,0.18)",
               }}
               onClick={() => {
-                window.location.href = "/chat";
+                window.location.href = "/nlp/chat";
               }}
             >
               <div className="relative flex-shrink-0">
@@ -1360,7 +1360,7 @@ export default function Home() {
           <span>© {new Date().getFullYear()} כל הזכויות שמורות למאיר שמעון עשור | קורס NLP Practitioner</span>
           <span style={{ color: "oklch(0.80 0.005 250)" }}>|</span>
           <a
-            href="/terms"
+            href="/nlp/terms"
             className="hover:underline transition-colors"
             style={{ color: "oklch(0.50 0.01 250)" }}
           >
@@ -1368,7 +1368,7 @@ export default function Home() {
           </a>
           <span style={{ color: "oklch(0.80 0.005 250)" }}>|</span>
           <a
-            href="/accessibility"
+            href="/nlp/accessibility"
             className="hover:underline transition-colors"
             style={{ color: "oklch(0.50 0.01 250)" }}
           >

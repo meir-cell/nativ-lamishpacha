@@ -97,7 +97,7 @@ export default function ForgotPassword() {
         )}
 
         <p className="text-center text-sm mt-6" style={{ color: "oklch(0.55 0.005 65)" }}>
-          <Link href="/" style={{ color: "oklch(0.72 0.15 75)" }}>
+          <Link href="/nlp" style={{ color: "oklch(0.72 0.15 75)" }}>
             ← חזרה לכניסה
           </Link>
         </p>

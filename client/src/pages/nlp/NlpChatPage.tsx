@@ -292,7 +292,7 @@ export default function NlpChatPage() {
             </button>
             {/* Close / Back button */}
             <a
-              href="/"
+              href="/nlp"
               className="p-2 rounded-lg bg-gray-800 hover:bg-red-600/30 text-gray-400 hover:text-red-300 transition-colors"
               title="סגור וחזור לקורס"
             >

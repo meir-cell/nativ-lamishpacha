@@ -349,7 +349,7 @@ export default function RegistrationGate({ onAuthenticated }: Props) {
                   </Button>
 
                   <p className="text-[11px] text-center" style={{ color: "oklch(0.45 0.01 265)" }}>
-                    <a href="/forgot-password" style={{ color: "#C9A84C" }} className="underline">
+                    <a href="/nlp/forgot-password" style={{ color: "#C9A84C" }} className="underline">
                       שכחתי סיסמה
                     </a>
                   </p>

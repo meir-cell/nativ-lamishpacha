@@ -61,7 +61,7 @@ export default function AdminSurveys() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <Link href="/admin/registrations">
+          <Link href="/nlp/admin/registrations">
             <button className="flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700">
               <ArrowRight size={16} />
               חזרה לרשימת תלמידים
