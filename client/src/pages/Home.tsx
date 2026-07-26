@@ -369,9 +369,7 @@ function NLPCourseBanner() {
           </p>
 
           <a
-            href="https://nlpcourse-5wedavl3.manus.space/"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/nlp"
             style={{
               display: "inline-flex",
               alignItems: "center",

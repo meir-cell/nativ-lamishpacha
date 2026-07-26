@@ -94,7 +94,7 @@ export async function reEngagementHandler(req: Request, res: Response) {
       }
 
       // Build site URL from env
-      const siteUrl = process.env.SITE_URL || "https://nlpcourse-5wedavl3.manus.space";
+      const siteUrl = process.env.SITE_URL || "https://nativ-lamishpacha.com";
 
       if (!reg.unsubscribeToken) {
         skipped++;

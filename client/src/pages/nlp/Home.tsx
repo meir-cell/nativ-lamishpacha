@@ -206,7 +206,7 @@ export default function Home() {
     );
   }
 
-  const courseUrl = "https://nlpcourse-5wedavl3.manus.space";
+  const courseUrl = "https://nativ-lamishpacha.com/nlp";
   const iframeCode = `<iframe\n  src="${courseUrl}"\n  width="100%"\n  height="700"\n  frameborder="0"\n  allow="autoplay; clipboard-write"\n  style="border-radius: 12px; border: 1px solid #e5e7eb;"\n  title="קורס NLP Practitioner"\n></iframe>`;
 
   const copyEmbed = () => {
