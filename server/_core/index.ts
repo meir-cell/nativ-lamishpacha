@@ -54,6 +54,15 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+
+  // ACME HTTP-01 challenge passthrough - Railway needs this to issue SSL certificates
+  // Do NOT redirect these requests to HTTPS
+  app.get('/.well-known/acme-challenge/:token', (req, res) => {
+    // Railway's load balancer intercepts this before it reaches the app
+    // but we return 200 to prevent any redirect loops
+    res.status(200).send(req.params.token);
+  });
+
   app.use(
     "/api/trpc",
     createExpressMiddleware({
