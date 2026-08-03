@@ -37,3 +37,19 @@
 - [x] הגנה על endpoint הגיבוי — רק owner מורשה
 - [x] הוספת עמוד גיבוי בפאנל הניהול (/nlp/admin/backup) עם כפתורי הורדה
 - [x] בדיקה ו-checkpoint
+
+## גיבוי — שלב 2
+- [ ] endpoint שחזור מ-ZIP: POST /api/backup/restore — מקבל קובץ ZIP, משחזר DB ו/או קוד
+- [ ] endpoint שליחת גיבוי במייל: POST /api/backup/send-email — מייצר ZIP ושולח למייל הבעלים
+- [ ] גיבוי אוטומטי שבועי עם Heartbeat (כל יום ראשון 03:00 UTC)
+- [ ] עדכון UI של /nlp/admin/backup: כרטיסיות שחזור + שליחה במייל
+- [x] checkpoint ו-deploy
+
+## פאנל ניהול עצמאי (ללא Manus OAuth)
+- [x] הוספת ADMIN_USERNAME + ADMIN_PASSWORD ב-Railway Variables
+- [x] endpoint כניסה עצמאי: POST /api/admin/login — מחזיר JWT cookie
+- [x] endpoint יציאה: POST /api/admin/logout
+- [x] endpoint בדיקת סשן: GET /api/admin/me
+- [x] דף כניסה עצמאי: /admin (עיצוב בסגנון האתר)
+- [x] פאנל ניהול ראשי: /admin — פניות, גיבוי, סטטיסטיקות
+- [x] checkpoint ו-deploy
