@@ -39,10 +39,10 @@
 - [x] בדיקה ו-checkpoint
 
 ## גיבוי — שלב 2
-- [ ] endpoint שחזור מ-ZIP: POST /api/backup/restore — מקבל קובץ ZIP, משחזר DB ו/או קוד
-- [ ] endpoint שליחת גיבוי במייל: POST /api/backup/send-email — מייצר ZIP ושולח למייל הבעלים
-- [ ] גיבוי אוטומטי שבועי עם Heartbeat (כל יום ראשון 03:00 UTC)
-- [ ] עדכון UI של /nlp/admin/backup: כרטיסיות שחזור + שליחה במייל
+- [x] endpoint שחזור מ-ZIP: POST /api/backup/restore — מקבל קובץ ZIP, משחזר DB ו/או קוד
+- [x] endpoint שליחת גיבוי במייל: POST /api/backup/send-email — מייצר ZIP ושולח למייל הבעלים
+- [x] גיבוי אוטומטי שבועי עם Heartbeat (כל יום ראשון 03:00 UTC)
+- [x] עדכון UI של /nlp/admin/backup: כרטיסיות שחזור + שליחה במייל
 - [x] checkpoint ו-deploy
 
 ## פאנל ניהול עצמאי (ללא Manus OAuth)
