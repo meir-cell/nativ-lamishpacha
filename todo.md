@@ -36,4 +36,4 @@
 - [x] הוספת endpoint לשרת: GET /api/backup/full — מייצא MySQL dump + קוד כ-ZIP
 - [x] הגנה על endpoint הגיבוי — רק owner מורשה
 - [x] הוספת עמוד גיבוי בפאנל הניהול (/nlp/admin/backup) עם כפתורי הורדה
-- [ ] בדיקה ו-checkpoint
+- [x] בדיקה ו-checkpoint
