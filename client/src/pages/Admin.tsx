@@ -12,9 +12,11 @@ import AdminArticles from "./admin/AdminArticles";
 import AdminSEO from "./admin/AdminSEO";
 import AdminNLP from "./admin/AdminNLP";
 import AdminSiteContent from "./admin/AdminSiteContent";
+import AdminBooks from "./admin/AdminBooks";
+import AdminFAQ from "./admin/AdminFAQ";
 
 type ContactStatus = "new" | "read" | "replied";
-type AdminTab = "contacts" | "articles" | "seo" | "nlp" | "site-content" | "backup" | "log";
+type AdminTab = "contacts" | "articles" | "books" | "faq" | "seo" | "nlp" | "site-content" | "backup" | "log";
 type LoginView = "login" | "forgot" | "reset";
 
 const statusLabel: Record<ContactStatus, string> = { new: "חדש", read: "נקרא", replied: "נענה" };
@@ -260,6 +262,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const tabs: { key: AdminTab; label: string; icon: any }[] = [
     { key: "contacts", label: "פניות", icon: Users },
     { key: "articles", label: "מאמרים", icon: BookOpen },
+    { key: "books", label: "ספרים", icon: BookOpen },
+    { key: "faq", label: "שאלות נפוצות", icon: MessageSquare },
     { key: "seo", label: "קידום אורגני", icon: Search },
     { key: "nlp", label: "קורס NLP", icon: GraduationCap },
     { key: "site-content", label: "תוכן האתר", icon: Layout },
@@ -372,6 +376,8 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         )}
 
         {activeTab === "articles" && <AdminArticles />}
+        {activeTab === "books" && <AdminBooks />}
+        {activeTab === "faq" && <AdminFAQ />}
         {activeTab === "seo" && <AdminSEO />}
         {activeTab === "nlp" && <AdminNLP />}
         {activeTab === "site-content" && <AdminSiteContent />}

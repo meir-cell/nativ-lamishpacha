@@ -94,6 +94,37 @@ async function startServer() {
           createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS books (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          slug VARCHAR(200) NOT NULL UNIQUE,
+          title VARCHAR(300) NOT NULL,
+          subtitle VARCHAR(500),
+          description TEXT,
+          pages INT,
+          category VARCHAR(100),
+          pdfUrl VARCHAR(1000),
+          img VARCHAR(1000),
+          color VARCHAR(20),
+          icon VARCHAR(10),
+          published TINYINT NOT NULL DEFAULT 1,
+          sortOrder INT NOT NULL DEFAULT 0,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS faq_items (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          question TEXT NOT NULL,
+          answer TEXT NOT NULL,
+          category VARCHAR(100) NOT NULL DEFAULT 'כללי',
+          sortOrder INT NOT NULL DEFAULT 0,
+          published TINYINT NOT NULL DEFAULT 1,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+      `);
       console.log("[Startup] Admin tables ensured");
     }
   } catch (e) {

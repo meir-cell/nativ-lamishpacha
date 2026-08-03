@@ -348,3 +348,38 @@ export const adminPasswordResetTokens = mysqlTable("admin_password_reset_tokens"
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type AdminPasswordResetToken = typeof adminPasswordResetTokens.$inferSelect;
+
+// ─── Books ────────────────────────────────────────────────────────────────────
+export const books = mysqlTable("books", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 200 }).notNull().unique(),
+  title: varchar("title", { length: 300 }).notNull(),
+  subtitle: varchar("subtitle", { length: 500 }),
+  description: text("description"),
+  pages: int("pages"),
+  category: varchar("category", { length: 100 }),
+  pdfUrl: varchar("pdfUrl", { length: 1000 }),
+  img: varchar("img", { length: 1000 }),
+  color: varchar("color", { length: 20 }),
+  icon: varchar("icon", { length: 10 }),
+  published: tinyint("published").default(1).notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type Book = typeof books.$inferSelect;
+export type InsertBook = typeof books.$inferInsert;
+
+// ─── FAQ Items ────────────────────────────────────────────────────────────────
+export const faqItems = mysqlTable("faq_items", {
+  id: int("id").autoincrement().primaryKey(),
+  question: text("question").notNull(),
+  answer: text("answer").notNull(),
+  category: varchar("category", { length: 100 }).default("כללי").notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  published: tinyint("published").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type FaqItem = typeof faqItems.$inferSelect;
+export type InsertFaqItem = typeof faqItems.$inferInsert;

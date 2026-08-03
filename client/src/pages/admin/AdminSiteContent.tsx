@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
-import { Save, RefreshCw, Home, Heart, Scale, Users, Phone, MapPin, BookOpen, Info } from "lucide-react";
+import { Save, Home, Heart, Phone, BookOpen, Info } from "lucide-react";
 
 // Default site content structure
 const SITE_CONTENT_DEFAULTS = [
@@ -60,6 +60,12 @@ function SectionPanel({ sectionKey, sectionLabel, icon: Icon, items, onSave }: {
   );
   const [saved, setSaved] = useState(false);
 
+  // Sync state when DB data loads (items change from defaults to DB values)
+  useEffect(() => {
+    setValues(Object.fromEntries(items.map(i => [i.key, i.value])));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sectionKey, items.map(i => i.value).join("|")]);
+
   const handleSave = () => {
     onSave(items.map(i => ({ ...i, value: values[i.key] ?? i.value })));
     setSaved(true);
@@ -83,7 +89,7 @@ function SectionPanel({ sectionKey, sectionLabel, icon: Icon, items, onSave }: {
             <label className="block text-xs font-semibold mb-1" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
               {item.label}
             </label>
-            {item.value.length > 80 ? (
+            {(values[item.key] ?? item.value).length > 80 ? (
               <textarea
                 value={values[item.key] ?? item.value}
                 onChange={e => setValues(v => ({ ...v, [item.key]: e.target.value }))}
@@ -125,14 +131,14 @@ export default function AdminSiteContent() {
     onSuccess: () => utils.adminSiteContent.getAll.invalidate()
   });
 
-  // Merge DB values with defaults
+  // Merge DB values with defaults — DB values always override defaults
   const getItemsForSection = (sectionKey: string) => {
     const defaults = SITE_CONTENT_DEFAULTS.filter(i => i.section === sectionKey);
     if (!dbContent) return defaults;
-    const dbMap = new Map(dbContent.map(d => [d.key, d.value]));
+    const dbMap = new Map(dbContent.map(d => [d.key, d.value ?? ""]));
     return defaults.map(item => ({
       ...item,
-      value: dbMap.get(item.key) ?? item.value,
+      value: dbMap.has(item.key) ? (dbMap.get(item.key) ?? item.value) : item.value,
     }));
   };
 

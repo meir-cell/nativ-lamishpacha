@@ -36,6 +36,8 @@ import { ttsRouter } from "./routers_nlp/tts";
 import { adminArticlesRouter } from "./routers_admin/articles";
 import { adminSeoRouter } from "./routers_admin/seo";
 import { adminSiteContentRouter } from "./routers_admin/siteContent";
+import { adminBooksRouter } from "./routers_admin/books";
+import { adminFaqRouter } from "./routers_admin/faq";
 
 // Admin-only guard
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -130,6 +132,8 @@ export const appRouter = router({
   adminArticles: adminArticlesRouter,
   adminSeo: adminSeoRouter,
   adminSiteContent: adminSiteContentRouter,
+  adminBooks: adminBooksRouter,
+  adminFaq: adminFaqRouter,
 });
 
 export type AppRouter = typeof appRouter;
