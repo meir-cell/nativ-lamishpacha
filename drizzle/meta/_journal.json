@@ -15,6 +15,13 @@
       "when": 1785048101546,
       "tag": "0001_complete_warhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1785200000000,
+      "tag": "0002_admin_tables",
+      "breakpoints": true
     }
   ]
 }

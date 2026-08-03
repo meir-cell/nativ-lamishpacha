@@ -69,6 +69,37 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
 
+  // Auto-create missing admin tables on startup
+  try {
+    const dbMod = await import("../db.js");
+    const dbConn = await dbMod.getDb();
+    if (dbConn) {
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS admin_activity_log (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          action VARCHAR(100) NOT NULL,
+          username VARCHAR(100) NOT NULL,
+          ipAddress VARCHAR(64),
+          userAgent VARCHAR(512),
+          details TEXT,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS admin_password_reset_tokens (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          token VARCHAR(128) NOT NULL UNIQUE,
+          expiresAt DATETIME NOT NULL,
+          usedAt DATETIME,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      console.log("[Startup] Admin tables ensured");
+    }
+  } catch (e) {
+    console.error("[Startup] Failed to create admin tables:", e);
+  }
+
   // ACME HTTP-01 challenge passthrough - Railway needs this to issue SSL certificates
   // Do NOT redirect these requests to HTTPS
   app.get('/.well-known/acme-challenge/:token', (req, res) => {
@@ -602,6 +633,21 @@ async function startServer() {
       return res.json({ ok: true });
     } catch (e) {
       return res.status(500).json({ error: "שגיאה בעדכון סטטוס" });
+    }
+  });
+
+  // DELETE /api/admin/contacts/:id
+  app.delete("/api/admin/contacts/:id", async (req, res) => {
+    const admin = await getAdminFromReq(req);
+    if (!admin) return res.status(401).json({ error: "Unauthorized" });
+    try {
+      const db = await import("../db.js");
+      await db.deleteContact(parseInt(req.params.id));
+      await logAdminActivity("delete_contact", admin.username, req, `contact id=${req.params.id}`);
+      return res.json({ ok: true });
+    } catch (e) {
+      console.error("[Admin] Error deleting contact:", e);
+      return res.status(500).json({ error: "שגיאה במחיקת פנייה" });
     }
   });
 

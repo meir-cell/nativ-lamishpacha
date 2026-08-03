@@ -38,7 +38,7 @@ export const adminArticlesRouter = router({
         .offset(offset);
 
       const [{ count }] = await db.select({ count: sql<number>`COUNT(*)` }).from(articles);
-      return { articles: rows, total: count };
+      return { articles: rows, total: Number(count) };
     }),
 
   get: publicProcedure

@@ -326,3 +326,25 @@ export const siteContent = mysqlTable("site_content", {
 });
 export type SiteContent = typeof siteContent.$inferSelect;
 export type InsertSiteContent = typeof siteContent.$inferInsert;
+
+// ─── Admin Activity Log ───────────────────────────────────────────────────────
+export const adminActivityLog = mysqlTable("admin_activity_log", {
+  id: int("id").autoincrement().primaryKey(),
+  action: varchar("action", { length: 100 }).notNull(),
+  username: varchar("username", { length: 100 }).notNull(),
+  ipAddress: varchar("ipAddress", { length: 50 }),
+  userAgent: text("userAgent"),
+  details: text("details"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
+
+// ─── Admin Password Reset Tokens ─────────────────────────────────────────────
+export const adminPasswordResetTokens = mysqlTable("admin_password_reset_tokens", {
+  id: int("id").autoincrement().primaryKey(),
+  token: varchar("token", { length: 255 }).notNull().unique(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  usedAt: timestamp("usedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type AdminPasswordResetToken = typeof adminPasswordResetTokens.$inferSelect;

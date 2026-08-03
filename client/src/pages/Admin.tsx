@@ -228,7 +228,11 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   };
   const handleDelete = async (id: number) => {
     if (!confirm("למחוק פנייה זו?")) return;
-    try { const res = await fetch("/api/trpc/admin.deleteContact", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ json: { id } }) }); if (res.ok) fetchContacts(); } catch (e) { console.error(e); }
+    try {
+      const res = await fetch("/api/admin/contacts/" + id, { method: "DELETE", credentials: "include" });
+      if (res.ok) fetchContacts();
+      else { const d = await res.json(); alert("שגיאה: " + (d.error || "לא ניתן למחוק")); }
+    } catch (e) { console.error(e); }
   };
   const handleDownloadBackup = async () => {
     setIsBackingUp(true); setBackupStatus("מכין גיבוי...");
