@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import {
   Mail, Phone, MessageSquare, CheckCircle2,
-  Trash2, Eye, RefreshCw, LogOut, Users,
+  Trash2, Eye, EyeOff, RefreshCw, LogOut, Users,
   ChevronDown, ChevronUp, AlertCircle, Lock, User,
   Download, Shield, Archive, Activity, KeyRound,
   ArrowRight, Send, CheckCircle, MapPin, Calendar
@@ -410,6 +410,7 @@ function AdminLoginPage({ onSuccess }: { onSuccess: () => void }) {
 function LoginFormView({ onSuccess, onForgot }: { onSuccess: () => void; onForgot: () => void }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
@@ -445,12 +446,17 @@ function LoginFormView({ onSuccess, onForgot }: { onSuccess: () => void; onForgo
             <label className="text-sm font-medium" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>סיסמה</label>
           </div>
           <div className="relative">
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password"
-              className="w-full px-4 py-3 pr-10 rounded-xl border text-right outline-none transition-all"
+            <input type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password"
+              className="w-full px-4 py-3 pr-10 pl-10 rounded-xl border text-right outline-none transition-all"
               style={{ borderColor: "rgba(196,149,106,0.3)", fontFamily: "'Assistant', sans-serif", fontSize: "15px" }}
               onFocus={e => (e.target.style.borderColor = "var(--brand-gold)")} onBlur={e => (e.target.style.borderColor = "rgba(196,149,106,0.3)")}
               placeholder="הכנס סיסמה" />
             <Lock size={16} className="absolute top-1/2 -translate-y-1/2 right-3" style={{ color: "var(--brand-mid)" }} />
+            <button type="button" onClick={() => setShowPassword(!showPassword)}
+              className="absolute top-1/2 -translate-y-1/2 left-3 transition-opacity hover:opacity-70"
+              style={{ color: "var(--brand-mid)" }} tabIndex={-1}>
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
           </div>
         </div>
         {error && <div className="flex items-center gap-2 p-3 rounded-xl text-sm text-right" style={{ background: "rgba(220,38,38,0.08)", color: "#dc2626", fontFamily: "'Assistant', sans-serif" }}><AlertCircle size={14} /> {error}</div>}
