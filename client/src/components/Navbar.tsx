@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { Menu, X, Phone, ChevronDown, Settings } from "lucide-react";
 
 const LOGO_URL = "/manus-storage/logo_nativ_630a6168.png";
 
@@ -145,6 +145,17 @@ export default function Navbar() {
           ))}
         </nav>
 
+        {/* Admin button (desktop) */}
+        <a
+          href="/admin"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+          style={{ color: "var(--brand-mid)", border: "1px solid rgba(196,149,106,0.25)", fontFamily: "'Assistant', sans-serif" }}
+          title="כניסה לממשק ניהול"
+        >
+          <Settings size={13} />
+          ניהול
+        </a>
+
         {/* Mobile menu toggle */}
         <button
           className="md:hidden p-2 rounded-lg"
@@ -204,6 +215,15 @@ export default function Navbar() {
             <a href="tel:0542111288" className="btn-cta mt-2 justify-center">
               <Phone size={16} />
               054-2111-288
+            </a>
+            <a
+              href="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-amber-50 text-right mt-1"
+              style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}
+            >
+              <Settings size={15} />
+              ניהול
             </a>
           </div>
         </div>
