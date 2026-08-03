@@ -38,31 +38,18 @@ function BookRow({ book, onEdit, onDelete, onTogglePublish }: {
 }) {
   return (
     <tr className="border-b hover:bg-amber-50/30 transition-colors" style={{ borderColor: "rgba(196,149,106,0.1)" }}>
+      {/* פעולות — ראשון (ימין ב-RTL) */}
       <td className="py-3 px-4 text-right">
-        <div className="flex items-center gap-2 justify-end">
-          {book.icon && <span className="text-lg">{book.icon}</span>}
-          <div>
-            <div className="font-semibold text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{book.title}</div>
-            <div className="text-xs mt-0.5" style={{ color: "var(--brand-mid)" }}>{book.subtitle}</div>
-          </div>
+        <div className="flex items-center justify-start gap-2">
+          <button onClick={() => onEdit(book)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
+            <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
+          </button>
+          <button onClick={() => onDelete(book.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="מחיקה">
+            <Trash2 size={14} style={{ color: "#dc2626" }} />
+          </button>
         </div>
       </td>
-      <td className="py-3 px-4 text-right">
-        {book.category && (
-          <span className="inline-block px-2 py-0.5 rounded-full text-xs" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
-            {book.category}
-          </span>
-        )}
-      </td>
-      <td className="py-3 px-4 text-right text-sm" style={{ color: "var(--brand-mid)" }}>
-        {book.pages ? `${book.pages} עמ'` : "—"}
-      </td>
-      <td className="py-3 px-4 text-right">
-        <div className="flex items-center justify-end gap-1">
-          {book.pdfUrl && <span title="יש PDF"><FileText size={14} style={{ color: "var(--brand-gold)" }} /></span>}
-          {book.img && <span title="יש תמונה"><BookOpen size={14} style={{ color: "var(--brand-gold)" }} /></span>}
-        </div>
-      </td>
+      {/* סטטוס */}
       <td className="py-3 px-4 text-right">
         <button
           onClick={() => onTogglePublish(book.id, book.published ? 0 : 1)}
@@ -76,14 +63,33 @@ function BookRow({ book, onEdit, onDelete, onTogglePublish }: {
           {book.published ? "מפורסם" : "מוסתר"}
         </button>
       </td>
+      {/* קבצים */}
       <td className="py-3 px-4 text-right">
-        <div className="flex items-center justify-end gap-2">
-          <button onClick={() => onEdit(book)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
-            <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
-          </button>
-          <button onClick={() => onDelete(book.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="מחיקה">
-            <Trash2 size={14} style={{ color: "#dc2626" }} />
-          </button>
+        <div className="flex items-center justify-end gap-1">
+          {book.pdfUrl && <span title="יש PDF"><FileText size={14} style={{ color: "var(--brand-gold)" }} /></span>}
+          {book.img && <span title="יש תמונה"><BookOpen size={14} style={{ color: "var(--brand-gold)" }} /></span>}
+        </div>
+      </td>
+      {/* עמודים */}
+      <td className="py-3 px-4 text-right text-sm" style={{ color: "var(--brand-mid)" }}>
+        {book.pages ? `${book.pages} עמ'` : "—"}
+      </td>
+      {/* קטגוריה */}
+      <td className="py-3 px-4 text-right">
+        {book.category && (
+          <span className="inline-block px-2 py-0.5 rounded-full text-xs" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
+            {book.category}
+          </span>
+        )}
+      </td>
+      {/* ספר — אחרון (שמאל ב-RTL) */}
+      <td className="py-3 px-4 text-right">
+        <div className="flex items-center gap-2 justify-end">
+          {book.icon && <span className="text-lg">{book.icon}</span>}
+          <div>
+            <div className="font-semibold text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{book.title}</div>
+            <div className="text-xs mt-0.5" style={{ color: "var(--brand-mid)" }}>{book.subtitle}</div>
+          </div>
         </div>
       </td>
     </tr>
@@ -399,12 +405,12 @@ export default function AdminBooks() {
         <table className="w-full" dir="rtl">
           <thead>
             <tr style={{ background: "rgba(196,149,106,0.08)" }}>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>ספר</th>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קטגוריה</th>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>עמודים</th>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קבצים</th>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>סטטוס</th>
               <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>פעולות</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>סטטוס</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קבצים</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>עמודים</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קטגוריה</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>ספר</th>
             </tr>
           </thead>
           <tbody>

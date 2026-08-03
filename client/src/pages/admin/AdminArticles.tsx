@@ -39,23 +39,18 @@ function ArticleRow({ article, onEdit, onDelete, onTogglePublish }: {
 }) {
   return (
     <tr className="border-b hover:bg-amber-50/30 transition-colors" style={{ borderColor: "rgba(196,149,106,0.1)" }}>
+      {/* פעולות — ראשון (ימין ב-RTL) */}
       <td className="py-3 px-4 text-right">
-        <div className="font-semibold text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{article.title}</div>
-        <div className="text-xs mt-0.5" style={{ color: "var(--brand-mid)" }}>{article.slug}</div>
-      </td>
-      <td className="py-3 px-4 text-right">
-        {article.category && (
-          <span className="inline-block px-2 py-0.5 rounded-full text-xs" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
-            {article.category}
-          </span>
-        )}
-      </td>
-      <td className="py-3 px-4 text-center">
-        <div className="flex items-center justify-center gap-1">
-          {article.img && <Image size={14} style={{ color: "var(--brand-gold)" }} />}
-          {article.audioSrc && <Volume2 size={14} style={{ color: "var(--brand-gold)" }} />}
+        <div className="flex items-center justify-start gap-2">
+          <button onClick={() => onEdit(article)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
+            <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
+          </button>
+          <button onClick={() => onDelete(article.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="מחיקה">
+            <Trash2 size={14} style={{ color: "#dc2626" }} />
+          </button>
         </div>
       </td>
+      {/* סטטוס */}
       <td className="py-3 px-4 text-center">
         <button
           onClick={() => onTogglePublish(article.id, article.published ? 0 : 1)}
@@ -69,15 +64,25 @@ function ArticleRow({ article, onEdit, onDelete, onTogglePublish }: {
           {article.published ? "מפורסם" : "מוסתר"}
         </button>
       </td>
+      {/* מדיה */}
       <td className="py-3 px-4 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <button onClick={() => onEdit(article)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
-            <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
-          </button>
-          <button onClick={() => onDelete(article.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="מחיקה">
-            <Trash2 size={14} style={{ color: "#dc2626" }} />
-          </button>
+        <div className="flex items-center justify-center gap-1">
+          {article.img && <Image size={14} style={{ color: "var(--brand-gold)" }} />}
+          {article.audioSrc && <Volume2 size={14} style={{ color: "var(--brand-gold)" }} />}
         </div>
+      </td>
+      {/* קטגוריה */}
+      <td className="py-3 px-4 text-right">
+        {article.category && (
+          <span className="inline-block px-2 py-0.5 rounded-full text-xs" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
+            {article.category}
+          </span>
+        )}
+      </td>
+      {/* כותרת — אחרון (שמאל ב-RTL) */}
+      <td className="py-3 px-4 text-right">
+        <div className="font-semibold text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{article.title}</div>
+        <div className="text-xs mt-0.5" style={{ color: "var(--brand-mid)" }}>{article.slug}</div>
       </td>
     </tr>
   );
@@ -389,11 +394,11 @@ export default function AdminArticles() {
         <table className="w-full" dir="rtl">
           <thead>
             <tr style={{ background: "var(--brand-dark)" }}>
-              <th className="py-3 px-4 text-right text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>כותרת</th>
-              <th className="py-3 px-4 text-right text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>קטגוריה</th>
-              <th className="py-3 px-4 text-center text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>מדיה</th>
+              <th className="py-3 px-4 text-right text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>פעולות</th>
               <th className="py-3 px-4 text-center text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>סטטוס</th>
-              <th className="py-3 px-4 text-center text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>פעולות</th>
+              <th className="py-3 px-4 text-center text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>מדיה</th>
+              <th className="py-3 px-4 text-right text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>קטגוריה</th>
+              <th className="py-3 px-4 text-right text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>כותרת</th>
             </tr>
           </thead>
           <tbody style={{ background: "white" }}>

@@ -69,8 +69,8 @@ export const adminProcedure = t.procedure.use(
 );
 
 /**
- * ownerProcedure — accepts EITHER Manus admin OAuth OR a valid registration
- * token belonging to the OWNER_EMAIL address.
+ * ownerProcedure — accepts EITHER Manus admin OAuth, admin_session cookie,
+ * OR a valid registration token belonging to the OWNER_EMAIL address.
  */
 export const ownerProcedure = t.procedure.use(
   t.middleware(async opts => {
@@ -79,7 +79,12 @@ export const ownerProcedure = t.procedure.use(
     if (ctx.user && ctx.user.role === 'admin') {
       return next({ ctx: { ...ctx, user: ctx.user } });
     }
-    // Path 2: registration token in x-owner-token header
+    // Path 2: admin_session cookie (Railway /admin login)
+    const hasCookieAdmin = await verifyAdminSessionCookie(ctx);
+    if (hasCookieAdmin) {
+      return next({ ctx });
+    }
+    // Path 3: registration token in x-owner-token header
     const authHeader = ctx.req.headers['x-owner-token'] as string | undefined;
     const ownerEmail = ENV.ownerEmail;
     if (authHeader && ownerEmail) {
