@@ -194,7 +194,7 @@ function DonutChart({ segments, total }: { segments: { label: string; value: num
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function AdminDashboard() {
-  const { data, isLoading, error, refetch } = trpc.admin.dashboardStats.useQuery();
+  const { data, isLoading, error, refetch } = trpc.admin.dashboardStats.useQuery(undefined, { retry: false });
 
   if (isLoading) return <DashboardSkeleton />;
 

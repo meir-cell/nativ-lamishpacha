@@ -1,9 +1,8 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import {
   createContact,
   deleteContact,
@@ -40,13 +39,6 @@ import { adminSiteContentRouter } from "./routers_admin/siteContent";
 import { adminBooksRouter } from "./routers_admin/books";
 import { adminFaqRouter } from "./routers_admin/faq";
 
-// Admin-only guard
-const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "admin") {
-    throw new TRPCError({ code: "FORBIDDEN", message: "גישה מורשית למנהלים בלבד" });
-  }
-  return next({ ctx });
-});
 
 export const appRouter = router({
   system: systemRouter,
