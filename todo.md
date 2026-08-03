@@ -99,3 +99,10 @@
 - [x] תיקון getStats — מחזיר 0 בצורה חלקה כשטבלאות ריקות/חסרות
 - [x] הוספת יצירה אוטומטית של כל טבלאות NLP בהפעלת השרת (registrations, lesson_progress, module_exam_results, certificates, satisfaction_surveys, lesson_positions)
 - [x] אישור שנתיב /nlp/admin/updates קיים ב-App.tsx (404 ב-Railway היה בגלל ניסיון גישה ל-/admin/updates ללא nlp/)
+
+## תיקוני RTL טבלאות — אוגוסט 2026
+
+- [x] הזזת עמודת "פעולות" לצד ימין (ראשון ב-RTL) בטבלת ספרים
+- [x] הזזת עמודת "פעולות" לצד ימין (ראשון ב-RTL) בטבלת מאמרים
+- [x] הזזת עמודת "פעולות" לצד ימין (ראשון ב-RTL) בטבלת שאלות נפוצות
+- [x] תיקון ownerProcedure לקבל admin_session cookie (תיקון טעינת דף רישומי NLP)

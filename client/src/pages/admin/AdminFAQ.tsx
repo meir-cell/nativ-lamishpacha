@@ -26,16 +26,25 @@ function FaqRow({ item, onEdit, onDelete, onTogglePublish }: {
   return (
     <>
       <tr className="border-b hover:bg-amber-50/30 transition-colors" style={{ borderColor: "rgba(196,149,106,0.1)" }}>
-        {/* פעולות — ראשון (ימין ב-RTL) */}
+        {/* שאלה — ראשון (ימין ב-RTL) */}
         <td className="py-3 px-4 text-right">
-          <div className="flex items-center justify-start gap-2">
-            <button onClick={() => onEdit(item)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
-              <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
-            </button>
-            <button onClick={() => onDelete(item.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="מחיקה">
-              <Trash2 size={14} style={{ color: "#dc2626" }} />
-            </button>
-          </div>
+          <button
+            className="flex items-center gap-2 text-right w-full"
+            onClick={() => setExpanded(e => !e)}
+          >
+            <span className="text-sm font-semibold" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
+              {item.question}
+            </span>
+            <span className="mr-auto flex-shrink-0">
+              {expanded ? <ChevronUp size={14} style={{ color: "var(--brand-mid)" }} /> : <ChevronDown size={14} style={{ color: "var(--brand-mid)" }} />}
+            </span>
+          </button>
+        </td>
+        {/* קטגוריה */}
+        <td className="py-3 px-4 text-right">
+          <span className="inline-block px-2 py-0.5 rounded-full text-xs" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
+            {item.category}
+          </span>
         </td>
         {/* סטטוס */}
         <td className="py-3 px-4 text-center">
@@ -51,25 +60,16 @@ function FaqRow({ item, onEdit, onDelete, onTogglePublish }: {
             {item.published ? "מפורסם" : "מוסתר"}
           </button>
         </td>
-        {/* קטגוריה */}
-        <td className="py-3 px-4 text-right">
-          <span className="inline-block px-2 py-0.5 rounded-full text-xs" style={{ background: "rgba(196,149,106,0.15)", color: "var(--brand-mid)" }}>
-            {item.category}
-          </span>
-        </td>
-        {/* שאלה — אחרון (שמאל ב-RTL) */}
-        <td className="py-3 px-4 text-right">
-          <button
-            className="flex items-center gap-2 text-right w-full"
-            onClick={() => setExpanded(e => !e)}
-          >
-            <span className="text-sm font-semibold" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>
-              {item.question}
-            </span>
-            <span className="mr-auto flex-shrink-0">
-              {expanded ? <ChevronUp size={14} style={{ color: "var(--brand-mid)" }} /> : <ChevronDown size={14} style={{ color: "var(--brand-mid)" }} />}
-            </span>
-          </button>
+        {/* פעולות — אחרון (שמאל ב-RTL) */}
+        <td className="py-3 px-4 text-center">
+          <div className="flex items-center justify-center gap-2">
+            <button onClick={() => onEdit(item)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
+              <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
+            </button>
+            <button onClick={() => onDelete(item.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="מחיקה">
+              <Trash2 size={14} style={{ color: "#dc2626" }} />
+            </button>
+          </div>
         </td>
       </tr>
       {expanded && (
@@ -295,10 +295,10 @@ export default function AdminFAQ() {
         <table className="w-full" dir="rtl">
           <thead>
             <tr style={{ background: "rgba(196,149,106,0.08)" }}>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>פעולות</th>
-              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>סטטוס</th>
-              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קטגוריה</th>
               <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>שאלה</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קטגוריה</th>
+              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>סטטוס</th>
+              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>פעולות</th>
             </tr>
           </thead>
           <tbody>
