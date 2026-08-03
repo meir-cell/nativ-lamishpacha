@@ -6,6 +6,13 @@ import { eq } from "drizzle-orm";
 import { verifyAdmin } from "./_adminAuth";
 
 export const adminSiteContentRouter = router({
+  // Public endpoint — no admin auth required, used by frontend pages
+  getPublic: publicProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) return [];
+    return db.select().from(siteContent);
+  }),
+
   getAll: publicProcedure
     .input(z.object({ section: z.string().optional() }))
     .query(async ({ ctx, input }) => {

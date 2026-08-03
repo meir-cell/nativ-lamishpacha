@@ -8,6 +8,7 @@ import {
   createContact,
   deleteContact,
   getAllContacts,
+  getDashboardStats,
   getContactStats,
   updateContactStatus,
 } from "./db";
@@ -88,6 +89,9 @@ export const appRouter = router({
   admin: router({
     stats: adminProcedure.query(async () => {
       return getContactStats();
+    }),
+    dashboardStats: adminProcedure.query(async () => {
+      return getDashboardStats();
     }),
     listContacts: adminProcedure.query(async () => {
       return getAllContacts();

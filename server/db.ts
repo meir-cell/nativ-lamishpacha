@@ -4,6 +4,7 @@ import {
   contacts, InsertContact, InsertUser, users,
   lessonUpdates, lessonExtraSections, lessonExtraKeyPoints,
   lessonExtraExercises, researchRuns,
+  articles, registrations,
   type InsertLessonUpdate,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -278,4 +279,67 @@ export async function getRecentResearchRuns(limit = 20) {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(researchRuns).orderBy(desc(researchRuns.ranAt)).limit(limit);
+}
+
+// ── Dashboard Statistics ──────────────────────────────────────────────────────
+
+export async function getDashboardStats() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Contacts by month (last 6 months)
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const allContacts = await db.select().from(contacts);
+  const allArticles = await db.select({ id: articles.id, published: articles.published, createdAt: articles.createdAt }).from(articles);
+  const allRegistrations = await db.select({ id: registrations.id, createdAt: registrations.createdAt }).from(registrations);
+
+  // Monthly contacts (last 6 months)
+  const monthlyContacts: Record<string, number> = {};
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    monthlyContacts[key] = 0;
+  }
+  for (const c of allContacts) {
+    const d = new Date(c.createdAt);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    if (key in monthlyContacts) monthlyContacts[key]++;
+  }
+
+  // Monthly registrations (last 6 months)
+  const monthlyRegistrations: Record<string, number> = {};
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    monthlyRegistrations[key] = 0;
+  }
+  for (const r of allRegistrations) {
+    const d = new Date(r.createdAt);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    if (key in monthlyRegistrations) monthlyRegistrations[key]++;
+  }
+
+  // Contact status breakdown
+  const contactStatus = {
+    new: allContacts.filter(c => c.status === "new").length,
+    read: allContacts.filter(c => c.status === "read").length,
+    replied: allContacts.filter(c => c.status === "replied").length,
+  };
+
+  return {
+    totals: {
+      contacts: allContacts.length,
+      articles: allArticles.length,
+      publishedArticles: allArticles.filter(a => a.published).length,
+      registrations: allRegistrations.length,
+      newContacts: contactStatus.new,
+    },
+    contactStatus,
+    monthlyContacts: Object.entries(monthlyContacts).map(([month, count]) => ({ month, count })),
+    monthlyRegistrations: Object.entries(monthlyRegistrations).map(([month, count]) => ({ month, count })),
+  };
 }

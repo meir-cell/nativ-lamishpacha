@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const HERO_IMG = "/manus-storage/hero_family_13d15f66.webp";
 const ABOUT_IMG = "/manus-storage/courtroom_93b9f0ff.jpg";
@@ -43,7 +44,7 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
 }
 
 // ── HERO ──────────────────────────────────────────────────────────────────────
-function HeroSection() {
+function HeroSection({ sc }: { sc: (key: string, fallback?: string) => string }) {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background image */}
@@ -57,34 +58,33 @@ function HeroSection() {
       <div className="relative z-10 container mx-auto px-4 py-32 flex flex-col items-end text-right">
         <AnimatedSection delay={100}>
           <div className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-6" style={{ background: "rgba(196,149,106,0.25)", color: "#F5EFE6", border: "1px solid rgba(196,149,106,0.5)" }}>
-            פגישת ייעוץ ראשונית — ללא עלות וללא התחייבות
+            {sc("hero.badge")}
           </div>
         </AnimatedSection>
 
         <AnimatedSection delay={200}>
           <h1 className="text-4xl md:text-6xl font-black leading-tight mb-4 text-white" style={{ fontFamily: "'Noto Serif Hebrew', serif", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>
-            הדרך לפתרון
+            {sc("hero.title.line1")}
             <br />
-            <span style={{ color: "#C4956A" }}>מתחילה בשיחה אחת</span>
+            <span style={{ color: "#C4956A" }}>{sc("hero.title.line2")}</span>
           </h1>
         </AnimatedSection>
 
         <AnimatedSection delay={300}>
           <p className="text-lg md:text-xl text-white/90 max-w-xl mb-8 leading-relaxed" style={{ fontFamily: "'Assistant', sans-serif" }}>
-            מאיר שמעון עשור — 33 שנות ניסיון בטיפול זוגי, גישור טיפולי וייעוץ משפטי בבתי הדין הרבניים.
-            ליווי מקצועי, דיסקרטי ואנושי בצמתי החיים המשפחתיים.
+            {sc("hero.subtitle")}
           </p>
         </AnimatedSection>
 
         <AnimatedSection delay={400}>
           <div className="flex flex-wrap gap-3 justify-end">
             <a href="#contact" className="btn-cta text-base">
-              קבע פגישת ייעוץ חינם
+              {sc("hero.cta.primary")}
               <ArrowLeft size={18} />
             </a>
-            <a href="tel:0542111288" className="btn-outline" style={{ color: "white", borderColor: "rgba(255,255,255,0.6)" }}>
+            <a href={`tel:${sc("hero.phone").replace(/-/g, "")}`} className="btn-outline" style={{ color: "white", borderColor: "rgba(255,255,255,0.6)" }}>
               <Phone size={16} />
-              054-2111-288
+              {sc("hero.phone")}
             </a>
           </div>
         </AnimatedSection>
@@ -92,9 +92,9 @@ function HeroSection() {
         {/* Stats */}
         <AnimatedSection delay={500} className="mt-16 flex gap-8 flex-wrap justify-end">
           {[
-            { num: "33+", label: "שנות ניסיון" },
-            { num: "3", label: "אזורים בארץ" },
-            { num: "100%", label: "דיסקרטיות" },
+            { num: sc("hero.stat1.num"), label: sc("hero.stat1.label") },
+            { num: sc("hero.stat2.num"), label: sc("hero.stat2.label") },
+            { num: sc("hero.stat3.num"), label: sc("hero.stat3.label") },
           ].map((s) => (
             <div key={s.label} className="text-center flex flex-col items-center">
               <div className="text-3xl font-black" style={{ color: "#C4956A", fontFamily: "'Noto Serif Hebrew', serif" }}>{s.num}</div>
@@ -182,7 +182,7 @@ function ServicesSection() {
 }
 
 // ── ABOUT ─────────────────────────────────────────────────────────────────────
-function AboutSection() {
+function AboutSection({ sc }: { sc: (key: string, fallback?: string) => string }) {
   const expertise = [
     "גישור ויישוב סכסוכים",
     "עריכת הסכמי גירושין והסכמי ממון",
@@ -223,10 +223,10 @@ function AboutSection() {
               אודות
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-5 section-title" style={{ fontFamily: "'Noto Serif Hebrew', serif", color: "var(--brand-dark)" }}>
-              מאיר שמעון עשור
+              {sc("about.title")}
             </h2>
             <p className="text-base leading-relaxed mb-4" style={{ color: "#4A3728", fontFamily: "'Assistant', sans-serif" }}>
-              למעלה מ־33 שנות ניסיון בליווי יחידים, זוגות ומשפחות בהתמודדות עם סכסוכים ואתגרי חיים מורכבים.
+              {sc("about.bio")}
             </p>
             <p className="text-base leading-relaxed mb-6" style={{ color: "#4A3728", fontFamily: "'Assistant', sans-serif" }}>
               שילוב ייחודי בין ידע וניסיון משפטי והלכתי לבין הבנה וכלים מעולם הטיפול והגישור — המאפשרים מתן מענה מקצועי, מקיף ורגיש. גישה זו מסייעת לבחון כל מקרה לעומקו ולמצוא פתרונות המותאמים לצרכים האישיים והמשפחתיים של כל לקוח.
@@ -618,7 +618,7 @@ function ArticlesSection() {
 }
 
 // ── CONTACT ───────────────────────────────────────────────────────────────────
-function ContactSection() {
+function ContactSection({ sc }: { sc: (key: string, fallback?: string) => string }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [sent, setSent] = useState(false);
 
@@ -663,8 +663,8 @@ function ContactSection() {
             {/* Contact cards */}
             <div className="space-y-3 mb-4 flex-1">
               {[
-                { icon: Phone, label: "054-2111-288", sub: "זמין גם בוואצאפ", href: "tel:0542111288" },
-                { icon: Mail, label: "meir@ynrcollege.org", sub: "מייל אישי", href: "mailto:meir@ynrcollege.org" },
+                { icon: Phone, label: sc("contact.phone"), sub: "זמין גם בוואצאפ", href: `tel:${sc("contact.phone").replace(/-/g, "")}` },
+                { icon: Mail, label: sc("contact.email"), sub: "מייל אישי", href: `mailto:${sc("contact.email")}` },
                 { icon: MapPin, label: "באר שבע | ירושלים | בני ברק", sub: "שלושה מרכזים", href: "#about" },
                 { icon: Clock, label: "א׳–ה׳: 09:00–20:00", sub: "ו׳: 09:00–13:00", href: "#contact" },
               ].map((item) => (
@@ -797,7 +797,7 @@ function ContactSection() {
 }
 
 // ── FOOTER ────────────────────────────────────────────────────────────────────
-function Footer() {
+function Footer({ sc }: { sc: (key: string, fallback?: string) => string }) {
   const LOGO_URL = "/manus-storage/logo_nativ_630a6168.png";
 
   return (
@@ -818,13 +818,13 @@ function Footer() {
 
           {/* Contact row */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm" style={{ color: "rgba(255,255,255,0.65)", fontFamily: "'Assistant', sans-serif" }}>
-            <a href="tel:0542111288" className="flex items-center gap-2 hover:text-white transition-colors">
+            <a href={`tel:${sc("contact.phone").replace(/-/g, "")}`} className="flex items-center gap-2 hover:text-white transition-colors">
               <Phone size={14} style={{ color: "#C4956A" }} />
-              054-2111-288
+              {sc("contact.phone")}
             </a>
-            <a href="mailto:meir@ynrcollege.org" className="flex items-center gap-2 hover:text-white transition-colors">
+            <a href={`mailto:${sc("contact.email")}`} className="flex items-center gap-2 hover:text-white transition-colors">
               <Mail size={14} style={{ color: "#C4956A" }} />
-              meir@ynrcollege.org
+              {sc("contact.email")}
             </a>
             <span className="flex items-center gap-2">
               <MapPin size={14} style={{ color: "#C4956A" }} />
@@ -879,7 +879,7 @@ function Footer() {
         {/* Bottom bar */}
         <div className="border-t mt-10 pt-5" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-5 text-xs" style={{ fontFamily: "'Assistant', sans-serif", color: "rgba(255,255,255,0.35)" }}>
-            <span>© 2026 נתיב למשפחה — מאיר שמעון עשור. כל הזכויות שמורות.</span>
+            <span>{sc("footer.copyright", "© 2026 נתיב למשפחה — מאיר שמעון עשור. כל הזכויות שמורות.")}</span>
             <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
             <a href="/accessibility" className="hover:text-white/60 transition-colors">הצהרת נגישות</a>
             <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
@@ -895,17 +895,18 @@ function Footer() {
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function Home() {
   useSEO("home");
+  const { get: sc } = useSiteContent();
   return (
     <div className="min-h-screen" dir="rtl">
       <Navbar />
-      <HeroSection />
+      <HeroSection sc={sc} />
       <ServicesSection />
-      <AboutSection />
+      <AboutSection sc={sc} />
       {/* TestimonialsSection removed */}
       <NLPCourseBanner />
       <ArticlesSection />
-      <ContactSection />
-      <Footer />
+      <ContactSection sc={sc} />
+      <Footer sc={sc} />
       <WhatsAppFloat />
     </div>
   );
