@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 import { useState, useEffect } from "react";
 import { Lock, ArrowLeft, AlertCircle, MessageCircle, Mail, Send } from "lucide-react";
 
@@ -6,6 +7,7 @@ const OWNER_EMAIL = "meir@ynrcollege.org";
 const SITE_URL = "https://www.nativ-lamishpacha.com";
 
 export default function Payment() {
+  useSEO("payment");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [clientEmail, setClientEmail] = useState("");

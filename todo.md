@@ -51,7 +51,7 @@
 - [x] הוספת טבלת seo_settings ל-DB (page_key, title, description, og_title, og_description, og_image, keywords, canonical)
 - [x] הוספת tRPC procedures: seo.getAll, seo.update
 - [x] בניית AdminSEO.tsx — טבלה עם כל דפי האתר, עריכת meta tags לכל דף
-- [ ] שילוב SEO settings בדפי האתר (dynamic meta tags)
+- [x] שילוב SEO settings בדפי האתר (dynamic meta tags) — useSEO hook בכל דפי האתר הראשיים (Home, CoupleTherapy, Mediation, LegalAdvice, Articles, FAQ, Books)
 - [x] הוספת route /admin/seo (הוסף כ-tab)
 
 ### ניהול קורס NLP

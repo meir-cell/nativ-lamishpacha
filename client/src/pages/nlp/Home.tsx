@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 // קורס NLP Practitioner — עיצוב מקצועי ומינימליסטי
 // Design: Clean Professional Light (Udemy/Coursera style) | RTL Hebrew
 
@@ -29,6 +30,7 @@ const SIDEBAR_TEXT = "oklch(0.92 0.005 250)";
 const SIDEBAR_MUTED = "oklch(0.55 0.01 250)";
 
 export default function Home() {
+  useSEO("nlp");
   const { user: authUser, logout } = useAuth();
 
   // ── Registration Gate ──
