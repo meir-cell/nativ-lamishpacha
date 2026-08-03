@@ -15,6 +15,10 @@ function getAdminToken(ctx: any): string | null {
 
 export async function verifyAdmin(ctx: any): Promise<void> {
   const token = getAdminToken(ctx);
+  // Debug: log cookie presence (not value) to help diagnose production issues
+  const cookieHeader = ctx.req?.headers?.cookie || "";
+  const parsedCookies = ctx.req?.cookies || {};
+  console.log(`[AdminAuth] cookie header length: ${cookieHeader.length}, parsed keys: ${Object.keys(parsedCookies).join(',')}, token found: ${!!token}`);
   if (!token) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Admin session required" });
   }
