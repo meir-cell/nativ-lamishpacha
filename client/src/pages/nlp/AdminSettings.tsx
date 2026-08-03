@@ -1,6 +1,6 @@
 // AdminSettings — דף הגדרות מנהל עם בדיקת SMTP ומידע מערכת
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useNlpAdminAuth } from "@/hooks/useNlpAdminAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
@@ -11,16 +11,8 @@ import { Link } from "wouter";
 import { NaturalSpeechController } from "@/lib/naturalSpeech";
 
 export default function AdminSettings() {
-  const { user: authUser, loading: authLoading } = useAuth();
-  const ownerToken = typeof window !== "undefined" ? localStorage.getItem("nlp_course_token") || "" : "";
-  const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin-token") || "" : "";
-
-  // Determine if user has admin access via any method
-  const isAdminViaOAuth = authUser?.role === "admin";
-  const hasTokenAccess = !!(ownerToken || adminToken);
-  const hasAccess = isAdminViaOAuth || hasTokenAccess;
-
-  // For API calls, pass tokens if available (OAuth is handled server-side via ctx.user)
+  const { loading: authLoading, hasAccess, ownerToken, adminToken } = useNlpAdminAuth();
+  const isAdminViaOAuth = hasAccess;
   const effectiveAdminSecret = adminToken || undefined;
   const effectiveOwnerToken = ownerToken || undefined;
 
@@ -130,7 +122,7 @@ export default function AdminSettings() {
             <CheckCircle size={18} style={{ color: "#80e080" }} />
             <div>
               <p className="text-sm font-semibold" style={{ color: "#80e080" }}>מחובר כמנהל</p>
-              <p className="text-xs" style={{ color: "#8888aa" }}>{authUser?.name} ({authUser?.email})</p>
+              <p className="text-xs" style={{ color: "#8888aa" }}>מנהל מחובר</p>
             </div>
           </div>
         )}

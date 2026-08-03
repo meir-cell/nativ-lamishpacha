@@ -84,3 +84,10 @@
 - [x] הוספת פרוצדורת tRPC ציבורית (publicSiteContent.getAll) ללא אימות אדמין
 - [x] חיבור Home.tsx לנתוני site_content מה-DB (החלפת hardcoded texts)
 - [x] נרמול מפתחות legacy ב-site_content (hero.title_line1 → hero.title.line1)
+
+## שיפורי UX — אוגוסט 2026
+
+- [ ] skeleton loader לדשבורד סטטיסטיקות בזמן טעינת נתונים
+- [ ] חיפוש וסינון בפאנל ניהול ספרים
+- [ ] חיפוש וסינון בפאנל ניהול שאלות נפוצות
+- [ ] toast notifications לכל פעולות CRUD (יצירה, עדכון, מחיקה)

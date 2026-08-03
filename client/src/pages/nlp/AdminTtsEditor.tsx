@@ -8,7 +8,7 @@
  * 5. Save corrections to the pronunciation overrides dictionary
  */
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useNlpAdminAuth } from "@/hooks/useNlpAdminAuth";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
@@ -28,11 +28,8 @@ type FixMode = "nikud" | "spelling" | "phonetic" | "speed" | null;
 
 export default function AdminTtsEditor() {
   const { ttsSettings } = useTtsSettings();
-  const { user: authUser, loading: authLoading } = useAuth();
-  const adminToken = typeof window !== 'undefined' ? localStorage.getItem("admin-token") || "" : "";
-  const ownerToken = typeof window !== 'undefined' ? localStorage.getItem("nlp_course_token") || "" : "";
-  const isAdminViaOAuth = authUser?.role === "admin";
-  const hasAccess = isAdminViaOAuth || !!(adminToken || ownerToken);
+  const { loading: authLoading, hasAccess, ownerToken, adminToken } = useNlpAdminAuth();
+  const isAdminViaOAuth = hasAccess;
   const trpcUtils = trpc.useUtils();
   const trpcClientRef = useRef(trpcUtils.client);
 

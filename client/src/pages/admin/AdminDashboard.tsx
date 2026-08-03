@@ -8,6 +8,113 @@ function formatMonthLabel(key: string) {
   return `${MONTH_NAMES_HE[parseInt(month) - 1]} ${year}`;
 }
 
+// ── SKELETON COMPONENTS ───────────────────────────────────────────────────────
+function SkeletonBlock({ className = "", style = {} }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <div
+      className={`rounded-lg ${className}`}
+      style={{
+        background: "linear-gradient(90deg, #f0ebe4 25%, #e8e0d5 50%, #f0ebe4 75%)",
+        backgroundSize: "200% 100%",
+        animation: "skeleton-shimmer 1.5s infinite",
+        ...style,
+      }}
+    />
+  );
+}
+
+function KPICardSkeleton() {
+  return (
+    <div className="rounded-2xl p-5" style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)" }}>
+      <div className="flex items-center justify-between mb-3">
+        <SkeletonBlock style={{ width: 40, height: 40, borderRadius: 12 }} />
+        <SkeletonBlock style={{ width: 48, height: 36, borderRadius: 8 }} />
+      </div>
+      <SkeletonBlock style={{ width: "60%", height: 14, marginRight: "auto" }} />
+    </div>
+  );
+}
+
+function ChartCardSkeleton({ height = 160 }: { height?: number }) {
+  return (
+    <div className="rounded-2xl p-6" style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)" }}>
+      <div className="flex items-center gap-2 mb-4 justify-end">
+        <SkeletonBlock style={{ width: 140, height: 20, borderRadius: 6 }} />
+        <SkeletonBlock style={{ width: 20, height: 20, borderRadius: "50%" }} />
+      </div>
+      <div className="flex items-end gap-2" style={{ height }}>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SkeletonBlock
+            key={i}
+            className="flex-1"
+            style={{ height: `${30 + Math.random() * 60}%`, borderRadius: "6px 6px 0 0" }}
+          />
+        ))}
+      </div>
+      <SkeletonBlock style={{ width: "80%", height: 12, marginTop: 12, marginRight: "auto" }} />
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div dir="rtl" className="space-y-6">
+      {/* Header skeleton */}
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <SkeletonBlock style={{ width: 200, height: 28 }} />
+          <SkeletonBlock style={{ width: 160, height: 16 }} />
+        </div>
+        <SkeletonBlock style={{ width: 80, height: 36, borderRadius: 12 }} />
+      </div>
+
+      {/* KPI cards skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => <KPICardSkeleton key={i} />)}
+      </div>
+
+      {/* Charts row skeleton */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <ChartCardSkeleton height={128} />
+        <div className="rounded-2xl p-6" style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)" }}>
+          <div className="flex items-center gap-2 mb-4 justify-end">
+            <SkeletonBlock style={{ width: 100, height: 20, borderRadius: 6 }} />
+            <SkeletonBlock style={{ width: 20, height: 20, borderRadius: "50%" }} />
+          </div>
+          <div className="flex items-center gap-6">
+            <SkeletonBlock style={{ width: 100, height: 100, borderRadius: "50%" }} />
+            <div className="space-y-2 flex-1">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <SkeletonBlock key={i} style={{ width: `${60 + i * 10}%`, height: 14 }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* NLP chart skeleton */}
+      <ChartCardSkeleton height={128} />
+
+      {/* Articles summary skeleton */}
+      <div className="rounded-2xl p-6" style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)" }}>
+        <div className="flex items-center gap-2 mb-4 justify-end">
+          <SkeletonBlock style={{ width: 80, height: 20, borderRadius: 6 }} />
+          <SkeletonBlock style={{ width: 20, height: 20, borderRadius: "50%" }} />
+        </div>
+        <div className="flex gap-6 justify-end">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="text-right space-y-1">
+              <SkeletonBlock style={{ width: 48, height: 36, borderRadius: 8, marginRight: "auto" }} />
+              <SkeletonBlock style={{ width: 60, height: 14 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── CHART COMPONENTS ──────────────────────────────────────────────────────────
 function BarChartSimple({ data, color, label }: { data: { month: string; count: number }[]; color: string; label: string }) {
   const max = Math.max(...data.map(d => d.count), 1);
   return (
@@ -18,7 +125,7 @@ function BarChartSimple({ data, color, label }: { data: { month: string; count: 
           <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
             <div className="text-xs font-bold" style={{ color }}>{d.count > 0 ? d.count : ""}</div>
             <div
-              className="w-full rounded-t-md transition-all"
+              className="w-full rounded-t-md transition-all duration-500"
               style={{
                 background: color,
                 height: `${Math.max((d.count / max) * 100, d.count > 0 ? 8 : 2)}%`,
@@ -85,16 +192,11 @@ function DonutChart({ segments, total }: { segments: { label: string; value: num
   );
 }
 
+// ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { data, isLoading, error, refetch } = trpc.admin.dashboardStats.useQuery();
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <RefreshCw size={32} className="animate-spin" style={{ color: "var(--brand-gold)" }} />
-      </div>
-    );
-  }
+  if (isLoading) return <DashboardSkeleton />;
 
   if (error) {
     return (
@@ -124,6 +226,14 @@ export default function AdminDashboard() {
 
   return (
     <div dir="rtl" className="space-y-6">
+      {/* Shimmer keyframe injected once */}
+      <style>{`
+        @keyframes skeleton-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -161,7 +271,6 @@ export default function AdminDashboard() {
 
       {/* Charts row */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Monthly contacts chart */}
         <div className="rounded-2xl p-6" style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)" }}>
           <div className="flex items-center gap-2 mb-4 justify-end">
             <h3 className="font-bold text-right" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>פניות לאורך זמן</h3>
@@ -170,7 +279,6 @@ export default function AdminDashboard() {
           <BarChartSimple data={monthlyContacts} color="var(--brand-gold)" label="פניות חדשות לפי חודש (6 חודשים אחרונים)" />
         </div>
 
-        {/* Contact status donut */}
         <div className="rounded-2xl p-6" style={{ background: "white", border: "1px solid rgba(196,149,106,0.15)" }}>
           <div className="flex items-center gap-2 mb-4 justify-end">
             <h3 className="font-bold text-right" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>סטטוס פניות</h3>

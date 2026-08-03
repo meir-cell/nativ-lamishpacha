@@ -14,7 +14,7 @@ import AdminNLP from "./admin/AdminNLP";
 import AdminSiteContent from "./admin/AdminSiteContent";
 import AdminBooks from "./admin/AdminBooks";
 import AdminFAQ from "./admin/AdminFAQ";
-import AdminStatsDashboard from "./admin/AdminDashboard";
+import AdminStatsDashboardPage from "./admin/AdminDashboard";
 
 type ContactStatus = "new" | "read" | "replied";
 type AdminTab = "dashboard" | "contacts" | "articles" | "books" | "faq" | "seo" | "nlp" | "site-content" | "backup" | "log";
@@ -377,7 +377,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         )}
 
-        {activeTab === "dashboard" && <AdminStatsDashboard />}
+        {activeTab === "dashboard" && <AdminStatsDashboardPage />}
         {activeTab === "articles" && <AdminArticles />}
         {activeTab === "books" && <AdminBooks />}
         {activeTab === "faq" && <AdminFAQ />}

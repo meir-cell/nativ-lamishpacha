@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useNlpAdminAuth } from "@/hooks/useNlpAdminAuth";
 import { Link } from "wouter";
 import {
   Users, Award, BookOpen, BarChart3, MessageSquare, FileText,
@@ -7,14 +7,7 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboard() {
-  const { user: authUser, loading: authLoading } = useAuth();
-  const ownerToken = typeof window !== "undefined" ? localStorage.getItem("nlp_course_token") || "" : "";
-  const adminToken = typeof window !== "undefined" ? localStorage.getItem("admin-token") || "" : "";
-
-  // Determine if user has admin access via any method
-  const isAdminViaOAuth = authUser?.role === "admin";
-  const hasTokenAccess = !!(ownerToken || adminToken);
-  const hasAccess = isAdminViaOAuth || hasTokenAccess;
+  const { loading: authLoading, hasAccess, ownerToken, adminToken } = useNlpAdminAuth();
 
   const { data: stats, isLoading } = trpc.nlpAdmin.getStats.useQuery(
     { ownerToken: ownerToken || undefined, adminSecret: adminToken || undefined },
