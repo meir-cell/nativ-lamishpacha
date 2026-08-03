@@ -18,11 +18,6 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 
   if (!isUnauthorized) return;
 
-  // Do NOT redirect to Manus OAuth when on /admin or /nlp/admin routes
-  // These pages use their own standalone username/password authentication
-  const path = window.location.pathname;
-  if (path === "/admin" || path.startsWith("/admin/") || path.startsWith("/nlp/admin")) return;
-
   window.location.href = getLoginUrl();
 };
 

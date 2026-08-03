@@ -143,18 +143,17 @@ export default function Navbar() {
               {link.label}
             </button>
           ))}
-        </nav>
 
-        {/* Admin button (desktop) */}
-        <a
-          href="/admin"
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
-          style={{ color: "var(--brand-mid)", border: "1px solid rgba(196,149,106,0.25)", fontFamily: "'Assistant', sans-serif" }}
-          title="כניסה לממשק ניהול"
-        >
-          <Settings size={13} />
-          ניהול
-        </a>
+          {/* Admin button */}
+          <a
+            href="/admin"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
+            style={{ background: "rgba(92,64,51,0.08)", color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}
+          >
+            <Settings size={13} />
+            ניהול
+          </a>
+        </nav>
 
         {/* Mobile menu toggle */}
         <button
@@ -218,11 +217,11 @@ export default function Navbar() {
             </a>
             <a
               href="/admin"
+              className="flex items-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-amber-50 text-right"
+              style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-colors hover:bg-amber-50 text-right mt-1"
-              style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}
             >
-              <Settings size={15} />
+              <Settings size={14} />
               ניהול
             </a>
           </div>
