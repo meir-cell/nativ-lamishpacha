@@ -23,8 +23,8 @@ const adminInput = z.object({
   ownerToken: z.string().optional(),
 });
 
-/** Verify admin access — by secret, owner token, or OAuth admin user */
-async function checkAdmin(input: { adminSecret?: string; ownerToken?: string }, user?: User | null) {
+/** Verify admin access — by secret, owner token, OAuth admin user, or admin_session cookie */
+async function checkAdmin(input: { adminSecret?: string; ownerToken?: string }, user?: User | null, ctx?: any) {
   // Method 1: OAuth admin user
   if (user && user.role === "admin") {
     return; // Access granted — OAuth admin
@@ -49,6 +49,24 @@ async function checkAdmin(input: { adminSecret?: string; ownerToken?: string }, 
     }
   }
 
+  // Method 4: admin_session cookie (set by /admin login on Railway)
+  if (ctx?.req) {
+    try {
+      const parsed = ctx.req?.cookies?.admin_session;
+      const cookieHeader = ctx.req?.headers?.cookie || "";
+      const match = cookieHeader.match(/admin_session=([^;]+)/);
+      const token = parsed || (match ? match[1] : null);
+      if (token) {
+        const { jwtVerify } = await import("jose");
+        const jwtSecret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret");
+        await jwtVerify(token, jwtSecret);
+        return; // Access granted — admin_session cookie
+      }
+    } catch {
+      // Cookie invalid, fall through
+    }
+  }
+
   throw new TRPCError({ code: "UNAUTHORIZED", message: "גישה אסורה" });
 }
 
@@ -60,7 +78,7 @@ export const adminRouter = router({
   testSmtp: publicProcedure
     .input(adminInput)
     .mutation(async ({ input, ctx }) => {
-      await checkAdmin(input, ctx.user);
+      await checkAdmin(input, ctx.user, ctx);
 
       const host = process.env.SMTP_HOST;
       const port = parseInt(process.env.SMTP_PORT || "587", 10);
@@ -104,7 +122,7 @@ export const adminRouter = router({
   getStats: publicProcedure
     .input(adminInput)
     .query(async ({ input, ctx }) => {
-      await checkAdmin(input, ctx.user);
+      await checkAdmin(input, ctx.user, ctx);
 
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
