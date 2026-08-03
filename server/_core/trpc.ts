@@ -32,20 +32,39 @@ const requireUser = t.middleware(async opts => {
 
 export const protectedProcedure = t.procedure.use(requireUser);
 
+// Helper: verify admin_session cookie JWT
+async function verifyAdminSessionCookie(ctx: TrpcContext): Promise<boolean> {
+  try {
+    const parsed = (ctx.req as any)?.cookies?.admin_session;
+    const cookieHeader = (ctx.req as any)?.headers?.cookie || "";
+    const match = cookieHeader.match(/admin_session=([^;]+)/);
+    const token = parsed || (match ? match[1] : null);
+    if (!token) return false;
+    const { jwtVerify } = await import("jose");
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret");
+    await jwtVerify(token, secret);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const adminProcedure = t.procedure.use(
   t.middleware(async opts => {
     const { ctx, next } = opts;
 
-    if (!ctx.user || ctx.user.role !== 'admin') {
-      throw new TRPCError({ code: "FORBIDDEN", message: NOT_ADMIN_ERR_MSG });
+    // Path 1: Manus OAuth admin
+    if (ctx.user && ctx.user.role === 'admin') {
+      return next({ ctx: { ...ctx, user: ctx.user } });
     }
 
-    return next({
-      ctx: {
-        ...ctx,
-        user: ctx.user,
-      },
-    });
+    // Path 2: admin_session cookie (Railway /admin login)
+    const hasCookieAdmin = await verifyAdminSessionCookie(ctx);
+    if (hasCookieAdmin) {
+      return next({ ctx });
+    }
+
+    throw new TRPCError({ code: "FORBIDDEN", message: NOT_ADMIN_ERR_MSG });
   }),
 );
 
