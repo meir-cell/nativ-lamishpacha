@@ -125,6 +125,84 @@ async function startServer() {
           updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
       `);
+      // NLP course tables
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS registrations (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          fullName VARCHAR(200) NOT NULL,
+          email VARCHAR(320) NOT NULL UNIQUE,
+          phone VARCHAR(30) NOT NULL,
+          passwordHash VARCHAR(100) NOT NULL,
+          token VARCHAR(512) NOT NULL DEFAULT '',
+          emailOptIn TINYINT NOT NULL DEFAULT 0,
+          unsubscribeToken VARCHAR(128),
+          firstLessonEmailSent TINYINT NOT NULL DEFAULT 0,
+          ipAddress VARCHAR(64),
+          passwordResetToken VARCHAR(128),
+          passwordResetExpiry TIMESTAMP NULL,
+          lastActivityAt TIMESTAMP NULL,
+          reEngagementEmailSent TINYINT NOT NULL DEFAULT 0,
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS lesson_progress (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          registrationId INT NOT NULL,
+          lessonId INT NOT NULL,
+          completedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS module_exam_results (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          registrationId INT NOT NULL,
+          moduleId INT NOT NULL,
+          score INT NOT NULL,
+          passed TINYINT NOT NULL,
+          attempt INT NOT NULL DEFAULT 1,
+          examVersion VARCHAR(1) NOT NULL DEFAULT 'A',
+          completedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS certificates (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          registrationId INT NOT NULL,
+          fullName VARCHAR(200) NOT NULL,
+          totalHours INT NOT NULL,
+          moduleCount INT NOT NULL,
+          lessonCount INT NOT NULL,
+          certNumber VARCHAR(30) NOT NULL UNIQUE,
+          pdfKey VARCHAR(500),
+          pdfUrl VARCHAR(1000),
+          emailSent TINYINT NOT NULL DEFAULT 0,
+          issuedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS satisfaction_surveys (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          registrationId INT NOT NULL,
+          moduleId INT NOT NULL,
+          overallRating INT NOT NULL,
+          contentRating INT NOT NULL,
+          uxRating INT NOT NULL,
+          relevanceRating INT NOT NULL,
+          recommendRating INT NOT NULL,
+          comment TEXT,
+          submittedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await (dbConn as any).$client.promise().execute(`
+        CREATE TABLE IF NOT EXISTS lesson_positions (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          registrationId INT NOT NULL UNIQUE,
+          lessonId INT NOT NULL,
+          slideIndex INT NOT NULL DEFAULT 0,
+          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+      `);
       console.log("[Startup] Admin tables ensured");
     }
   } catch (e) {

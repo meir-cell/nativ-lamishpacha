@@ -109,27 +109,50 @@ export const adminRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
 
-      const [totalRegs] = await db.select({ count: count() }).from(registrations);
-      const [totalCerts] = await db.select({ count: count() }).from(certificates);
-      const [totalExams] = await db.select({ count: count() }).from(moduleExamResults);
-      const [totalLessons] = await db.select({ count: count() }).from(lessonProgress);
-      const [optedIn] = await db
-        .select({ count: count() })
-        .from(registrations)
-        .where(eq(registrations.emailOptIn, true));
-
       const smtpConfigured = !!(
         process.env.SMTP_HOST &&
         process.env.SMTP_USER &&
         process.env.SMTP_PASS
       );
 
+      // Query each table separately with error handling — tables may not exist yet on fresh deployments
+      let totalRegistrations = 0;
+      let totalCertificates = 0;
+      let totalExamResults = 0;
+      let totalLessonCompletions = 0;
+      let emailOptInCount = 0;
+
+      try {
+        const [totalRegs] = await db.select({ count: count() }).from(registrations);
+        totalRegistrations = Number(totalRegs.count) || 0;
+        const [optedIn] = await db
+          .select({ count: count() })
+          .from(registrations)
+          .where(eq(registrations.emailOptIn, true));
+        emailOptInCount = Number(optedIn.count) || 0;
+      } catch { /* table may not exist yet */ }
+
+      try {
+        const [totalCerts] = await db.select({ count: count() }).from(certificates);
+        totalCertificates = Number(totalCerts.count) || 0;
+      } catch { /* table may not exist yet */ }
+
+      try {
+        const [totalExams] = await db.select({ count: count() }).from(moduleExamResults);
+        totalExamResults = Number(totalExams.count) || 0;
+      } catch { /* table may not exist yet */ }
+
+      try {
+        const [totalLessons] = await db.select({ count: count() }).from(lessonProgress);
+        totalLessonCompletions = Number(totalLessons.count) || 0;
+      } catch { /* table may not exist yet */ }
+
       return {
-        totalRegistrations: totalRegs.count,
-        totalCertificates: totalCerts.count,
-        totalExamResults: totalExams.count,
-        totalLessonCompletions: totalLessons.count,
-        emailOptInCount: optedIn.count,
+        totalRegistrations,
+        totalCertificates,
+        totalExamResults,
+        totalLessonCompletions,
+        emailOptInCount,
         smtpConfigured,
         smtpHost: process.env.SMTP_HOST || null,
       };

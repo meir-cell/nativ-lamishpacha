@@ -71,7 +71,7 @@ export default function AdminSettings() {
       style={{ background: "#0a0a12", color: "#e8e8f0", fontFamily: "'Segoe UI', Arial, sans-serif", direction: "rtl" }}
     >
       {/* Header */}
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto" dir="rtl">
         <div className="flex items-center gap-3 mb-8">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -86,15 +86,15 @@ export default function AdminSettings() {
         </div>
 
         {/* Admin nav */}
-        <div className="flex gap-2 mb-8 flex-wrap">
+        <div className="flex gap-2 mb-8 flex-wrap justify-end">
           {[
-            { label: "דשבורד", href: "/admin" },
-            { label: "רישומים", href: "/admin/registrations" },
-            { label: "עדכוני תוכן", href: "/admin/updates" },
-            { label: "סקרים", href: "/admin/surveys" },
-            { label: "הגדרות", href: "/admin/settings", active: true },
-            { label: "מילון הגייה", href: "/admin/pronunciation" },
-            { label: "עורך הקראה", href: "/admin/tts-editor" },
+            { label: "דשבורד", href: "/nlp/admin" },
+            { label: "רישומים", href: "/nlp/admin/registrations" },
+            { label: "עדכוני תוכן", href: "/nlp/admin/updates" },
+            { label: "סקרים", href: "/nlp/admin/surveys" },
+            { label: "הגדרות", href: "/nlp/admin/settings", active: true },
+            { label: "מילון הגייה", href: "/nlp/admin/pronunciation" },
+            { label: "עורך הקראה", href: "/nlp/admin/tts-editor" },
           ].map((item) => (
             <Link
               key={item.href}
@@ -114,7 +114,7 @@ export default function AdminSettings() {
         </div>
 
         {/* Connected as admin indicator */}
-        {isAdminViaOAuth && (
+      {isAdminViaOAuth && (
           <div
             className="rounded-2xl p-4 mb-6 flex items-center gap-3"
             style={{ background: "rgba(80,200,80,0.08)", border: "1px solid rgba(80,200,80,0.25)" }}
@@ -122,17 +122,17 @@ export default function AdminSettings() {
             <CheckCircle size={18} style={{ color: "#80e080" }} />
             <div>
               <p className="text-sm font-semibold" style={{ color: "#80e080" }}>מחובר כמנהל</p>
-              <p className="text-xs" style={{ color: "#8888aa" }}>מנהל מחובר</p>
+              <p className="text-xs" style={{ color: "#8888aa" }}>גישה מלאה לניהול</p>
             </div>
           </div>
         )}
 
         {/* Stats */}
-        <div
+      <div
           className="rounded-2xl p-6 mb-6"
           style={{ background: "#0f0f1a", border: "1px solid #1e1e35" }}
         >
-          <h2 className="text-base font-bold mb-4" style={{ color: "#F0C040" }}>
+          <h2 className="text-base font-bold mb-4 text-right" style={{ color: "#F0C040" }}>
             📊 סטטיסטיקות מערכת
           </h2>
           {statsLoading ? (
@@ -168,11 +168,11 @@ export default function AdminSettings() {
         </div>
 
         {/* SMTP Test */}
-        <div
+      <div
           className="rounded-2xl p-6 mb-6"
           style={{ background: "#0f0f1a", border: "1px solid #1e1e35" }}
         >
-          <h2 className="text-base font-bold mb-2" style={{ color: "#F0C040" }}>
+          <h2 className="text-base font-bold mb-2 text-right" style={{ color: "#F0C040" }}>
             📧 בדיקת חיבור SMTP
           </h2>
           <p className="text-sm mb-4" style={{ color: "#8888aa" }}>
@@ -262,7 +262,7 @@ export default function AdminSettings() {
             ⚙️ הגדרת SMTP
           </h2>
           <p className="text-sm mb-3" style={{ color: "#c8c8e0" }}>
-            הגדר את הפרטים הבאים ב-<strong style={{ color: "#F0C040" }}>Settings → Secrets</strong> בפאנל הניהול של Manus:
+            הגדר את הפרטים הבאים ב-<strong style={{ color: "#F0C040" }}>פאנל הניהול ← הגדרות ← סודות (Secrets)</strong> בשרת Railway:
           </p>
           <div className="space-y-2">
             {[

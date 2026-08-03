@@ -54,16 +54,16 @@ function BookRow({ book, onEdit, onDelete, onTogglePublish }: {
           </span>
         )}
       </td>
-      <td className="py-3 px-4 text-center text-sm" style={{ color: "var(--brand-mid)" }}>
+      <td className="py-3 px-4 text-right text-sm" style={{ color: "var(--brand-mid)" }}>
         {book.pages ? `${book.pages} עמ'` : "—"}
       </td>
-      <td className="py-3 px-4 text-center">
-        <div className="flex items-center justify-center gap-1">
+      <td className="py-3 px-4 text-right">
+        <div className="flex items-center justify-end gap-1">
           {book.pdfUrl && <span title="יש PDF"><FileText size={14} style={{ color: "var(--brand-gold)" }} /></span>}
           {book.img && <span title="יש תמונה"><BookOpen size={14} style={{ color: "var(--brand-gold)" }} /></span>}
         </div>
       </td>
-      <td className="py-3 px-4 text-center">
+      <td className="py-3 px-4 text-right">
         <button
           onClick={() => onTogglePublish(book.id, book.published ? 0 : 1)}
           className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold transition-colors"
@@ -76,8 +76,8 @@ function BookRow({ book, onEdit, onDelete, onTogglePublish }: {
           {book.published ? "מפורסם" : "מוסתר"}
         </button>
       </td>
-      <td className="py-3 px-4 text-center">
-        <div className="flex items-center justify-center gap-2">
+      <td className="py-3 px-4 text-right">
+        <div className="flex items-center justify-end gap-2">
           <button onClick={() => onEdit(book)} className="p-1.5 rounded-lg hover:bg-amber-100 transition-colors" title="עריכה">
             <Edit2 size={14} style={{ color: "var(--brand-gold)" }} />
           </button>
@@ -401,10 +401,10 @@ export default function AdminBooks() {
             <tr style={{ background: "rgba(196,149,106,0.08)" }}>
               <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>ספר</th>
               <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קטגוריה</th>
-              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>עמודים</th>
-              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קבצים</th>
-              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>סטטוס</th>
-              <th className="py-3 px-4 text-center text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>פעולות</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>עמודים</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>קבצים</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>סטטוס</th>
+              <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>פעולות</th>
             </tr>
           </thead>
           <tbody>
