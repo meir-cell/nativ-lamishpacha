@@ -408,17 +408,22 @@ function AdminLoginPage({ onSuccess }: { onSuccess: () => void }) {
 }
 
 function LoginFormView({ onSuccess, onForgot }: { onSuccess: () => void; onForgot: () => void }) {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(() => localStorage.getItem("admin_remembered_user") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() => !!localStorage.getItem("admin_remembered_user"));
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
     try {
-      const res = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ username, password }) });
+      const res = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ username, password, rememberMe }) });
       const data = await res.json();
-      if (res.ok) onSuccess(); else setError(data.error || "שגיאה בהתחברות");
+      if (res.ok) {
+        if (rememberMe) localStorage.setItem("admin_remembered_user", username);
+        else localStorage.removeItem("admin_remembered_user");
+        onSuccess();
+      } else setError(data.error || "שגיאה בהתחברות");
     } catch { setError("שגיאת רשת — נסה שוב"); }
     finally { setLoading(false); }
   };
@@ -458,6 +463,13 @@ function LoginFormView({ onSuccess, onForgot }: { onSuccess: () => void; onForgo
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+        </div>
+        {/* זכור אותי */}
+        <div className="flex items-center justify-end gap-2 pt-1">
+          <label className="text-sm cursor-pointer select-none" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>זכור אותי</label>
+          <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
+            className="w-4 h-4 rounded cursor-pointer"
+            style={{ accentColor: "var(--brand-gold)" }} />
         </div>
         {error && <div className="flex items-center gap-2 p-3 rounded-xl text-sm text-right" style={{ background: "rgba(220,38,38,0.08)", color: "#dc2626", fontFamily: "'Assistant', sans-serif" }}><AlertCircle size={14} /> {error}</div>}
         <button type="submit" disabled={loading}

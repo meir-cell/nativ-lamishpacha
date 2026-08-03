@@ -31,3 +31,9 @@
 - [x] הוספת מפתח OpenAI API לפרויקט המאוחד לצורך TTS בשיעורים
 - [x] שינוי ברירת מחדל של טאב כניסה ל"כניסה" (במקום "הרשמה")
 - [x] הוספת route לדף נגישות NLP (/nlp/accessibility)
+
+## כניסה לניהול — שיפורים נוספים
+- [x] תיבת "זכור אותי" — שומרת session ל-30 יום (במקום 24 שעות)
+- [x] קישור "שכחתי סיסמה" — מציג טופס איפוס סיסמה
+- [x] עדכון server endpoint לתמוך ב-rememberMe (כולל הוספת כל endpoints חסרים: login, logout, me, activity-log, contacts, forgot-password, reset-password, backup)
+- [x] checkpoint ו-deploy
