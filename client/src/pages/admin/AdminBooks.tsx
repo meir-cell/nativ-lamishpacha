@@ -396,7 +396,7 @@ export default function AdminBooks() {
 
       {/* Table */}
       <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "rgba(196,149,106,0.2)" }}>
-        <table className="w-full">
+        <table className="w-full" dir="rtl">
           <thead>
             <tr style={{ background: "rgba(196,149,106,0.08)" }}>
               <th className="py-3 px-4 text-right text-xs font-semibold" style={{ color: "var(--brand-mid)" }}>ספר</th>

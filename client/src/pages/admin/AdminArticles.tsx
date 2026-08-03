@@ -386,7 +386,7 @@ export default function AdminArticles() {
 
       {/* Table */}
       <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(196,149,106,0.15)" }}>
-        <table className="w-full">
+        <table className="w-full" dir="rtl">
           <thead>
             <tr style={{ background: "var(--brand-dark)" }}>
               <th className="py-3 px-4 text-right text-sm font-semibold text-white" style={{ fontFamily: "'Assistant', sans-serif" }}>כותרת</th>

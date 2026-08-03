@@ -11,7 +11,7 @@ export default function AdminDashboard() {
 
   const { data: stats, isLoading } = trpc.nlpAdmin.getStats.useQuery(
     { ownerToken: ownerToken || undefined, adminSecret: adminToken || undefined },
-    { enabled: hasAccess && !authLoading, retry: false }
+    { enabled: !authLoading, retry: false }
   );
 
   const navItems = [

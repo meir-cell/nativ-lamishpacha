@@ -58,7 +58,7 @@ async function checkAdmin(input: { adminSecret?: string; ownerToken?: string }, 
       const token = parsed || (match ? match[1] : null);
       if (token) {
         const { jwtVerify } = await import("jose");
-        const jwtSecret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret");
+        const jwtSecret = new TextEncoder().encode(process.env.JWT_SECRET || "admin-secret");
         await jwtVerify(token, jwtSecret);
         return; // Access granted — admin_session cookie
       }

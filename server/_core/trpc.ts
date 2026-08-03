@@ -41,7 +41,7 @@ async function verifyAdminSessionCookie(ctx: TrpcContext): Promise<boolean> {
     const token = parsed || (match ? match[1] : null);
     if (!token) return false;
     const { jwtVerify } = await import("jose");
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret");
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "admin-secret");
     await jwtVerify(token, secret);
     return true;
   } catch {
