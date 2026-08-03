@@ -3,19 +3,7 @@ import { router, publicProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { seoSettings } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
-
-async function verifyAdmin(ctx: any) {
-  const cookieHeader = ctx.req?.headers?.cookie || "";
-  const match = cookieHeader.match(/admin_session=([^;]+)/);
-  if (!match) throw new Error("Unauthorized");
-  try {
-    const { jwtVerify } = await import("jose");
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret");
-    await jwtVerify(match[1], secret);
-  } catch {
-    throw new Error("Unauthorized");
-  }
-}
+import { verifyAdmin } from "./_adminAuth";
 
 // Default SEO pages for the site
 const DEFAULT_SEO_PAGES = [

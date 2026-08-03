@@ -3,25 +3,7 @@ import { router, publicProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { articles } from "../../drizzle/schema";
 import { eq, desc, like, or, sql } from "drizzle-orm";
-
-// Admin auth middleware — checks JWT cookie set by /api/admin/login
-function getAdminToken(ctx: any): string | null {
-  const cookieHeader = ctx.req?.headers?.cookie || "";
-  const match = cookieHeader.match(/admin_session=([^;]+)/);
-  return match ? match[1] : null;
-}
-
-async function verifyAdmin(ctx: any) {
-  const token = getAdminToken(ctx);
-  if (!token) throw new Error("Unauthorized");
-  try {
-    const { jwtVerify } = await import("jose");
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "fallback-secret");
-    await jwtVerify(token, secret);
-  } catch {
-    throw new Error("Unauthorized");
-  }
-}
+import { verifyAdmin } from "./_adminAuth";
 
 export const adminArticlesRouter = router({
   list: publicProcedure
