@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 import { Users, CheckCircle2, ArrowLeft, Scale, Clock, FileText, Handshake } from "lucide-react";
 import {
   ServicePage,
@@ -112,6 +113,7 @@ const testimonials = [
 ];
 
 export default function Mediation() {
+  useSEO("gishur");
   return (
     <ServicePage>
       {/* Hero */}

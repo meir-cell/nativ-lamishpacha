@@ -41,30 +41,30 @@
 ## מערכת ניהול מלאה — פאנלים חדשים
 
 ### ניהול מאמרים
-- [ ] הוספת טבלת articles לDB (slug, title, excerpt, content, img, audioSrc, category, date, readTime, published)
-- [ ] הוספת tRPC procedures: articles.list, articles.get, articles.create, articles.update, articles.delete, articles.generateAudio
-- [ ] בניית AdminArticles.tsx — רשימת מאמרים עם חיפוש/סינון, עריכה inline, מחיקה
-- [ ] בניית ArticleEditor.tsx — עורך מאמר מלא: כותרת, תוכן markdown, תמונה, שמע, קטגוריה, תאריך
-- [ ] הוספת route /admin/articles ו-/admin/articles/:slug
+- [x] הוספת טבלת articles ל-DB (שלוג, כותרת, תקציר, תוכן, img, audioSrc, category, date, readTime, published)
+- [x] הוספת tRPC procedures: articles.list, articles.get, articles.create, articles.update, articles.delete, articles.generateAudio
+- [x] בניית AdminArticles.tsx — רשימת מאמרים עם חיפוש/סינון, עריכה inline, מחיקה
+- [x] בניית ArticleEditor.tsx — עורך מאמר מלא: כותרת, תוכן markdown, תמונה, שמע, קטגוריה, תאריך (שולב ב-AdminArticles)
+- [x] הוספת route /admin/articles ו-/admin/articles/:slug (הוסף כ-tab ב-Admin.tsx)
 
 ### ניהול קידום אורגני (SEO)
-- [ ] הוספת טבלת seo_settings לDB (page_key, title, description, og_title, og_description, og_image, keywords, canonical)
-- [ ] הוספת tRPC procedures: seo.getAll, seo.update
-- [ ] בניית AdminSEO.tsx — טבלה עם כל דפי האתר, עריכת meta tags לכל דף
+- [x] הוספת טבלת seo_settings ל-DB (page_key, title, description, og_title, og_description, og_image, keywords, canonical)
+- [x] הוספת tRPC procedures: seo.getAll, seo.update
+- [x] בניית AdminSEO.tsx — טבלה עם כל דפי האתר, עריכת meta tags לכל דף
 - [ ] שילוב SEO settings בדפי האתר (dynamic meta tags)
-- [ ] הוספת route /admin/seo
+- [x] הוספת route /admin/seo (הוסף כ-tab)
 
 ### ניהול קורס NLP
-- [ ] בניית AdminNLP.tsx — wrapper שמפנה ל-/nlp/admin עם auth מהמערכת הראשית
-- [ ] הוספת לינק ל-/nlp/admin בניווט מערכת הניהול הראשית
-- [ ] הוספת route /admin/nlp
+- [x] בניית AdminNLP.tsx — hub שמפנה לכל דפי הניהול של קורס NLP
+- [x] הוספת לינק ל-/nlp/admin בניווט מערכת הניהול הראשית
+- [x] הוספת route /admin/nlp (הוסף כ-tab)
 
 ### ניהול רכיבי האתר
-- [ ] הוספת טבלת site_content לDB (key, value, type: text/html/json, updated_at)
-- [ ] הוספת tRPC procedures: siteContent.getAll, siteContent.update
-- [ ] בניית AdminSiteContent.tsx — ניהול: Hero text, Services, About, Contact info, Footer
-- [ ] הוספת route /admin/site-content
+- [x] הוספת טבלת site_content ל-DB (key, value, type: text/html/json, updated_at)
+- [x] הוספת tRPC procedures: siteContent.getAll, siteContent.update
+- [x] בניית AdminSiteContent.tsx — ניהול: Hero text, Services, About, Contact info, Footer
+- [x] הוספת route /admin/site-content (הוסף כ-tab)
 
 ### ניווט מערכת הניהול
-- [ ] שדרוג Admin.tsx לתמיכה בניווט צד עם כל הפאנלים החדשים
-- [ ] הוספת sidebar navigation עם: פניות, מאמרים, SEO, קורס NLP, תוכן האתר, גיבוי, יומן
+- [x] שדרוג Admin.tsx לתמיכה בניווט צד עם כל הפאנלים החדשים
+- [x] הוספת sidebar navigation עם: פניות, מאמרים, SEO, קורס NLP, תוכן האתר, גיבוי, יומן

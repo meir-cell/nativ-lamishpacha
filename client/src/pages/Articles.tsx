@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Streamdown } from 'streamdown';
 
@@ -3089,6 +3090,7 @@ function ArticleModal({ article, onClose }: { article: typeof articles[0] | null
 }
 
 export default function ArticlesPage() {
+  useSEO("articles");
   const [activeCategory, setActiveCategory] = useState("הכל");
   const [search, setSearch] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<typeof articles[0] | null>(null);

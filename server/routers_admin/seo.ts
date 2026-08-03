@@ -31,6 +31,16 @@ const DEFAULT_SEO_PAGES = [
 ];
 
 export const adminSeoRouter = router({
+  // Public endpoint — returns SEO data for a single page key (no auth required)
+  getByPage: publicProcedure
+    .input(z.object({ pageKey: z.string() }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) return null;
+      const rows = await db.select().from(seoSettings).where(eq(seoSettings.pageKey, input.pageKey));
+      return rows[0] || null;
+    }),
+
   getAll: publicProcedure
     .query(async ({ ctx }) => {
       await verifyAdmin(ctx);

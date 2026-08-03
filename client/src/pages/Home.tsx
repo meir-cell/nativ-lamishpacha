@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { useSEO } from "@/hooks/useSEO";
 import { articles as allArticles } from "./Articles";
 import {
   Phone, Mail, MapPin, Heart, Scale, Users, CheckCircle2,
@@ -893,6 +894,7 @@ function Footer() {
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function Home() {
+  useSEO("home");
   return (
     <div className="min-h-screen" dir="rtl">
       <Navbar />

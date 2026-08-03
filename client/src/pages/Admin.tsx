@@ -264,32 +264,47 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   ];
 
   return (
-    <div className="min-h-screen" dir="rtl" style={{ background: "var(--brand-cream)" }}>
-      <header className="sticky top-0 z-50 shadow-sm" style={{ background: "var(--brand-dark)" }}>
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button onClick={fetchContacts} className="p-2 rounded-lg transition-colors hover:bg-white/10" style={{ color: "white" }} title="רענן"><RefreshCw size={16} /></button>
-            <button onClick={onLogout} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors hover:bg-white/10" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Assistant', sans-serif" }}>
-              <LogOut size={14} /> יציאה
-            </button>
-          </div>
-          <div className="text-right">
-            <div className="font-bold text-white text-lg" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>ממשק ניהול</div>
-            <div className="text-xs" style={{ color: "var(--brand-gold)", fontFamily: "'Assistant', sans-serif" }}>נתיב למשפחה — מאיר שמעון עשור</div>
-          </div>
+    <div className="min-h-screen flex" dir="rtl" style={{ background: "var(--brand-cream)" }}>
+      {/* Sidebar */}
+      <aside className="w-60 min-h-screen flex-shrink-0 flex flex-col" style={{ background: "var(--brand-dark)", position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}>
+        {/* Logo */}
+        <div className="px-5 py-6 border-b" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <div className="font-bold text-white text-base" style={{ fontFamily: "'Noto Serif Hebrew', serif" }}>מערכת ניהול</div>
+          <div className="text-xs mt-0.5" style={{ color: "var(--brand-gold)", fontFamily: "'Assistant', sans-serif" }}>נתיב למשפחה</div>
         </div>
-        <div className="container mx-auto px-4 pb-0 flex gap-1 justify-end">
+        {/* Nav items */}
+        <nav className="flex-1 px-3 py-4 space-y-1">
           {tabs.map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-lg transition-colors"
-              style={{ background: activeTab === tab.key ? "var(--brand-cream)" : "transparent", color: activeTab === tab.key ? "var(--brand-dark)" : "rgba(255,255,255,0.7)", fontFamily: "'Assistant', sans-serif" }}>
-              <tab.icon size={14} /> {tab.label}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-right"
+              style={{ background: activeTab === tab.key ? "rgba(196,149,106,0.2)" : "transparent", color: activeTab === tab.key ? "var(--brand-gold)" : "rgba(255,255,255,0.7)", fontFamily: "'Assistant', sans-serif", border: activeTab === tab.key ? "1px solid rgba(196,149,106,0.3)" : "1px solid transparent" }}>
+              <tab.icon size={16} style={{ flexShrink: 0 }} />
+              <span>{tab.label}</span>
             </button>
           ))}
+        </nav>
+        {/* Bottom actions */}
+        <div className="px-3 py-4 border-t space-y-1" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <button onClick={fetchContacts} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all" style={{ color: "rgba(255,255,255,0.5)", fontFamily: "'Assistant', sans-serif" }}>
+            <RefreshCw size={15} /> רענן
+          </button>
+          <button onClick={onLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all" style={{ color: "rgba(255,255,255,0.5)", fontFamily: "'Assistant', sans-serif" }}>
+            <LogOut size={15} /> יציאה
+          </button>
         </div>
-      </header>
+      </aside>
 
-      <div className="container mx-auto px-4 py-8">
+      {/* Main content */}
+      <main className="flex-1 min-h-screen overflow-auto">
+        {/* Top bar */}
+        <div className="sticky top-0 z-10 px-6 py-4 border-b flex items-center justify-between" style={{ background: "white", borderColor: "rgba(196,149,106,0.15)" }}>
+          <div className="text-sm" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>
+            {tabs.find(t => t.key === activeTab)?.label}
+          </div>
+          <div className="font-bold" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>מאיר שמעון עשור</div>
+        </div>
+
+      <div className="px-6 py-8">
         {activeTab === "contacts" && (
           <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -358,6 +373,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         {activeTab === "site-content" && <AdminSiteContent />}
         {activeTab === "log" && <ActivityLogTab />}
       </div>
+      </main>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 import { useEffect, useRef, useState } from "react";
 import { BookOpen, Download, FileText, ExternalLink, ChevronDown, Volume2, VolumeX, Pause, Play, Share2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -380,6 +381,7 @@ function BookCard({ book, delay }: { book: Book; delay: number }) {
 }
 
 export default function Books() {
+  useSEO("books");
   return (
     <div className="min-h-screen" style={{ background: "var(--brand-cream, #FAF6F0)" }} dir="rtl">
       <Navbar />

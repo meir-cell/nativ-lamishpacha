@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 import { Scale, CheckCircle2, ArrowLeft, BookOpen, Shield, FileText, Gavel } from "lucide-react";
 import {
   ServicePage,
@@ -121,6 +122,7 @@ const testimonials = [
 ];
 
 export default function LegalAdvice() {
+  useSEO("yiutz-mishpati");
   return (
     <ServicePage>
       {/* Hero */}

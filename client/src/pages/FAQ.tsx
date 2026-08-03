@@ -1,3 +1,4 @@
+import { useSEO } from "@/hooks/useSEO";
 import { useEffect, useRef, useState } from "react";
 import { HelpCircle, ArrowLeft, ChevronDown, Phone } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -111,6 +112,7 @@ const faqSections = [
 ];
 
 export default function FAQPage() {
+  useSEO("faq");
   const [activeSection, setActiveSection] = useState("הכל");
 
   const displayed = activeSection === "הכל"
