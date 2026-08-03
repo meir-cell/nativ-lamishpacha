@@ -1,7 +1,7 @@
 export const ENV = {
   appId: process.env.VITE_APP_ID ?? "",
   cookieSecret: process.env.JWT_SECRET ?? "",
-  databaseUrl: process.env.DATABASE_URL ?? "",
+  databaseUrl: process.env.DATABASE_URL ?? "mysql://3H3qNMVuMPNQvMbD:yFhBMEPJFxMnJBhA@gateway03.us-east-1.prod.aws.tidbcloud.com:4000/mLbezbk5ZAEXFd46ngs4DG?ssl={\"rejectUnauthorized\":true}",
   oAuthServerUrl: process.env.OAUTH_SERVER_URL ?? "",
   ownerOpenId: process.env.OWNER_OPEN_ID ?? "",
   ownerEmail: process.env.OWNER_EMAIL ?? "",
