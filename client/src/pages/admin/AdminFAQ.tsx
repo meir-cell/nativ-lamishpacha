@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Plus, Search, Edit2, Trash2, Eye, EyeOff, Save, X, ChevronDown, ChevronUp } from "lucide-react";
+import { useAdminToast, AdminToastContainer } from "@/components/admin/AdminToast";
 
 const CATEGORIES = ["כללי", "טיפול זוגי", "גישור", "ייעוץ משפטי"];
 
@@ -185,13 +186,8 @@ export default function AdminFAQ() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [editingItem, setEditingItem] = useState<Partial<FaqItem> | null | false>(false);
-  const [feedback, setFeedback] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  const { toasts, showToast, dismiss } = useAdminToast();
   const utils = trpc.useUtils();
-
-  const showFeedback = (type: "success" | "error", msg: string) => {
-    setFeedback({ type, msg });
-    setTimeout(() => setFeedback(null), 3500);
-  };
 
   const { data, isLoading, error: listError } = trpc.adminFaq.list.useQuery({
     search: search || undefined,
@@ -199,23 +195,23 @@ export default function AdminFAQ() {
   });
 
   const createMutation = trpc.adminFaq.create.useMutation({
-    onSuccess: () => { utils.adminFaq.list.invalidate(); setEditingItem(false); showFeedback("success", "שאלה נוספה בהצלחה"); },
-    onError: (e) => showFeedback("error", "שגיאה: " + e.message),
+    onSuccess: () => { utils.adminFaq.list.invalidate(); setEditingItem(false); showToast("success", "שאלה נוספה בהצלחה ✓"); },
+    onError: (e) => showToast("error", "שגיאה: " + e.message),
   });
   const updateMutation = trpc.adminFaq.update.useMutation({
-    onSuccess: () => { utils.adminFaq.list.invalidate(); setEditingItem(false); showFeedback("success", "שאלה עודכנה בהצלחה"); },
-    onError: (e) => showFeedback("error", "שגיאה: " + e.message),
+    onSuccess: () => { utils.adminFaq.list.invalidate(); setEditingItem(false); showToast("success", "שאלה עודכנה בהצלחה ✓"); },
+    onError: (e) => showToast("error", "שגיאה: " + e.message),
   });
   const deleteMutation = trpc.adminFaq.delete.useMutation({
-    onSuccess: () => { utils.adminFaq.list.invalidate(); showFeedback("success", "שאלה נמחקה בהצלחה"); },
-    onError: (e) => showFeedback("error", "שגיאה: " + e.message),
+    onSuccess: () => { utils.adminFaq.list.invalidate(); showToast("success", "שאלה נמחקה בהצלחה ✓"); },
+    onError: (e) => showToast("error", "שגיאה: " + e.message),
   });
 
   const isMutating = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   const handleSave = (form: any) => {
     if (!form.question.trim() || !form.answer.trim()) {
-      showFeedback("error", "שאלה ותשובה הם שדות חובה");
+      showToast("error", "שאלה ותשובה הם שדות חובה");
       return;
     }
     if (editingItem && (editingItem as FaqItem).id) {
@@ -238,12 +234,8 @@ export default function AdminFAQ() {
 
   return (
     <div dir="rtl" className="space-y-6">
-      {/* Feedback toast */}
-      {feedback && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] px-5 py-3 rounded-xl text-sm font-semibold shadow-lg" style={{ background: feedback.type === "success" ? "#6B7C5C" : "#dc2626", color: "white" }}>
-          {feedback.msg}
-        </div>
-      )}
+      {/* Toast notifications */}
+      <AdminToastContainer toasts={toasts} dismiss={dismiss} />
       {/* Error state */}
       {listError && (
         <div className="rounded-xl p-4 text-sm text-right" style={{ background: "rgba(220,38,38,0.08)", color: "#dc2626" }}>
