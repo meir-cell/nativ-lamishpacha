@@ -91,3 +91,11 @@
 - [x] חיפוש וסינון בפאנל ניהול ספרים
 - [x] חיפוש וסינון בפאנל ניהול שאלות נפוצות
 - [x] toast notifications לכל פעולות CRUD (יצירה, עדכון, מחיקה)
+
+## תיקוני NLP Admin — אוגוסט 2026
+
+- [x] תיקון קישורי ניווט ב-AdminSettings.tsx מ-/admin/... ל-/nlp/admin/...
+- [x] תיקון הוראות SMTP לעברית (Railway Secrets)
+- [x] תיקון getStats — מחזיר 0 בצורה חלקה כשטבלאות ריקות/חסרות
+- [x] הוספת יצירה אוטומטית של כל טבלאות NLP בהפעלת השרת (registrations, lesson_progress, module_exam_results, certificates, satisfaction_surveys, lesson_positions)
+- [x] אישור שנתיב /nlp/admin/updates קיים ב-App.tsx (404 ב-Railway היה בגלל ניסיון גישה ל-/admin/updates ללא nlp/)

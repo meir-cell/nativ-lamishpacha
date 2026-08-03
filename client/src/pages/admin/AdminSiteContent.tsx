@@ -30,9 +30,9 @@ const SITE_CONTENT_DEFAULTS = [
   // Contact
   { key: "contact.phone", label: "טלפון ראשי", value: "054-2111-288", section: "contact", type: "text" as const },
   { key: "contact.email", label: "אימייל", value: "meir@nativ-lamishpacha.com", section: "contact", type: "text" as const },
-  { key: "contact.address.jerusalem", label: "כתובת ירושלים", value: "ירושלים — רחוב יפו 216", section: "contact", type: "text" as const },
-  { key: "contact.address.bnei-brak", label: "כתובת בני ברק", value: "בני ברק — רחוב הרב שך 5", section: "contact", type: "text" as const },
-  { key: "contact.address.beit-shemesh", label: "כתובת בית שמש", value: "בית שמש — רחוב נחל לכיש 7", section: "contact", type: "text" as const },
+  { key: "contact.address.jerusalem", label: "כתובת ירושלים", value: "ירושלים — בית הדפוס 30 גבעת שאול", section: "contact", type: "text" as const },
+  { key: "contact.address.petah-tikva", label: "כתובת פתח תקווה", value: "פתח תקווה — ז'בוטינסקי 100", section: "contact", type: "text" as const },
+  { key: "contact.address.beer-sheva", label: "כתובת באר שבע", value: "באר שבע — האבות 64", section: "contact", type: "text" as const },
   { key: "contact.whatsapp", label: "מספר WhatsApp", value: "972542111288", section: "contact", type: "text" as const },
 
   // Footer
