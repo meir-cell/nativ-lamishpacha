@@ -411,6 +411,126 @@ async function startServer() {
     }
   });
 
+    // ── BACKUP ENDPOINT ─────────────────────────────────────────────────────────
+  // Protected: requires the same owner/admin token used by the NLP admin panel
+  // Accepts: x-owner-token header (registration JWT for OWNER_EMAIL) OR admin OAuth cookie
+  app.get("/api/backup/full", async (req, res) => {
+    try {
+      const { ENV } = await import("./env.js");
+      const { getDb } = await import("../db.js");
+      const { registrations } = await import("../../drizzle/schema.js");
+      const { eq } = await import("drizzle-orm");
+      const jwt = await import("jose");
+
+      let authorized = false;
+
+      // Path 1: x-owner-token header (NLP course JWT for OWNER_EMAIL)
+      const ownerToken = req.headers["x-owner-token"] as string | undefined;
+      if (ownerToken && ENV.ownerEmail) {
+        try {
+          const secret = new TextEncoder().encode(process.env.JWT_SECRET || "nlp-course-secret");
+          const { payload } = await jwt.jwtVerify(ownerToken, secret) as { payload: { id: number; email: string } };
+          const db = await getDb();
+          if (db) {
+            const rows = await db
+              .select({ email: registrations.email })
+              .from(registrations)
+              .where(eq(registrations.id, payload.id))
+              .limit(1);
+            if (rows.length > 0 && rows[0].email.toLowerCase() === ENV.ownerEmail.toLowerCase()) {
+              authorized = true;
+            }
+          }
+        } catch {
+          // invalid token
+        }
+      }
+
+      // Path 2: admin-secret header (plain text admin secret stored in env)
+      const adminSecret = req.headers["x-admin-secret"] as string | undefined;
+      const envAdminSecret = process.env.ADMIN_SECRET || "";
+      if (!authorized && adminSecret && envAdminSecret && adminSecret === envAdminSecret) {
+        authorized = true;
+      }
+
+      // Path 3: simple BACKUP_TOKEN query param (for convenience)
+      const backupToken = process.env.BACKUP_TOKEN || "";
+      const providedToken = req.query.token as string | undefined;
+      if (!authorized && backupToken && providedToken === backupToken) {
+        authorized = true;
+      }
+
+      if (!authorized) {
+        return res.status(401).json({ error: "Unauthorized — owner or admin access required" });
+      }
+
+      const { execSync } = await import("child_process");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const archiverCreate = (await import("archiver") as any).default ?? (await import("archiver"));
+      const path = await import("path");
+      const fs = await import("fs");
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+      const tmpDir = `/tmp/backup-${timestamp}`;
+      fs.mkdirSync(tmpDir, { recursive: true });
+
+      // 1. MySQL dump
+      const dbUrl = ENV.databaseUrl; // mysql://user:pass@host:port/db
+      let dbDumpPath = "";
+      if (dbUrl) {
+        try {
+          const url = new URL(dbUrl);
+          const host = url.hostname;
+          const port = url.port || "3306";
+          const user = url.username;
+          const pass = url.password;
+          const db = url.pathname.replace(/^\//, "");
+          dbDumpPath = path.join(tmpDir, `db-${timestamp}.sql`);
+          const cmd = `mysqldump --host=${host} --port=${port} --user=${user} --password=${pass} --single-transaction --routines --triggers ${db} > ${dbDumpPath}`;
+          execSync(cmd, { timeout: 120_000 });
+        } catch (dbErr) {
+          console.error("DB dump error:", dbErr);
+          // Continue even if DB dump fails — still deliver code backup
+        }
+      }
+
+      // 2. Stream ZIP response
+      res.setHeader("Content-Type", "application/zip");
+      res.setHeader("Content-Disposition", `attachment; filename="nativ-backup-${timestamp}.zip"`);
+
+      const archive = archiverCreate("zip", { zlib: { level: 6 } });
+      archive.pipe(res);
+
+      // Add DB dump if it was created
+      if (dbDumpPath && fs.existsSync(dbDumpPath)) {
+        archive.file(dbDumpPath, { name: `db-${timestamp}.sql` });
+      }
+
+      // Add source code (exclude node_modules, dist, .git, tmp)
+      const projectRoot = process.cwd();
+      archive.glob("**/*", {
+        cwd: projectRoot,
+        ignore: [
+          "node_modules/**",
+          "dist/**",
+          ".git/**",
+          ".manus-logs/**",
+          "*.log",
+        ],
+      });
+
+      await archive.finalize();
+
+      // Cleanup tmp
+      try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch {}
+    } catch (err) {
+      console.error("Backup error:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Backup failed", details: String(err) });
+      }
+    }
+  });
+
   // TTS proxy endpoint
   app.post("/api/tts", async (req, res) => {
     try {

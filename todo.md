@@ -31,3 +31,9 @@
 - [x] הוספת מפתח OpenAI API לפרויקט המאוחד לצורך TTS בשיעורים
 - [x] שינוי ברירת מחדל של טאב כניסה ל"כניסה" (במקום "הרשמה")
 - [x] הוספת route לדף נגישות NLP (/nlp/accessibility)
+
+## גיבוי
+- [x] הוספת endpoint לשרת: GET /api/backup/full — מייצא MySQL dump + קוד כ-ZIP
+- [x] הגנה על endpoint הגיבוי — רק owner מורשה
+- [x] הוספת עמוד גיבוי בפאנל הניהול (/nlp/admin/backup) עם כפתורי הורדה
+- [ ] בדיקה ו-checkpoint

@@ -29,6 +29,7 @@ export default function AdminDashboard() {
     { label: "הגדרות", href: "/nlp/admin/settings" },
     { label: "מילון הגייה", href: "/nlp/admin/pronunciation" },
     { label: "עורך הקראה", href: "/nlp/admin/tts-editor" },
+    { label: "גיבוי", href: "/nlp/admin/backup" },
   ];
 
   // Show loading while checking auth
@@ -169,6 +170,12 @@ export default function AdminDashboard() {
                 icon={<FileText size={18} />}
                 label="עדכוני תוכן"
                 description="ניהול תוכן נוסף לשיעורים"
+              />
+              <QuickLink
+                href="/nlp/admin/backup"
+                icon={<TrendingUp size={18} />}
+                label="גיבוי האתר"
+                description="הורדת גיבוי מלא — מסד נתונים + קוד מקור"
               />
             </div>
           </>

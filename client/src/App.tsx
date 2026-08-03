@@ -26,6 +26,7 @@ import NlpAdminSettings from "./pages/nlp/AdminSettings";
 import NlpAdminDashboard from "./pages/nlp/AdminDashboard";
 import NlpAdminPronunciation from "./pages/nlp/AdminPronunciation";
 import NlpAdminTtsEditor from "./pages/nlp/AdminTtsEditor";
+import NlpAdminBackup from "./pages/nlp/AdminBackup";
 import NlpChatPage from "./pages/nlp/NlpChatPage";
 import NlpTerms from "./pages/nlp/Terms";
 import NlpUnsubscribe from "./pages/nlp/Unsubscribe";
@@ -60,6 +61,7 @@ function Router() {
       <Route path={"/nlp/admin/settings"} component={NlpAdminSettings} />
       <Route path={"/nlp/admin/pronunciation"} component={NlpAdminPronunciation} />
       <Route path={"/nlp/admin/tts-editor"} component={NlpAdminTtsEditor} />
+      <Route path={"/nlp/admin/backup"} component={NlpAdminBackup} />
       <Route path={"/nlp/chat"} component={NlpChatPage} />
       <Route path={"/nlp/terms"} component={NlpTerms} />
       <Route path={"/nlp/unsubscribe"} component={NlpUnsubscribe} />
