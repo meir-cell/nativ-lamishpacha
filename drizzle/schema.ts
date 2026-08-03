@@ -276,3 +276,53 @@ export const ttsSettings = mysqlTable("tts_settings", {
 });
 export type TtsSettings = typeof ttsSettings.$inferSelect;
 export type InsertTtsSettings = typeof ttsSettings.$inferInsert;
+
+// ─── Articles ───────────────────────────────────────────────────────────────────────────────
+export const articles = mysqlTable("articles", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  title: text("title").notNull(),
+  excerpt: text("excerpt"),
+  content: text("content"),
+  img: varchar("img", { length: 1000 }),
+  audioSrc: varchar("audioSrc", { length: 1000 }),
+  category: varchar("category", { length: 100 }),
+  date: varchar("date", { length: 50 }),
+  readTime: varchar("readTime", { length: 50 }),
+  published: tinyint("published").default(1).notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type Article = typeof articles.$inferSelect;
+export type InsertArticle = typeof articles.$inferInsert;
+
+// ─── SEO Settings ─────────────────────────────────────────────────────────────────────────
+export const seoSettings = mysqlTable("seo_settings", {
+  id: int("id").autoincrement().primaryKey(),
+  pageKey: varchar("pageKey", { length: 100 }).notNull().unique(),
+  pageLabel: varchar("pageLabel", { length: 200 }),
+  metaTitle: varchar("metaTitle", { length: 200 }),
+  metaDescription: text("metaDescription"),
+  ogTitle: varchar("ogTitle", { length: 200 }),
+  ogDescription: text("ogDescription"),
+  ogImage: varchar("ogImage", { length: 1000 }),
+  keywords: text("keywords"),
+  canonical: varchar("canonical", { length: 500 }),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type SeoSettings = typeof seoSettings.$inferSelect;
+export type InsertSeoSettings = typeof seoSettings.$inferInsert;
+
+// ─── Site Content ─────────────────────────────────────────────────────────────────────────────
+export const siteContent = mysqlTable("site_content", {
+  id: int("id").autoincrement().primaryKey(),
+  key: varchar("key", { length: 200 }).notNull().unique(),
+  label: varchar("label", { length: 300 }),
+  value: text("value"),
+  type: mysqlEnum("type", ["text", "html", "json", "url"]).default("text").notNull(),
+  section: varchar("section", { length: 100 }),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type SiteContent = typeof siteContent.$inferSelect;
+export type InsertSiteContent = typeof siteContent.$inferInsert;

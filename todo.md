@@ -37,3 +37,34 @@
 - [x] קישור "שכחתי סיסמה" — מציג טופס איפוס סיסמה
 - [x] עדכון server endpoint לתמוך ב-rememberMe (כולל הוספת כל endpoints חסרים: login, logout, me, activity-log, contacts, forgot-password, reset-password, backup)
 - [x] checkpoint ו-deploy
+
+## מערכת ניהול מלאה — פאנלים חדשים
+
+### ניהול מאמרים
+- [ ] הוספת טבלת articles לDB (slug, title, excerpt, content, img, audioSrc, category, date, readTime, published)
+- [ ] הוספת tRPC procedures: articles.list, articles.get, articles.create, articles.update, articles.delete, articles.generateAudio
+- [ ] בניית AdminArticles.tsx — רשימת מאמרים עם חיפוש/סינון, עריכה inline, מחיקה
+- [ ] בניית ArticleEditor.tsx — עורך מאמר מלא: כותרת, תוכן markdown, תמונה, שמע, קטגוריה, תאריך
+- [ ] הוספת route /admin/articles ו-/admin/articles/:slug
+
+### ניהול קידום אורגני (SEO)
+- [ ] הוספת טבלת seo_settings לDB (page_key, title, description, og_title, og_description, og_image, keywords, canonical)
+- [ ] הוספת tRPC procedures: seo.getAll, seo.update
+- [ ] בניית AdminSEO.tsx — טבלה עם כל דפי האתר, עריכת meta tags לכל דף
+- [ ] שילוב SEO settings בדפי האתר (dynamic meta tags)
+- [ ] הוספת route /admin/seo
+
+### ניהול קורס NLP
+- [ ] בניית AdminNLP.tsx — wrapper שמפנה ל-/nlp/admin עם auth מהמערכת הראשית
+- [ ] הוספת לינק ל-/nlp/admin בניווט מערכת הניהול הראשית
+- [ ] הוספת route /admin/nlp
+
+### ניהול רכיבי האתר
+- [ ] הוספת טבלת site_content לDB (key, value, type: text/html/json, updated_at)
+- [ ] הוספת tRPC procedures: siteContent.getAll, siteContent.update
+- [ ] בניית AdminSiteContent.tsx — ניהול: Hero text, Services, About, Contact info, Footer
+- [ ] הוספת route /admin/site-content
+
+### ניווט מערכת הניהול
+- [ ] שדרוג Admin.tsx לתמיכה בניווט צד עם כל הפאנלים החדשים
+- [ ] הוספת sidebar navigation עם: פניות, מאמרים, SEO, קורס NLP, תוכן האתר, גיבוי, יומן

@@ -168,10 +168,8 @@ function ServicesSection() {
                     </li>
                   ))}
                 </ul>
-                <Link href={(s as any).pageHref}>
-                  <a className="btn-cta text-sm justify-center" style={{ background: s.color }}>
-                    לפרטים נוספים
-                  </a>
+                <Link href={(s as any).pageHref} className="btn-cta text-sm justify-center" style={{ background: s.color } as React.CSSProperties}>
+                  לפרטים נוספים
                 </Link>
               </div>
             </AnimatedSection>
@@ -511,10 +509,9 @@ function ArticlesSection() {
                 ) : (
                   <>
                     {searchResults.map((a, i) => (
-                      <Link key={(a as any).slug} href={`/articles/${(a as any).slug}`}>
-                        <a
+                      <Link key={(a as any).slug} href={`/articles/${(a as any).slug}`}
                           className="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-amber-50 border-b last:border-b-0"
-                          style={{ borderColor: "rgba(196,149,106,0.1)", textDecoration: "none" }}
+                          style={{ borderColor: "rgba(196,149,106,0.1)", textDecoration: "none" } as React.CSSProperties}
                         >
                           <img
                             src={a.img}
@@ -530,17 +527,14 @@ function ArticlesSection() {
                             </div>
                           </div>
                           <ArrowLeft size={14} style={{ color: "var(--brand-gold)", flexShrink: 0 }} />
-                        </a>
                       </Link>
                     ))}
-                    <Link href={`/articles?q=${encodeURIComponent(query)}`}>
-                      <a
+                    <Link href={`/articles?q=${encodeURIComponent(query)}`}
                         className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium transition-colors"
-                        style={{ color: "var(--brand-gold)", background: "rgba(196,149,106,0.06)", fontFamily: "'Assistant', sans-serif" }}
+                        style={{ color: "var(--brand-gold)", background: "rgba(196,149,106,0.06)", fontFamily: "'Assistant', sans-serif" } as React.CSSProperties}
                       >
                         ראה כל התוצאות ({allArticles.filter(a => a.title.includes(query) || a.excerpt?.includes(query)).length})
                         <ArrowLeft size={13} />
-                      </a>
                     </Link>
                   </>
                 )}
@@ -574,11 +568,9 @@ function ArticlesSection() {
             ))}
           </div>
 
-          <Link href="/articles">
-            <a className="btn-outline text-sm inline-flex">
-              לכל המאמרים
-              <ArrowLeft size={15} />
-            </a>
+          <Link href="/articles" className="btn-outline text-sm inline-flex">
+            לכל המאמרים
+            <ArrowLeft size={15} />
           </Link>
         </AnimatedSection>
 
@@ -590,10 +582,9 @@ function ArticlesSection() {
         <div className="grid md:grid-cols-3 gap-6">
           {displayedArticles.map((a, i) => (
             <AnimatedSection key={a.title} delay={i * 100}>
-              <Link href={`/articles/${(a as any).slug}`}>
-              <a
+              <Link href={`/articles/${(a as any).slug}`}
                 className="block rounded-2xl overflow-hidden shadow-sm border group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-                style={{ borderColor: "rgba(196,149,106,0.2)" }}
+                style={{ borderColor: "rgba(196,149,106,0.2)" } as React.CSSProperties}
               >
                 <div className="aspect-[3/2] overflow-hidden">
                   <img
@@ -615,7 +606,6 @@ function ArticlesSection() {
                     <ArrowLeft size={14} />
                   </div>
                 </div>
-              </a>
               </Link>
             </AnimatedSection>
           ))}

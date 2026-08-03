@@ -32,6 +32,11 @@ import { courseIndexRouter } from "./routers_nlp/courseIndex";
 import { ttsSettingsRouter } from "./routers_nlp/ttsSettings";
 import { ttsRouter } from "./routers_nlp/tts";
 
+// Admin panel routers
+import { adminArticlesRouter } from "./routers_admin/articles";
+import { adminSeoRouter } from "./routers_admin/seo";
+import { adminSiteContentRouter } from "./routers_admin/siteContent";
+
 // Admin-only guard
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
@@ -120,6 +125,11 @@ export const appRouter = router({
   courseIndex: courseIndexRouter,
   ttsSettings: ttsSettingsRouter,
   tts: ttsRouter,
+
+  // ── Admin Panel routers ───────────────────────────────────────────────────────────────────────────────
+  adminArticles: adminArticlesRouter,
+  adminSeo: adminSeoRouter,
+  adminSiteContent: adminSiteContentRouter,
 });
 
 export type AppRouter = typeof appRouter;

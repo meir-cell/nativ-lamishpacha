@@ -5,11 +5,16 @@ import {
   Trash2, Eye, EyeOff, RefreshCw, LogOut, Users,
   ChevronDown, ChevronUp, AlertCircle, Lock, User,
   Download, Shield, Archive, Activity, KeyRound,
-  ArrowRight, Send, CheckCircle, MapPin, Calendar
+  ArrowRight, Send, CheckCircle, MapPin, Calendar,
+  BookOpen, Search, Layout, GraduationCap
 } from "lucide-react";
+import AdminArticles from "./admin/AdminArticles";
+import AdminSEO from "./admin/AdminSEO";
+import AdminNLP from "./admin/AdminNLP";
+import AdminSiteContent from "./admin/AdminSiteContent";
 
 type ContactStatus = "new" | "read" | "replied";
-type AdminTab = "contacts" | "backup" | "log";
+type AdminTab = "contacts" | "articles" | "seo" | "nlp" | "site-content" | "backup" | "log";
 type LoginView = "login" | "forgot" | "reset";
 
 const statusLabel: Record<ContactStatus, string> = { new: "חדש", read: "נקרא", replied: "נענה" };
@@ -250,8 +255,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const filtered = contacts.filter(c => filter === "all" ? true : c.status === filter);
   const tabs: { key: AdminTab; label: string; icon: any }[] = [
     { key: "contacts", label: "פניות", icon: Users },
+    { key: "articles", label: "מאמרים", icon: BookOpen },
+    { key: "seo", label: "קידום אורגני", icon: Search },
+    { key: "nlp", label: "קורס NLP", icon: GraduationCap },
+    { key: "site-content", label: "תוכן האתר", icon: Layout },
     { key: "backup", label: "גיבוי", icon: Archive },
-    { key: "log", label: "יומן פעולות", icon: Activity },
+    { key: "log", label: "יומן", icon: Activity },
   ];
 
   return (
@@ -343,6 +352,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         )}
 
+        {activeTab === "articles" && <AdminArticles />}
+        {activeTab === "seo" && <AdminSEO />}
+        {activeTab === "nlp" && <AdminNLP />}
+        {activeTab === "site-content" && <AdminSiteContent />}
         {activeTab === "log" && <ActivityLogTab />}
       </div>
     </div>
