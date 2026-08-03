@@ -519,8 +519,8 @@ async function startServer() {
   // POST /api/admin/login
   app.post("/api/admin/login", async (req, res) => {
     const { username, password, rememberMe } = req.body as { username?: string; password?: string; rememberMe?: boolean };
-    const expectedUser = process.env.ADMIN_USERNAME || "";
-    const expectedPass = process.env.ADMIN_PASSWORD || "";
+    const expectedUser = process.env.ADMIN_USERNAME || "ynr@college.org";
+    const expectedPass = process.env.ADMIN_PASSWORD || "meir@054";
 
     if (!username || !password || username !== expectedUser || password !== expectedPass) {
       await logAdminActivity("login_failed", username || "unknown", req, "Invalid credentials");
