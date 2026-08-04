@@ -120,6 +120,34 @@ function KeywordDensity({ keywords, description }: { keywords: string; descripti
   );
 }
 
+// ── Character Counter Bar ───────────────────────────────────────────────────
+function CharCounter({ value, min, max, ideal }: { value: string; min: number; max: number; ideal?: [number, number] }) {
+  const len = value?.length || 0;
+  const pct = Math.min((len / max) * 100, 100);
+  const isGood = ideal ? len >= ideal[0] && len <= ideal[1] : len >= min && len <= max;
+  const isTooLong = len > max;
+  const isTooShort = len > 0 && len < min;
+  const color = isTooLong ? "#dc2626" : isTooShort ? "#C4956A" : isGood ? "#6B7C5C" : "rgba(196,149,106,0.4)";
+  const label = isTooLong ? "ארוך מדי" : isTooShort ? "קצר מדי" : isGood ? "אידיאלי ✓" : "";
+  return (
+    <div className="mt-1">
+      <div className="flex justify-between items-center mb-0.5">
+        <span className="text-xs font-medium" style={{ color }}>{label}</span>
+        <span className="text-xs font-bold" style={{ color }}>{len}/{max}</span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(196,149,106,0.12)" }}>
+        <div
+          className="h-full rounded-full transition-all duration-300"
+          style={{ width: `${pct}%`, background: color }}
+        />
+      </div>
+      {ideal && (
+        <div className="text-xs mt-0.5" style={{ color: "rgba(100,80,60,0.5)" }}>מומלץ: {ideal[0]}–{ideal[1]} תווים</div>
+      )}
+    </div>
+  );
+}
+
 // ── Copy Button ───────────────────────────────────────────────────────────────
 function CopyBtn({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -246,16 +274,14 @@ function SeoPageRow({ row, onSave }: { row: SeoRow; onSave: (data: SeoRow) => vo
                     value={form.metaTitle || ""}
                     onChange={e => setForm(f => ({ ...f, metaTitle: e.target.value }))}
                     className="w-full px-3 py-2 rounded-xl border text-sm"
-                    style={{ borderColor: "rgba(196,149,106,0.3)", fontFamily: "'Assistant', sans-serif" }}
+                    style={{
+                      borderColor: (form.metaTitle?.length || 0) > 60 ? "#dc2626" : (form.metaTitle?.length || 0) >= 50 ? "#6B7C5C" : "rgba(196,149,106,0.3)",
+                      fontFamily: "'Assistant', sans-serif"
+                    }}
                     placeholder="כותרת לכרטיסיית הדפדפן..."
-                    maxLength={60}
+                    maxLength={70}
                   />
-                  <div className="flex justify-between mt-0.5">
-                    <span className="text-xs" style={{ color: "var(--brand-mid)" }}>אידיאלי: 50-60 תווים</span>
-                    <span className="text-xs font-medium" style={{ color: (form.metaTitle?.length || 0) > 55 ? "#dc2626" : "#6B7C5C" }}>
-                      {form.metaTitle?.length || 0}/60
-                    </span>
-                  </div>
+                  <CharCounter value={form.metaTitle || ""} min={30} max={60} ideal={[50, 60]} />
                 </div>
 
                 {/* OG Title */}
@@ -290,16 +316,14 @@ function SeoPageRow({ row, onSave }: { row: SeoRow; onSave: (data: SeoRow) => vo
                   onChange={e => setForm(f => ({ ...f, metaDescription: e.target.value }))}
                   rows={2}
                   className="w-full px-3 py-2 rounded-xl border text-sm resize-none"
-                  style={{ borderColor: "rgba(196,149,106,0.3)", fontFamily: "'Assistant', sans-serif" }}
+                  style={{
+                    borderColor: (form.metaDescription?.length || 0) > 160 ? "#dc2626" : (form.metaDescription?.length || 0) >= 120 ? "#6B7C5C" : "rgba(196,149,106,0.3)",
+                    fontFamily: "'Assistant', sans-serif"
+                  }}
                   placeholder="תיאור קצר של הדף לתוצאות חיפוש..."
-                  maxLength={160}
+                  maxLength={180}
                 />
-                <div className="flex justify-between mt-0.5">
-                  <span className="text-xs" style={{ color: "var(--brand-mid)" }}>אידיאלי: 120-160 תווים</span>
-                  <span className="text-xs font-medium" style={{ color: (form.metaDescription?.length || 0) > 150 ? "#dc2626" : "#6B7C5C" }}>
-                    {form.metaDescription?.length || 0}/160
-                  </span>
-                </div>
+                <CharCounter value={form.metaDescription || ""} min={70} max={160} ideal={[120, 160]} />
               </div>
 
               {/* OG Description */}
@@ -491,6 +515,7 @@ function SeoPageRow({ row, onSave }: { row: SeoRow; onSave: (data: SeoRow) => vo
 export default function AdminSEO() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "good" | "needs_work" | "missing">("all");
+  const [showBulkPanel, setShowBulkPanel] = useState(false);
   const utils = trpc.useUtils();
 
   const { data: pages, isLoading, refetch } = trpc.adminSeo.getAll.useQuery();
@@ -498,6 +523,90 @@ export default function AdminSEO() {
   const updateMutation = trpc.adminSeo.update.useMutation({
     onSuccess: () => utils.adminSeo.getAll.invalidate()
   });
+
+  // Bulk AI panel component (inline to access pages data)
+  const BulkPanel = () => {
+    const [statuses, setStatuses] = useState<{ pageKey: string; pageLabel: string; status: "pending" | "running" | "done" | "error" }[]>(
+      (pages || []).map(p => ({ pageKey: p.pageKey, pageLabel: (p as { pageLabel?: string }).pageLabel || p.pageKey, status: "pending" as const }))
+    );
+    const [running, setRunning] = useState(false);
+    const [done, setDone] = useState(false);
+    const aiSuggest = trpc.adminSeo.aiSuggest.useMutation();
+    const updateSeo = trpc.adminSeo.update.useMutation();
+
+    const runBulk = async () => {
+      setRunning(true);
+      for (const page of (pages || [])) {
+        const pageLabel = (page as { pageLabel?: string }).pageLabel || page.pageKey;
+        setStatuses(s => s.map(x => x.pageKey === page.pageKey ? { ...x, status: "running" } : x));
+        try {
+          const suggestion = await aiSuggest.mutateAsync({ pageKey: page.pageKey, pageLabel });
+          await updateSeo.mutateAsync({ pageKey: page.pageKey, metaTitle: suggestion.metaTitle, metaDescription: suggestion.metaDescription, ogTitle: suggestion.ogTitle, keywords: suggestion.keywords });
+          setStatuses(s => s.map(x => x.pageKey === page.pageKey ? { ...x, status: "done" } : x));
+        } catch {
+          setStatuses(s => s.map(x => x.pageKey === page.pageKey ? { ...x, status: "error" } : x));
+        }
+        await new Promise(r => setTimeout(r, 800));
+      }
+      setRunning(false);
+      setDone(true);
+      utils.adminSeo.getAll.invalidate();
+    };
+
+    const doneCount = statuses.filter(s => s.status === "done").length;
+    const errorCount = statuses.filter(s => s.status === "error").length;
+    const progress = Math.round(((doneCount + errorCount) / Math.max(statuses.length, 1)) * 100);
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.5)" }} dir="rtl">
+        <div className="rounded-2xl p-6 w-full max-w-lg shadow-2xl" style={{ background: "white", maxHeight: "80vh", overflowY: "auto" }}>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-bold" style={{ color: "var(--brand-dark)", fontFamily: "'Noto Serif Hebrew', serif" }}>ייצור SEO אוטומטי לכל הדפים</h3>
+              <p className="text-xs mt-0.5" style={{ color: "var(--brand-mid)", fontFamily: "'Assistant', sans-serif" }}>ה-AI ייצור כותרת, תיאור ומילות מפתח לכל {statuses.length} דפים</p>
+            </div>
+            <button onClick={() => setShowBulkPanel(false)} disabled={running} className="p-2 rounded-lg hover:bg-gray-100 text-xl" style={{ color: "var(--brand-mid)" }}>×</button>
+          </div>
+          {(running || done) && (
+            <div className="mb-4">
+              <div className="flex justify-between text-xs mb-1" style={{ color: "var(--brand-mid)" }}>
+                <span>{doneCount + errorCount} / {statuses.length} דפים</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(196,149,106,0.15)" }}>
+                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, background: done ? "#6B7C5C" : "var(--brand-gold)" }} />
+              </div>
+            </div>
+          )}
+          <div className="space-y-2 mb-5">
+            {statuses.map(s => (
+              <div key={s.pageKey} className="flex items-center justify-between px-3 py-2 rounded-xl" style={{ background: "rgba(196,149,106,0.05)", border: "1px solid rgba(196,149,106,0.1)" }}>
+                <div className="flex items-center gap-2">
+                  {s.status === "pending" && <div className="w-4 h-4 rounded-full" style={{ background: "rgba(196,149,106,0.2)" }} />}
+                  {s.status === "running" && <Loader2 size={16} className="animate-spin" style={{ color: "var(--brand-gold)" }} />}
+                  {s.status === "done" && <CheckCircle2 size={16} style={{ color: "#6B7C5C" }} />}
+                  {s.status === "error" && <AlertCircle size={16} style={{ color: "#dc2626" }} />}
+                  <span className="text-sm" style={{ color: "var(--brand-dark)", fontFamily: "'Assistant', sans-serif" }}>{s.pageLabel}</span>
+                </div>
+                <span className="text-xs" style={{ color: s.status === "done" ? "#6B7C5C" : s.status === "error" ? "#dc2626" : s.status === "running" ? "var(--brand-gold)" : "var(--brand-mid)" }}>
+                  {s.status === "pending" ? "ממתין" : s.status === "running" ? "מעבד..." : s.status === "done" ? "בוצע ✓" : "שגיאה"}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-3">
+            {!running && !done && (
+              <button onClick={runBulk} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white text-sm" style={{ background: "linear-gradient(135deg, #C4956A 0%, #a0724a 100%)", fontFamily: "'Assistant', sans-serif" }}>
+                <Sparkles size={16} />התחל ייצור אוטומטי
+              </button>
+            )}
+            {done && <div className="flex-1 text-center py-3 rounded-xl text-sm font-semibold" style={{ background: "rgba(107,124,92,0.1)", color: "#6B7C5C" }}>✓ הושלם! {doneCount} דפים עודכנו{errorCount > 0 ? `, ${errorCount} שגיאות` : ""}</div>}
+            <button onClick={() => setShowBulkPanel(false)} disabled={running} className="px-4 py-3 rounded-xl text-sm font-semibold" style={{ background: "rgba(196,149,106,0.1)", color: "var(--brand-dark)" }}>{done ? "סגור" : "בטל"}</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const pagesWithScore = useMemo(() =>
     (pages || []).map(p => ({ ...p, seoScore: calcSeoScore(p as SeoRow).score })),
@@ -538,15 +647,27 @@ export default function AdminSEO() {
             ניהול Meta Tags, ניתוח SEO ותצוגה מקדימה לכל דף באתר
           </p>
         </div>
-        <button
-          onClick={() => refetch()}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-colors hover:bg-amber-50"
-          style={{ color: "var(--brand-mid)", border: "1px solid rgba(196,149,106,0.2)", fontFamily: "'Assistant', sans-serif" }}
-        >
-          <RefreshCw size={14} />
-          רענן
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowBulkPanel(true)}
+            disabled={isLoading || !pages?.length}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95 disabled:opacity-50"
+            style={{ background: "linear-gradient(135deg, #C4956A 0%, #a0724a 100%)", fontFamily: "'Assistant', sans-serif" }}
+          >
+            <Sparkles size={14} />
+            ייצור AI לכל הדפים
+          </button>
+          <button
+            onClick={() => refetch()}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-colors hover:bg-amber-50"
+            style={{ color: "var(--brand-mid)", border: "1px solid rgba(196,149,106,0.2)", fontFamily: "'Assistant', sans-serif" }}
+          >
+            <RefreshCw size={14} />
+            רענן
+          </button>
+        </div>
       </div>
+      {showBulkPanel && <BulkPanel />}
 
       {/* Stats Dashboard */}
       <div className="grid grid-cols-4 gap-4 mb-6">
