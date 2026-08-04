@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import {
   Search, Globe, Save, ChevronDown, ChevronUp, ExternalLink, Tag,
   FileText, TrendingUp, AlertCircle, CheckCircle2, BarChart3,
-  Eye, Zap, Target, Info, RefreshCw, Copy, Check
+  Eye, Zap, Target, Info, RefreshCw, Copy, Check, Sparkles, Loader2
 } from "lucide-react";
 
 type SeoRow = {
@@ -140,6 +140,22 @@ function SeoPageRow({ row, onSave }: { row: SeoRow; onSave: (data: SeoRow) => vo
   const [form, setForm] = useState<SeoRow>({ ...row });
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview" | "analysis">("edit");
+  const [aiApplied, setAiApplied] = useState(false);
+
+  const aiSuggestMutation = trpc.adminSeo.aiSuggest.useMutation({
+    onSuccess: (data) => {
+      setForm(f => ({
+        ...f,
+        metaTitle: data.metaTitle,
+        metaDescription: data.metaDescription,
+        ogTitle: data.ogTitle,
+        keywords: data.keywords,
+      }));
+      setAiApplied(true);
+      setActiveTab("edit");
+      setTimeout(() => setAiApplied(false), 3000);
+    },
+  });
 
   const { score, issues, passes } = useMemo(() => calcSeoScore(form), [form]);
 
@@ -348,7 +364,7 @@ function SeoPageRow({ row, onSave }: { row: SeoRow; onSave: (data: SeoRow) => vo
                 />
               </div>
 
-              <div className="flex items-center gap-3 pt-1">
+              <div className="flex items-center gap-3 pt-1 flex-wrap">
                 <button
                   onClick={handleSave}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm transition-all hover:opacity-90 active:scale-95"
@@ -357,6 +373,28 @@ function SeoPageRow({ row, onSave }: { row: SeoRow; onSave: (data: SeoRow) => vo
                   <Save size={14} />
                   {saved ? "נשמר!" : "שמור שינויים"}
                 </button>
+                <button
+                  onClick={() => aiSuggestMutation.mutate({ pageKey: row.pageKey, pageLabel: row.pageLabel || row.pageKey })}
+                  disabled={aiSuggestMutation.isPending}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90 active:scale-95 disabled:opacity-60"
+                  style={{
+                    background: aiApplied ? "rgba(107,124,92,0.15)" : "linear-gradient(135deg, #C4956A 0%, #a0724a 100%)",
+                    color: aiApplied ? "#6B7C5C" : "white",
+                    border: aiApplied ? "1px solid #6B7C5C" : "none",
+                    fontFamily: "'Assistant', sans-serif",
+                  }}
+                >
+                  {aiSuggestMutation.isPending ? (
+                    <><Loader2 size={14} className="animate-spin" />מייצר המלצות...</>
+                  ) : aiApplied ? (
+                    <><CheckCircle2 size={14} />הוחל בהצלחה!</>
+                  ) : (
+                    <><Sparkles size={14} />הצעת AI</>
+                  )}
+                </button>
+                {aiSuggestMutation.isError && (
+                  <span className="text-xs" style={{ color: "#dc2626" }}>שגיאה: {aiSuggestMutation.error?.message}</span>
+                )}
                 {saved && <span className="text-xs" style={{ color: "#6B7C5C" }}>✓ הנתונים עודכנו בהצלחה</span>}
               </div>
             </div>
