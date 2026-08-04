@@ -6,7 +6,7 @@ import {
   ChevronDown, ChevronUp, AlertCircle, Lock, User,
   Download, Shield, Archive, Activity, KeyRound,
   ArrowRight, Send, CheckCircle, MapPin, Calendar,
-  BookOpen, Search, Layout, GraduationCap
+  BookOpen, Search, Layout, GraduationCap, Home
 } from "lucide-react";
 import AdminArticles from "./admin/AdminArticles";
 import AdminSEO from "./admin/AdminSEO";
@@ -295,6 +295,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         </nav>
         {/* Bottom actions */}
         <div className="px-3 py-4 border-t space-y-1" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <a href="/" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all hover:bg-white/10" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Assistant', sans-serif", textDecoration: "none" }}>
+            <Home size={15} /> דף הבית
+          </a>
           <button onClick={fetchContacts} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all" style={{ color: "rgba(255,255,255,0.5)", fontFamily: "'Assistant', sans-serif" }}>
             <RefreshCw size={15} /> רענן
           </button>
