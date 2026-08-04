@@ -11,7 +11,7 @@ function getTransporter() {
   const host = process.env.SMTP_HOST || "smtp.gmail.com";
   const port = parseInt(process.env.SMTP_PORT || "587", 10);
   const user = process.env.SMTP_USER || "meir@ynrcollege.org";
-  const pass = process.env.SMTP_PASS || "rkzryywi ybsjumvf";
+  const pass = process.env.SMTP_PASS || "dxul dlhw lfho kjbg";
 
   if (!host || !user || !pass) {
     return null;
