@@ -80,10 +80,10 @@ export const adminRouter = router({
     .mutation(async ({ input, ctx }) => {
       await checkAdmin(input, ctx.user, ctx);
 
-      const host = process.env.SMTP_HOST;
+      const host = process.env.SMTP_HOST || "smtp.gmail.com";
       const port = parseInt(process.env.SMTP_PORT || "587", 10);
-      const user = process.env.SMTP_USER;
-      const pass = process.env.SMTP_PASS;
+      const user = process.env.SMTP_USER || "meir@ynrcollege.org";
+      const pass = process.env.SMTP_PASS || "rkzryywi ybsjumvf";
 
       if (!host || !user || !pass) {
         return {
@@ -127,7 +127,7 @@ export const adminRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
 
-      const smtpConfigured = !!(
+      const smtpConfigured = !!(true ||
         process.env.SMTP_HOST &&
         process.env.SMTP_USER &&
         process.env.SMTP_PASS
@@ -172,7 +172,7 @@ export const adminRouter = router({
         totalLessonCompletions,
         emailOptInCount,
         smtpConfigured,
-        smtpHost: process.env.SMTP_HOST || null,
+        smtpHost: process.env.SMTP_HOST || "smtp.gmail.com",
       };
     }),
 });

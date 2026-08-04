@@ -7,10 +7,11 @@
 import nodemailer from "nodemailer";
 
 function getTransporter() {
-  const host = process.env.SMTP_HOST;
+  // Use env vars if set, otherwise fall back to hardcoded Gmail credentials
+  const host = process.env.SMTP_HOST || "smtp.gmail.com";
   const port = parseInt(process.env.SMTP_PORT || "587", 10);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER || "meir@ynrcollege.org";
+  const pass = process.env.SMTP_PASS || "rkzryywi ybsjumvf";
 
   if (!host || !user || !pass) {
     return null;
